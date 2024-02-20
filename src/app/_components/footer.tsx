@@ -1,6 +1,5 @@
-import { WebComponentProps } from '../../types';
+'use client';
 
-export default function Footer(props: WebComponentProps) {
-	const { currentPage } = props;
+export default function Footer() {
 	return <></>;
 }

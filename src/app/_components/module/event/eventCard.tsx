@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export default function EventCard(props: any) {
@@ -20,7 +19,7 @@ export default function EventCard(props: any) {
 }
 
 export function EventCardPost(props: any) {
-	const { currentPage, setCurrentPage, event } = props;
+	const { setCurrentPage, event } = props;
 	const close = () => setCurrentPage('');
 	return (
 		<motion.div

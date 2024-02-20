@@ -1,9 +1,9 @@
 'use client';
 
-import { BodyComponentProps, WebComponentProps, EventCardProps } from '../../types';
+import { BodyComponentProps } from '@/types';
 import EventModule from './module/event/eventModule';
 
 export default function Body(props: BodyComponentProps) {
-	const { currentPage, setCurrentPage, events, setEvents } = props;
+	const { currentPage } = props;
 	return <div>{(currentPage === '' || currentPage.includes('#event-')) && <EventModule {...props} />}</div>;
 }

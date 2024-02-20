@@ -1,12 +1,13 @@
-import { BodyComponentProps, WebComponentProps, EventCardProps } from '../../../../types';
+'use client';
+
+import { BodyComponentProps, EventCardProps } from '@/types';
 import SequentialComponents from '../../utils/sequentialComponents';
-import EventCard from './eventCard';
-import { EventCardPost } from './eventCard';
+import EventCard, { EventCardPost } from './eventCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBox from './searchBox';
 
 export default function EventModule(props: BodyComponentProps) {
-	const { currentPage, setCurrentPage, events, setEvents } = props;
+	const { currentPage, setCurrentPage, events } = props;
 
 	function getEventFromEventString(eventString: string): EventCardProps | undefined {
 		const id = parseInt(eventString.split('-')[1]);

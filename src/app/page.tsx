@@ -3,7 +3,7 @@
 import Navbar from './_components/navbar';
 import Body from './_components/body';
 import Footer from './_components/footer';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { EventCardProps } from '@/types';
 
 const sampleEvents: EventCardProps[] = [
@@ -17,17 +17,13 @@ export default function App() {
 	const [currentPage, setCurrentPage] = useState('');
 	const [events, setEvents] = useState<EventCardProps[]>(sampleEvents);
 
-	useEffect(() => {
-		console.log('Current Page: ', currentPage);
-	}, [currentPage]);
-
 	return (
 		<div>
-			<Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+			<Navbar />
 			<div className="flex flex-col justify-center items-center w-full">
 				<Body currentPage={currentPage} setCurrentPage={setCurrentPage} events={events} setEvents={setEvents} />
 			</div>
-			<Footer currentPage={currentPage} setCurrentPage={setCurrentPage} />
+			<Footer />
 		</div>
 	);
 }
