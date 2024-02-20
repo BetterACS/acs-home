@@ -1,16 +1,10 @@
-import { z } from 'zod';
-import { publicProcedure, router } from "./trpc";
+import apiSecondTest from './api/secondTestTRPC';
+import apiTest from './api/testTRPC';
+import { router } from './trpc';
+
 export const appRouter = router({
-    test: publicProcedure.query(async () => {
-        return {
-            message: 'Hello world! if you see this, it means that trpc is working!'
-        }
-    }),
-    hello: publicProcedure.input(z.string()).mutation(async (input) => {
-        return {
-            message: `Hello, ${input}!`
-        }
-    })
-})
+	...apiTest(),
+	...apiSecondTest(),
+});
 
 export type AppRouter = typeof appRouter;

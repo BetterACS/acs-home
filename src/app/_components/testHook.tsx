@@ -1,14 +1,14 @@
-"use client"
-import { trpc } from "../_trpc/client"
+'use client';
+import { trpc } from '../_trpc/client';
 
 export default function TestHook() {
-    const test = trpc.test.useQuery()
-    const testMutation = trpc.hello.useMutation()
+	const test = trpc.test.useQuery();
+	const hellothere = trpc.hellothere.useQuery();
 
-    return (
-        <div>
-            <p>{JSON.stringify(test.data)}</p>
-            <p>{JSON.stringify(testMutation.data)}</p>
-        </div>
-    )
+	return (
+		<div>
+			<p>{JSON.stringify(test.data)}</p>
+			<p>{JSON.stringify(hellothere.data)}</p>
+		</div>
+	);
 }
