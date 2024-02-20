@@ -2,7 +2,7 @@
 import { trpc } from '../_trpc/client';
 
 export default function TestHook() {
-	const test = trpc.test.useQuery();
+	const test = trpc.testQuery.useQuery();
 	const hellothere = trpc.hellothere.useQuery();
 
 	return (
