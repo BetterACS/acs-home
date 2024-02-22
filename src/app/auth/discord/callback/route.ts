@@ -39,7 +39,7 @@ async function getDiscordCode(request: NextRequest) {
 		const userResponseData = await userResponse.json();
 		console.log('userResponse:', userResponseData);
 
-		const redirectUrl = `/login/?display_name=${userResponseData.global_name}&discord_id=${userResponseData.id}&email=${userResponseData.email}`;
+		const redirectUrl = `/api/login/?display_name=${userResponseData.global_name}&discord_id=${userResponseData.id}&email=${userResponseData.email}`;
 		return NextResponse.redirect(new URL(redirectUrl, request.url));
 	} else {
 		console.error('Failed to fetch token:', response.statusText);
