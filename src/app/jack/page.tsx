@@ -1,6 +1,4 @@
-import { MouseEventHandler } from "react";
 import DiscordButton from "../_components/discordButton";
-
 
 export default function TestPage() {
     return (

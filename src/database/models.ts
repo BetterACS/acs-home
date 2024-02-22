@@ -6,9 +6,6 @@ interface User extends Document {
 	password: string;
 	display_name: string;
 	created_at: Date;
-	is_verified: boolean;
-	verification_token?: string;
-	verification_token_expire?: Date;
 	reset_token?: string;
 	reset_token_expire?: Date;
 	coin?: number;
@@ -21,9 +18,6 @@ const UserSchema: Schema<User> = new Schema({
 	password: { type: String, required: true },
 	display_name: { type: String, required: true },
 	created_at: { type: Date, default: Date.now },
-	is_verified: { type: Boolean, default: false },
-	verification_token: { type: String },
-	verification_token_expire: { type: Date },
 	reset_token: { type: String },
 	reset_token_expire: { type: Date },
 	coin: { type: Number },
@@ -31,7 +25,7 @@ const UserSchema: Schema<User> = new Schema({
 	discord_id: { type: String },
 });
 
-const UserModel = mongoose.model<User>('User', UserSchema);
+const UserModel = mongoose.models.User || mongoose.model<User>('User', UserSchema);
 
 // Define Post Schema
 interface Post extends Document {
@@ -50,7 +44,7 @@ const PostSchema: Schema<Post> = new Schema({
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-const PostModel = mongoose.model<Post>('Post', PostSchema);
+const PostModel = mongoose.models.Post || mongoose.model<Post>('Post', PostSchema);
 
 // Define Tag Schema
 interface Tag extends Document {
@@ -63,7 +57,7 @@ const TagSchema: Schema<Tag> = new Schema({
 	created_at: { type: Date, default: Date.now },
 });
 
-const TagModel = mongoose.model<Tag>('Tag', TagSchema);
+const TagModel = mongoose.models.Tag || mongoose.model<Tag>('Tag', TagSchema);
 
 // Define PostTag Schema
 interface PostTag extends Document {
@@ -78,7 +72,7 @@ const PostTagSchema: Schema<PostTag> = new Schema({
 	created_at: { type: Date, default: Date.now },
 });
 
-const PostTagModel = mongoose.model<PostTag>('PostTag', PostTagSchema);
+const PostTagModel = mongoose.models.PostTag || mongoose.model<PostTag>('PostTag', PostTagSchema);
 
 // Define Comment Schema
 interface Comment extends Document {
@@ -95,7 +89,7 @@ const CommentSchema: Schema<Comment> = new Schema({
 	post_id: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
 });
 
-const CommentModel = mongoose.model<Comment>('Comment', CommentSchema);
+const CommentModel = mongoose.models.Comment || mongoose.model<Comment>('Comment', CommentSchema);
 
 // Define CommentPhoto Schema
 interface CommentPhoto extends Document {
@@ -110,7 +104,8 @@ const CommentPhotoSchema: Schema<CommentPhoto> = new Schema({
 	comment_id: { type: Schema.Types.ObjectId, ref: 'Comment', required: true },
 });
 
-const CommentPhotoModel = mongoose.model<CommentPhoto>('CommentPhoto', CommentPhotoSchema);
+const CommentPhotoModel =
+	mongoose.models.CommentPhoto || mongoose.model<CommentPhoto>('CommentPhoto', CommentPhotoSchema);
 
 // Define Bookmark Schema
 interface Bookmark extends Document {
@@ -125,7 +120,7 @@ const BookmarkSchema: Schema<Bookmark> = new Schema({
 	post_id: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
 });
 
-const BookmarkModel = mongoose.model<Bookmark>('Bookmark', BookmarkSchema);
+const BookmarkModel = mongoose.models.Bookmark || mongoose.model<Bookmark>('Bookmark', BookmarkSchema);
 
 // Define PostVote Schema
 interface PostVote extends Document {
@@ -140,7 +135,7 @@ const PostVoteSchema: Schema<PostVote> = new Schema({
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-const PostVoteModel = mongoose.model<PostVote>('PostVote', PostVoteSchema);
+const PostVoteModel = mongoose.models.PostVote || mongoose.model<PostVote>('PostVote', PostVoteSchema);
 
 // Define Event Schema
 interface Event extends Document {
@@ -157,7 +152,7 @@ const EventSchema: Schema<Event> = new Schema({
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-const EventModel = mongoose.model<Event>('Event', EventSchema);
+const EventModel = mongoose.models.Event || mongoose.model<Event>('Event', EventSchema);
 
 // Define EventPhoto Schema
 interface EventPhoto extends Document {
@@ -172,7 +167,7 @@ const EventPhotoSchema: Schema<EventPhoto> = new Schema({
 	event_id: { type: Schema.Types.ObjectId, ref: 'Event', required: true },
 });
 
-const EventPhotoModel = mongoose.model<EventPhoto>('EventPhoto', EventPhotoSchema);
+const EventPhotoModel = mongoose.models.EventPhoto || mongoose.model<EventPhoto>('EventPhoto', EventPhotoSchema);
 
 // Define Item Schema
 interface Item extends Document {
@@ -189,7 +184,7 @@ const ItemSchema: Schema<Item> = new Schema({
 	item_text: { type: String, required: true },
 });
 
-const ItemModel = mongoose.model<Item>('Item', ItemSchema);
+const ItemModel = mongoose.models.Item || mongoose.model<Item>('Item', ItemSchema);
 
 // Define Redeem Schema
 interface Redeem extends Document {
@@ -204,7 +199,7 @@ const RedeemSchema: Schema<Redeem> = new Schema({
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
-const RedeemModel = mongoose.model<Redeem>('Redeem', RedeemSchema);
+const RedeemModel = mongoose.models.Redeem || mongoose.model<Redeem>('Redeem', RedeemSchema);
 
 // Define ItemPhoto Schema
 interface ItemPhoto extends Document {
@@ -219,7 +214,7 @@ const ItemPhotoSchema: Schema<ItemPhoto> = new Schema({
 	item_id: { type: Schema.Types.ObjectId, ref: 'Item', required: true },
 });
 
-const ItemPhotoModel = mongoose.model<ItemPhoto>('ItemPhoto', ItemPhotoSchema);
+const ItemPhotoModel = mongoose.models.ItemPhoto || mongoose.model<ItemPhoto>('ItemPhoto', ItemPhotoSchema);
 
 // Export models
 export {
@@ -236,4 +231,20 @@ export {
 	RedeemModel,
 	TagModel,
 	UserModel,
+};
+
+export type {
+	Bookmark,
+	Comment,
+	CommentPhoto,
+	Event,
+	EventPhoto,
+	Item,
+	ItemPhoto,
+	Post,
+	PostTag,
+	PostVote,
+	Redeem,
+	Tag,
+	User,
 };
