@@ -26,4 +26,24 @@ interface SequentialComponentsProps<T> {
 	emptyState: string;
 }
 
+interface TagItem {
+	value: string;
+	label: string;
+}
+
+interface TagInputProps {
+	items: TagItem[];
+	message: string;
+}
+
+interface EventModalInputProps {
+	children: React.ReactElement;
+	label: string;
+	marginTop: number;
+	width: number;
+	textSize: string;
+}
+
+export type { EventModalInputProps, TagInputProps, TagItem };
+
 export type { BodyComponentProps, EventCardProps, GroupComponentProps, SequentialComponentsProps, WebComponentProps };

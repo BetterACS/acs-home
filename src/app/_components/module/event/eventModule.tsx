@@ -5,20 +5,38 @@ import SequentialComponents from '../../utils/sequentialComponents';
 import EventCard, { EventCardPost } from './eventCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBox from './searchBox';
+import { useEffect, useState } from 'react';
+import EventModal from './eventModal';
 
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events } = props;
+
+	const [modalOpen, setModalOpen] = useState(false);
+
+	const open = () => setModalOpen(true);
+	const close = () => setModalOpen(false);
 
 	function getEventFromEventString(eventString: string): EventCardProps | undefined {
 		const id = parseInt(eventString.split('-')[1]);
 		return events.find((event) => event.id === id);
 	}
 
+	useEffect(() => {
+		if (modalOpen) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'unset';
+		}
+	}, [modalOpen]);
+
 	return (
 		<div>
+			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
+				{modalOpen && <EventModal modalOpen={modalOpen} handleClose={close} />}
+			</AnimatePresence>
 			<div className="pt-[372px] w-[1200px] mb-[34px]">
 				<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
-					{currentPage === '' && <SearchBox />}
+					{currentPage === '' && <SearchBox setModalOpen={open} />}
 				</AnimatePresence>
 			</div>
 			<AnimatePresence initial={false} mode="wait">
