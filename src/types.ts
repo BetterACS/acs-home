@@ -14,7 +14,8 @@ interface WebComponentProps {
 }
 
 interface BodyComponentProps extends WebComponentProps {
-	onChildClick: (id: number) => void;
+	events: EventCardProps[];
+	setEvents: (events: EventCardProps[]) => void;
 }
 
 interface SequentialComponentsProps<T> {
