@@ -1,4 +1,4 @@
-import { connectDB, disconnectDB } from '../../../server/db';
+import { connectDB } from '../../../server/db';
 
 import bcrypt from 'bcrypt';
 import { NextRequest, NextResponse } from 'next/server';
@@ -25,9 +25,9 @@ async function registerFunction(request: NextRequest) {
 		console.error('Error creating user:', error);
 		return NextResponse.json({ message: 'Fail to create user' }, { status: 500 });
 	} finally {
-		if (client) {
-			await disconnectDB();
-		}
+		// if (client) {
+		// 	await disconnectDB();
+		// }
 	}
 }
 

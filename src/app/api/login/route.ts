@@ -1,4 +1,4 @@
-import { connectDB, disconnectDB } from '../../../server/db';
+import { connectDB } from '../../../server/db';
 //../../../database/models
 import { NextRequest, NextResponse } from 'next/server';
 import { UserModel } from '../../../database/models';
@@ -28,9 +28,9 @@ async function loginFunction(request: NextRequest) {
 		console.error('Error login user:', error);
 		return NextResponse.json({ message: 'Fail to login user' }, { status: 500 });
 	} finally {
-		if (client) {
-			await disconnectDB();
-		}
+		// if (client) {
+		// 	await disconnectDB();
+		// }
 	}
 }
 

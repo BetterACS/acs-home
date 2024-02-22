@@ -27,11 +27,11 @@ async function connectDB(): Promise<Connection> {
 	}
 }
 
-function disconnectDB(): Connection | void {
-	if (!cachedConnection) {
-		return;
-	}
-	mongoose.disconnect();
-}
+// function disconnectDB(): Connection | void {
+// 	if (!cachedConnection) {
+// 		return;
+// 	}
+// 	mongoose.disconnect();
+// }
 
-export { connectDB, disconnectDB };
+export { connectDB };
