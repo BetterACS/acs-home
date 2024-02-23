@@ -7,10 +7,10 @@ import { useState } from 'react';
 import { EventCardProps } from '@/types';
 
 const sampleEvents: EventCardProps[] = [
-	{ id: 0, title: 'Event 1', description: 'Description 1' },
-	{ id: 1, title: 'Event 2', description: 'Description 2' },
-	{ id: 2, title: 'Event 3', description: 'Description 3' },
-	{ id: 3, title: 'Event 4', description: 'Description 4' },
+	{ id: 0, title: 'Event 1', description: 'Description 1', dueDate: '2022-12-31' },
+	{ id: 1, title: 'Event 2', description: 'Description 2', dueDate: '2022-12-31' },
+	{ id: 2, title: 'Event 3', description: 'Description 3', dueDate: '2022-12-31' },
+	{ id: 3, title: 'Event 4', description: 'Description 4', dueDate: '2022-12-31' },
 ];
 
 export default function App() {

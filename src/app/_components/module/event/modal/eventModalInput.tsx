@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Label } from '@/components/ui/label';
@@ -92,10 +94,9 @@ export function TagInput(props: TagInputProps) {
 
 export default function EventModalInput(props: EventModalInputProps) {
 	const { children, label, marginTop, width, textSize } = props;
-
 	return (
-		<div className={`w-full mt-[${marginTop}px] flex flex-row items-center`}>
-			<Label className={`text-${textSize}} w-[${width}px]`} htmlFor="title">
+		<div className="w-full flex flex-row items-center" style={{ marginTop: marginTop }}>
+			<Label className={textSize} htmlFor="title" style={{ width: width }}>
 				{label}
 			</Label>
 			{children}

@@ -1,7 +1,10 @@
+'use client';
+
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
-import Backdrop from '../../utils/backdrop';
-import DatePicker from '../../utils/datepicker';
+import { Button } from '@/components/ui/button';
+import Backdrop from '../../../utils/backdrop';
+import DatePicker from '../../../utils/datepicker';
 import type { TagItem } from '@/types';
 import EventModalInput, { SelfExpandTextarea, TagInput } from './eventModalInput';
 
@@ -16,7 +19,7 @@ const EventModal = ({ handleClose }: any) => {
 		<Backdrop onClick={handleClose}>
 			<motion.div
 				onClick={(e) => e.stopPropagation()}
-				className="rounded-[34px] bg-white w-[968px] h-[688px]"
+				className="rounded-[34px] bg-white w-[968px] h-[724px]"
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				exit={{ opacity: 0 }}
@@ -37,15 +40,15 @@ const EventModal = ({ handleClose }: any) => {
 					/>
 
 					<div className="self-start w-[480px] ml-[124px]">
-						<EventModalInput label="Due date" marginTop={30} width={240} textSize="lg">
+						<EventModalInput label="Due date" marginTop={30} width={240} textSize="text-lg">
 							<DatePicker />
 						</EventModalInput>
 
-						<EventModalInput label="Coin" marginTop={20} width={240} textSize="lg">
+						<EventModalInput label="Coin" marginTop={20} width={240} textSize="text-lg">
 							<Input className="w-[200px]" placeholder="100+" />
 						</EventModalInput>
 
-						<EventModalInput label="Type" marginTop={20} width={240} textSize="lg">
+						<EventModalInput label="Type" marginTop={20} width={240} textSize="text-lg">
 							<TagInput message="Select item" items={example_items} />
 						</EventModalInput>
 					</div>
@@ -54,6 +57,10 @@ const EventModal = ({ handleClose }: any) => {
 						<SelfExpandTextarea />
 					</div>
 				</div>
+				<center className="pt-[20px]">
+					{/* Set disable if need <Button disabled>Create</Button> */}
+					<Button>Create</Button>
+				</center>
 			</motion.div>
 		</Backdrop>
 	);

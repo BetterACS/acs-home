@@ -6,7 +6,7 @@ import EventCard, { EventCardPost } from './eventCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBox from './searchBox';
 import { useEffect, useState } from 'react';
-import EventModal from './eventModal';
+import EventModal from './modal/eventModal';
 
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events } = props;

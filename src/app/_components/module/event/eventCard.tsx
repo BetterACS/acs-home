@@ -45,6 +45,7 @@ export function EventCardPost(props: any) {
 				<div className="bg-red-400 rounded-full w-12 h-12 mr-10" onClick={close}></div>
 			</div>
 			{event?.description}
+			{event?.dueDate}
 		</motion.div>
 	);
 }
