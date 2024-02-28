@@ -1,3 +1,5 @@
+import { caller } from '@/server';
+import { generateRandomString } from '@/utils/password';
 import { NextRequest, NextResponse } from 'next/server';
 
 async function getDiscordCode(request: NextRequest) {
@@ -39,8 +41,33 @@ async function getDiscordCode(request: NextRequest) {
 		const userResponseData = await userResponse.json();
 		console.log('userResponse:', userResponseData);
 
-		const redirectUrl = `/api/login/?display_name=${userResponseData.global_name}&discord_id=${userResponseData.id}&email=${userResponseData.email}`;
-		return NextResponse.redirect(new URL(redirectUrl, request.url));
+		const loginResult = await caller.login({
+			email: userResponseData.email,
+			display_name: userResponseData.username,
+			discord_id: userResponseData.id,
+		});
+
+		// Cannot find the user
+		// We create a new user
+		if (loginResult.status === 404) {
+			await caller.register({
+				email: userResponseData.email,
+				display_name: userResponseData.username,
+				discord_id: userResponseData.id,
+				coin: 0,
+				password: generateRandomString(10),
+			});
+
+			// set cookie here
+		} else if (loginResult.status === 200) {
+			// set cookie here
+		} else {
+			console.error('Failed to login:', loginResult.data.message);
+			return NextResponse.json({ message: 'Failed to login' }, { status: 500 });
+		}
+
+		// Redirect to the home page
+		return NextResponse.redirect(new URL('/', request.url));
 	} else {
 		console.error('Failed to fetch token:', response.statusText);
 	}
