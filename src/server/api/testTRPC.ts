@@ -1,5 +1,5 @@
+import { z } from 'zod';
 import { publicProcedure } from '../trpc';
-
 export default function apiTest() {
 	return {
 		testQuery: publicProcedure.query(async () => {
@@ -7,10 +7,17 @@ export default function apiTest() {
 				message: 'Hello world! if you see this, it means that trpc is working!',
 			};
 		}),
-		testMutation: publicProcedure.mutation(async () => {
-			return {
-				message: 'This is a mutation!',
-			};
-		}),
+		testMutation: publicProcedure
+			.input(
+				z.object({
+					name: z.string(),
+				})
+			)
+			.mutation(async ({ input }) => {
+				const { name } = input;
+				return {
+					message: 'Hi ' + name + '!',
+				};
+			}),
 	};
 }
