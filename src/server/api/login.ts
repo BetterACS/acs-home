@@ -13,7 +13,7 @@ export default function login() {
 					display_name: z.string(),
 				})
 			)
-			.query(async ({ input }) => {
+			.mutation(async ({ input }) => {
 				await connectDB();
 				const { email, discord_id, display_name } = input;
 

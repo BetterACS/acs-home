@@ -47,7 +47,6 @@ async function getDiscordCode(request: NextRequest) {
 			discord_id: userResponseData.id,
 		});
 
-		// Cannot find the user
 		// We create a new user
 		if (loginResult.status === 404) {
 			await caller.register({
@@ -57,17 +56,33 @@ async function getDiscordCode(request: NextRequest) {
 				coin: 0,
 				password: generateRandomString(10),
 			});
-
-			// set cookie here
 		} else if (loginResult.status === 200) {
 			// set cookie here
+			const cookieValue = userResponseData.id; // Set your desired cookie value
+			const cookieOptions = {
+				maxAge: 24 * 60 * 60, // Cookie will expire in 24 hours
+				path: '/', // Cookie will be accessible from all paths
+				httpOnly: true, // Cookie is only accessible through HTTP(S) requests, not JavaScript
+				sameSite: 'strict', // Cookie is not sent along with cross-origin requests
+				secure: process.env.NODE_ENV === 'production', // Cookie will only be sent over HTTPS in production
+			};
+
+			const cookieHeader = `Set-Cookie=${encodeURIComponent('auth')}=${encodeURIComponent(
+				cookieValue
+			)}; ${Object.entries(cookieOptions)
+				.map(([key, value]) => `${key}=${value}`)
+				.join('; ')}`;
+			const headers = { 'Set-Cookie': cookieHeader };
+
+			// Redirect to the home page with the cookie set
+			return NextResponse.redirect(new URL('/', request.url), { headers });
 		} else {
 			console.error('Failed to login:', loginResult.data.message);
 			return NextResponse.json({ message: 'Failed to login' }, { status: 500 });
 		}
 
-		// Redirect to the home page
-		return NextResponse.redirect(new URL('/', request.url));
+		// Redirect to the home page with the cookie set
+		return NextResponse.redirect(new URL('/', request.url), { headers });
 	} else {
 		console.error('Failed to fetch token:', response.statusText);
 	}
