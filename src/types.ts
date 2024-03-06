@@ -44,6 +44,23 @@ interface EventModalInputProps {
 	textSize: string;
 }
 
-export type { EventModalInputProps, TagInputProps, TagItem };
+interface GitHubRepoProps {
+	id: number;
+	title: string;
+	fullName: string;
+	avatar: string;
+	description: string;
+	language: string;
+	stars: number;
+}
+
+interface GitHubEventCardProps {
+	id: number;
+	title: string;
+	description: string;
+	githubLink: string;
+}
+
+export type { EventModalInputProps, GitHubEventCardProps, GitHubRepoProps, TagInputProps, TagItem };
 
 export type { BodyComponentProps, EventCardProps, GroupComponentProps, SequentialComponentsProps, WebComponentProps };

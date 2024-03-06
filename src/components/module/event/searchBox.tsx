@@ -12,7 +12,7 @@ interface MultiFunctionButtonProps {
 function MultiFunctionButton(props: MultiFunctionButtonProps) {
 	const { children, width, icon, onClick } = props;
 	return (
-		<div className="bg-red-200 h-full rounded-[33px]" style={{ width: width }} onClick={onClick}>
+		<div className="bg-red-200 rounded-[33px]" style={{ width: width }} onClick={onClick}>
 			{children}
 		</div>
 	);
@@ -22,7 +22,7 @@ export default function SearchBox(props: any) {
 	const { setModalOpen } = props;
 	return (
 		<motion.div
-			className="flex flex-row h-[164px] w-full justify-between"
+			className="flex flex-row h-[138px] w-full justify-between"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ scaleY: 0 }}

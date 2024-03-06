@@ -5,8 +5,9 @@ import SequentialComponents from '../../utils/sequentialComponents';
 import EventCard, { EventCardPost } from './eventCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBox from './searchBox';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import EventModal from './eventModal';
+import GitHubCarousel from './githubCarousel';
 
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events } = props;
@@ -34,13 +35,13 @@ export default function EventModule(props: BodyComponentProps) {
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 				{modalOpen && <EventModal modalOpen={modalOpen} handleClose={close} />}
 			</AnimatePresence>
-			<div className="pt-[372px] w-[1200px] mb-[34px]">
+			{/* Event Card List */}
+			<div className="pt-[234px] w-[1200px] pb-[34px] mx-[360px]">
 				<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 					{currentPage === '' && <SearchBox setModalOpen={open} />}
 				</AnimatePresence>
 			</div>
-			<AnimatePresence initial={false} mode="wait">
-				{currentPage === '' && (
+			{/* {currentPage === '' && (
 					<motion.div
 						className="w-[1200px] rounded-[60px] bg-red-200 min-h-[180px]"
 						initial={{ opacity: 0 }}
@@ -55,8 +56,11 @@ export default function EventModule(props: BodyComponentProps) {
 							emptyState="No events available"
 						/>
 					</motion.div>
-				)}
-			</AnimatePresence>
+				)} */}
+			<div className="w-screen h-[460px] flex flex-col justify-center" style={{ backgroundColor: '#D9D9D9' }}>
+				<GitHubCarousel />
+			</div>
+			{/* Event Card Post */}
 			<AnimatePresence initial={false} mode="wait">
 				{currentPage.includes('#event-') && (
 					<EventCardPost
