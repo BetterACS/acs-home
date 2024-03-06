@@ -1,10 +1,11 @@
 import { caller } from '@/server';
 import { creteCookies } from '@/utils/Token';
 import { generateRandomString } from '@/utils/password';
-import { setCookie } from 'cookies-next';
-import { cookies } from 'next/headers';
+import { getCookies } from 'next-client-cookies/server';
+
 import { NextRequest, NextResponse } from 'next/server';
 async function getDiscordCode(request: NextRequest) {
+	const cookieHandler = getCookies();
 	const code = request.nextUrl.searchParams.get('code') || '';
 	console.log('code:', code);
 	const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID || '';
@@ -60,12 +61,14 @@ async function getDiscordCode(request: NextRequest) {
 			});
 			const cookieHeader = await creteCookies(userResponseData.id, 'Set-Cookie'); // Set your desired cookie value
 			const headers = { 'Set-Cookie': cookieHeader };
-			setCookie('Set-Cookie', cookieHeader, { cookies });
+			cookieHandler.set('token', cookieHeader);
+			// setCookie('Set-Cookie', cookieHeader, { cookies });
 			// return NextResponse.redirect(new URL('/', request.url), { headers });
 		} else if (loginResult.status === 200) {
 			const cookieHeader = await creteCookies(userResponseData.id, 'Set-Cookie'); // Set your desired cookie value
 			const headers = { 'Set-Cookie': cookieHeader };
-			setCookie('Set-Cookie', cookieHeader, { cookies });
+			cookieHandler.set('token', cookieHeader);
+			// setCookie('Set-Cookie', cookieHeader, { cookies });
 			// return NextResponse.redirect(new URL('/', request.url), { headers });
 		} else {
 			console.error('Failed to login:', loginResult.data.message);

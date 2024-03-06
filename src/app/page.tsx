@@ -9,7 +9,7 @@ import { isLogin } from '@/utils/Token';
 import { NextRequest } from 'next/server';
 
 import { verifyToken } from '@/utils/Token';
-import { useCookies } from 'react-cookie';
+import { useCookies } from 'next-client-cookies';
 import { NextPage } from 'next';
 const sampleEvents: EventCardProps[] = [
 	{ id: 0, title: 'Event 1', description: 'Description 1' },
@@ -23,31 +23,29 @@ export default function App() {
 	const [events, setEvents] = useState<EventCardProps[]>(sampleEvents);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const cookies = useCookies();
 
-	const [cookies, setCookie, removeCookie] = useCookies(['Set-Cookie']);
+	async function isLoginClient(cookies: string) {
+		if (cookies !== undefined || cookies !== null || cookies !== '') {
+			const token = await verifyToken(cookies);
+			if (token !== undefined || token !== null || token !== '') {
+				setIsLoggedIn(true);
+			} else {
+				setIsLoggedIn(false);
+			}
+		} else {
+			setIsLoggedIn(false);
+		}
+		setIsLoading(false);
+	}
 
 	useEffect(() => {
-		console.log('Cookies: ', cookies);
+		isLoginClient(cookies.get('token') || '');
 	}, [cookies]);
 
-	// const cookies = useCookies();
-	// useEffect(() => {
-	// 	async function isLoginClient(cookies: string) {
-	// 		if (cookies !== undefined || cookies !== null || cookies !== '') {
-	// 			const token = await verifyToken(cookies);
-
-	// 			if (token !== undefined || token !== null || token !== '') {
-	// 				setIsLoggedIn(true);
-	// 			}
-	// 		}
-	// 		setIsLoggedIn(false);
-	// 	}
-	// 	isLoginClient(cookies.get('Set-Cookie') || '');
-	// }, [cookies]);
-
-	// if (isLoading) {
-	// 	return <div>Loading...</div>;
-	// }
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div>

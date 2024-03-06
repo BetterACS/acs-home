@@ -42,9 +42,11 @@ async function creteCookies(discordId: string, cookiesName: string) {
 		secure: process.env.NODE_ENV === 'production', // Cookie will only be sent over HTTPS in production
 	};
 
-	const cookieHeader = `${cookiesName}=${encodeURIComponent(cookieValue)}; ${Object.entries(cookieOptions)
-		.map(([key, value]) => `${key}=${value}`)
-		.join('; ')}`;
+	// const cookieHeader = `${cookiesName}=${encodeURIComponent(cookieValue)}; ${Object.entries(cookieOptions)
+	// 	.map(([key, value]) => `${key}=${value}`)
+	// 	.join('; ')}`;
+	console.log('cookieValue:', cookieValue);
+	const cookieHeader = encodeURIComponent(cookieValue);
 	return cookieHeader;
 }
 

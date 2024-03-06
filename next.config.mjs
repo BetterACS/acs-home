@@ -10,5 +10,6 @@ export default {
 		DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
 		DISCORD_REDIRECT_URI: process.env.DISCORD_REDIRECT_URI,
 		ORIGIN: process.env.ORIGIN,
+		SECRET_KEY: process.env.SECRET_KEY,
 	},
 };
