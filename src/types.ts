@@ -43,7 +43,17 @@ interface EventModalInputProps {
 	width: number;
 	textSize: string;
 }
+interface NavbarProps {
+	isLoggedIn: boolean;
+}
 
 export type { EventModalInputProps, TagInputProps, TagItem };
 
-export type { BodyComponentProps, EventCardProps, GroupComponentProps, SequentialComponentsProps, WebComponentProps };
+export type {
+	BodyComponentProps,
+	EventCardProps,
+	GroupComponentProps,
+	NavbarProps,
+	SequentialComponentsProps,
+	WebComponentProps,
+};

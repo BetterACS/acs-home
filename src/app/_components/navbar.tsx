@@ -1,6 +1,7 @@
 'use client';
 
-export default function Navbar() {
+import { NavbarProps } from '@/types';
+export default function Navbar({ isLoggedIn }: NavbarProps) {
 	const redCircle = 'rounded-full w-[64px] h-[64px] bg-red-400 mx-4';
 
 	return (
@@ -12,7 +13,14 @@ export default function Navbar() {
 						<div className={redCircle}></div>
 						<p>200 coin</p>
 					</div>
-					<div className={redCircle}></div>
+					{/* icon */}
+					{isLoggedIn ? (
+						// Render this when user is logged in
+						<div>Logged in content</div>
+					) : (
+						// Render this when user is not logged in
+						<div className={'rounded-full w-[64px] h-[64px] bg-blue-400 mx-4'}></div>
+					)}
 					<div className={redCircle}></div>
 				</div>
 			</div>

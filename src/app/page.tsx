@@ -3,9 +3,14 @@
 import Navbar from './_components/navbar';
 import Body from './_components/body';
 import Footer from './_components/footer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EventCardProps } from '@/types';
+import { isLogin } from '@/utils/Token';
+import { NextRequest } from 'next/server';
 
+import { verifyToken } from '@/utils/Token';
+import { useCookies } from 'react-cookie';
+import { NextPage } from 'next';
 const sampleEvents: EventCardProps[] = [
 	{ id: 0, title: 'Event 1', description: 'Description 1' },
 	{ id: 1, title: 'Event 2', description: 'Description 2' },
@@ -16,10 +21,38 @@ const sampleEvents: EventCardProps[] = [
 export default function App() {
 	const [currentPage, setCurrentPage] = useState('');
 	const [events, setEvents] = useState<EventCardProps[]>(sampleEvents);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+
+	const [cookies, setCookie, removeCookie] = useCookies(['Set-Cookie']);
+
+	useEffect(() => {
+		console.log('Cookies: ', cookies);
+	}, [cookies]);
+
+	// const cookies = useCookies();
+	// useEffect(() => {
+	// 	async function isLoginClient(cookies: string) {
+	// 		if (cookies !== undefined || cookies !== null || cookies !== '') {
+	// 			const token = await verifyToken(cookies);
+
+	// 			if (token !== undefined || token !== null || token !== '') {
+	// 				setIsLoggedIn(true);
+	// 			}
+	// 		}
+	// 		setIsLoggedIn(false);
+	// 	}
+	// 	isLoginClient(cookies.get('Set-Cookie') || '');
+	// }, [cookies]);
+
+	// if (isLoading) {
+	// 	return <div>Loading...</div>;
+	// }
 
 	return (
 		<div>
-			<Navbar />
+			<p>{}</p>
+			<Navbar isLoggedIn={isLoggedIn} />
 			<div className="flex flex-col justify-center items-center w-full">
 				<Body currentPage={currentPage} setCurrentPage={setCurrentPage} events={events} setEvents={setEvents} />
 			</div>

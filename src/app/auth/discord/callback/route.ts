@@ -1,7 +1,9 @@
 import { caller } from '@/server';
+import { creteCookies } from '@/utils/Token';
 import { generateRandomString } from '@/utils/password';
+import { setCookie } from 'cookies-next';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-
 async function getDiscordCode(request: NextRequest) {
 	const code = request.nextUrl.searchParams.get('code') || '';
 	console.log('code:', code);
@@ -56,33 +58,22 @@ async function getDiscordCode(request: NextRequest) {
 				coin: 0,
 				password: generateRandomString(10),
 			});
-		} else if (loginResult.status === 200) {
-			// set cookie here
-			const cookieValue = userResponseData.id; // Set your desired cookie value
-			const cookieOptions = {
-				maxAge: 24 * 60 * 60, // Cookie will expire in 24 hours
-				path: '/', // Cookie will be accessible from all paths
-				httpOnly: true, // Cookie is only accessible through HTTP(S) requests, not JavaScript
-				sameSite: 'strict', // Cookie is not sent along with cross-origin requests
-				secure: process.env.NODE_ENV === 'production', // Cookie will only be sent over HTTPS in production
-			};
-
-			const cookieHeader = `Set-Cookie=${encodeURIComponent('auth')}=${encodeURIComponent(
-				cookieValue
-			)}; ${Object.entries(cookieOptions)
-				.map(([key, value]) => `${key}=${value}`)
-				.join('; ')}`;
+			const cookieHeader = await creteCookies(userResponseData.id, 'Set-Cookie'); // Set your desired cookie value
 			const headers = { 'Set-Cookie': cookieHeader };
-
-			// Redirect to the home page with the cookie set
-			return NextResponse.redirect(new URL('/', request.url), { headers });
+			setCookie('Set-Cookie', cookieHeader, { cookies });
+			// return NextResponse.redirect(new URL('/', request.url), { headers });
+		} else if (loginResult.status === 200) {
+			const cookieHeader = await creteCookies(userResponseData.id, 'Set-Cookie'); // Set your desired cookie value
+			const headers = { 'Set-Cookie': cookieHeader };
+			setCookie('Set-Cookie', cookieHeader, { cookies });
+			// return NextResponse.redirect(new URL('/', request.url), { headers });
 		} else {
 			console.error('Failed to login:', loginResult.data.message);
 			return NextResponse.json({ message: 'Failed to login' }, { status: 500 });
 		}
 
 		// Redirect to the home page with the cookie set
-		return NextResponse.redirect(new URL('/', request.url), { headers });
+		return NextResponse.redirect(new URL('/', request.url));
 	} else {
 		console.error('Failed to fetch token:', response.statusText);
 	}
