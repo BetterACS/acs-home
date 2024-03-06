@@ -23,13 +23,17 @@ export default function App() {
 	const [events, setEvents] = useState<EventCardProps[]>(sampleEvents);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
+	const [discord, setDiscord] = useState('');
 	const cookies = useCookies();
 
 	async function isLoginClient(cookies: string) {
 		if (cookies !== undefined || cookies !== null || cookies !== '') {
 			const token = await verifyToken(cookies);
-			if (token !== undefined || token !== null || token !== '') {
+			//console.log('token:', token);
+			const discordId = token?.discordId as string;
+			if (token !== undefined) {
 				setIsLoggedIn(true);
+				setDiscord(discordId);
 			} else {
 				setIsLoggedIn(false);
 			}
@@ -41,7 +45,7 @@ export default function App() {
 
 	useEffect(() => {
 		isLoginClient(cookies.get('token') || '');
-	}, [cookies]);
+	}, []);
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -50,7 +54,7 @@ export default function App() {
 	return (
 		<div>
 			<p>{}</p>
-			<Navbar isLoggedIn={isLoggedIn} />
+			<Navbar isLoggedIn={isLoggedIn} discordId={discord} />
 			<div className="flex flex-col justify-center items-center w-full">
 				<Body currentPage={currentPage} setCurrentPage={setCurrentPage} events={events} setEvents={setEvents} />
 			</div>
@@ -58,3 +62,7 @@ export default function App() {
 		</div>
 	);
 }
+
+export const config = {
+	runtime: 'experimental-edge',
+};

@@ -11,6 +11,7 @@ interface User extends Document {
 	coin?: number;
 	role: string;
 	discord_id?: string;
+	avatar: string;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -23,6 +24,7 @@ const UserSchema: Schema<User> = new Schema({
 	coin: { type: Number },
 	role: { type: String, default: 'User' },
 	discord_id: { type: String },
+	avatar: { type: String, required: true },
 });
 
 const UserModel = mongoose.models.User || mongoose.model<User>('User', UserSchema);

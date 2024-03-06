@@ -45,6 +45,7 @@ interface EventModalInputProps {
 }
 interface NavbarProps {
 	isLoggedIn: boolean;
+	discordId: string;
 }
 
 export type { EventModalInputProps, TagInputProps, TagItem };

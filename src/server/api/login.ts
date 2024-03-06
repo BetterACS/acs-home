@@ -11,6 +11,7 @@ export default function login() {
 					email: z.string(),
 					discord_id: z.string(),
 					display_name: z.string(),
+					avatar: z.string(),
 				})
 			)
 			.mutation(async ({ input }) => {

@@ -56,9 +56,9 @@ async function isLogin(request: NextRequest) {
 	// console.log(allCookies.get('Set-Cookie'));
 	if (allCookies.has('Set-Cookie')) {
 		const auth_cookies = allCookies.get('Set-Cookie') || { name: '', value: '' };
-		const token = await verifyToken(auth_cookies.value);
+		const token = (await verifyToken(auth_cookies.value)) || undefined;
 
-		if (token !== undefined || token !== null || token !== '') {
+		if (token !== undefined) {
 			return true;
 		}
 	}

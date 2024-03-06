@@ -46,18 +46,20 @@ async function getDiscordCode(request: NextRequest) {
 
 		const loginResult = await caller.login({
 			email: userResponseData.email,
-			display_name: userResponseData.username,
+			display_name: userResponseData.global_name,
 			discord_id: userResponseData.id,
+			avatar: userResponseData.avatar,
 		});
 
 		// We create a new user
 		if (loginResult.status === 404) {
 			await caller.register({
 				email: userResponseData.email,
-				display_name: userResponseData.username,
+				display_name: userResponseData.global_name,
 				discord_id: userResponseData.id,
 				coin: 0,
 				password: generateRandomString(10),
+				avatar: userResponseData.avatar,
 			});
 			const cookieHeader = await creteCookies(userResponseData.id, 'Set-Cookie'); // Set your desired cookie value
 			const headers = { 'Set-Cookie': cookieHeader };
