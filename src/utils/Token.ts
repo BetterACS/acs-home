@@ -53,9 +53,9 @@ async function creteCookies(discordId: string, cookiesName: string) {
 async function isLogin(request: NextRequest) {
 	// check if user is login
 	const allCookies = request.cookies;
-	// console.log(allCookies.get('Set-Cookie'));
-	if (allCookies.has('Set-Cookie')) {
-		const auth_cookies = allCookies.get('Set-Cookie') || { name: '', value: '' };
+	// console.log(allCookies.get('token'));
+	if (allCookies.has('token')) {
+		const auth_cookies = allCookies.get('token') || { name: '', value: '' };
 		const token = (await verifyToken(auth_cookies.value)) || undefined;
 
 		if (token !== undefined) {
