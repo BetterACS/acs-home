@@ -8,7 +8,7 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { TagInputProps, EventModalInputProps } from '@/types';
 
-export function SelfExpandTextarea() {
+export function SelfExpandTextarea({ onChange }: { onChange: (text: string) => void }) {
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [value, setValue] = useState('');
 	const [placeholder, setPlaceholder] = useState('Type your message here.');
@@ -22,6 +22,7 @@ export function SelfExpandTextarea() {
 
 	const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setValue(e.target.value);
+		onChange(e.target.value);
 	};
 
 	const onFocus = () => {
@@ -50,8 +51,8 @@ export function SelfExpandTextarea() {
 	);
 }
 
-export function TagInput(props: TagInputProps) {
-	const { items, message } = props;
+export function TagInput(props: TagInputProps & { onChange: (value: string) => void }) {
+	const { items, message, onChange } = props;
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState('');
 
@@ -73,8 +74,10 @@ export function TagInput(props: TagInputProps) {
 								key={item.value}
 								value={item.value}
 								onSelect={(currentValue: any) => {
-									setValue(currentValue === value ? '' : currentValue);
+									const selectedValue = currentValue === value ? '' : currentValue;
+									setValue(selectedValue);
 									setOpen(false);
+									onChange(selectedValue);
 								}}
 							>
 								<Check
