@@ -1,9 +1,9 @@
 'use client';
 
-import Navbar from './_components/navbar';
-import Body from './_components/body';
-import Footer from './_components/footer';
 import { useEffect, useState } from 'react';
+import Navbar from '@/components/navbar';
+import Body from '@/components/body';
+import Footer from '@/components/footer';
 import { EventCardProps } from '@/types';
 import { isLogin } from '@/utils/Token';
 import { NextRequest } from 'next/server';
