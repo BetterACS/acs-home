@@ -9,7 +9,7 @@ export default function GitHubEventCard(props: GitHubRepoProps) {
 	const { title, fullName, avatar, description, language, stars } = props;
 
 	return (
-		<Card className="h-[318px] w-[381px] flex flex-col justify-evenly items-center">
+		<Card className="h-[318px] w-[381px] flex flex-col justify-evenly items-center drop-shadow-lg">
 			<div className="flex flex-row w-[320px]">
 				<Avatar className="w-[38px] h-[38px] mr-4 mt-2">
 					<AvatarImage src={avatar} alt="@shadcn" />

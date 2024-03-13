@@ -76,8 +76,8 @@ export default function EventModule(props: BodyComponentProps) {
 					exit={{ opacity: 0 }}
 				>
 					<div
-						className="w-screen h-[460px] flex flex-col justify-center"
-						style={{ backgroundColor: '#D9D9D9' }}
+						className="w-screen h-[460px] flex flex-col justify-center items-center"
+						style={{ backgroundColor: '#4287f5' }}
 					>
 						<GitHubCarousel />
 					</div>
