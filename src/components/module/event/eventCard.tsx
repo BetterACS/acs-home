@@ -1,20 +1,31 @@
 'use client';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 
 export default function EventCard(props: any) {
-	const { id, title, description, onChildClick } = props;
-
+	const {
+		id,
+		title,
+		description,
+		onChildClick,
+		avatar = 'https://avatars.githubusercontent.com/u/66357924?v=4',
+	} = props;
 	return (
-		<div>
-			<motion.div
-				className="flex flex-col bg-red-400 h-[144px] mx-[70px] rounded-[26px] my-[10px]"
-				onClick={() => onChildClick(id)}
-			>
-				<h1>{title}</h1>
-				{description}
-			</motion.div>
-		</div>
+		<Card
+			className="w-[580px] h-[140px] flex flex-row items-center cursor-pointer"
+			onClick={() => onChildClick(id)}
+		>
+			<Avatar className="w-[60px] h-[60px] mx-6">
+				<AvatarImage src={avatar} alt="@shadcn" />
+				<AvatarFallback>Avatar</AvatarFallback>
+			</Avatar>
+			<div className="flex flex-col">
+				<p className="text-xl">{title}</p>
+				<p className="text-gray-800">{description}</p>
+			</div>
+		</Card>
 	);
 }
 

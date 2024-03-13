@@ -8,6 +8,32 @@ import SearchBox from './searchBox';
 import { use, useEffect, useState } from 'react';
 import EventModal from './eventModal';
 import GitHubCarousel from './githubCarousel';
+import { Card } from '@/components/ui/card';
+import { HoverEffect } from '@/components/ui/cardHoverEffect';
+import { title } from 'process';
+
+export const requests = [
+	{
+		title: 'Just want to install a package. How do I do that?',
+		description: 'I am trying to install a package but I am not able to do that. Can someone help me?',
+		link: '',
+	},
+	{
+		title: 'How to use a package?',
+		description: 'I have installed a package but I am not able to use it. Can someone help me?',
+		link: '',
+	},
+	{
+		title: 'อยากได้ไอเดียสำหรับโปรเจค',
+		description: 'อยากได้ไอเดียสำหรับโปรเจคที่จะทำ มีใครมีไอเดียบ้าง?',
+		link: '',
+	},
+	{
+		title: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส',
+		description: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส มีใครมีไอเดียบ้าง?',
+		link: '',
+	},
+];
 
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events } = props;
@@ -16,6 +42,7 @@ export default function EventModule(props: BodyComponentProps) {
 
 	const open = () => setModalOpen(true);
 	const close = () => setModalOpen(false);
+	const clickPost = (id: number) => setCurrentPage('#event-' + id.toString());
 
 	function getEventFromEventString(eventString: string): EventCardProps | undefined {
 		const id = parseInt(eventString.split('-')[1]);
@@ -41,25 +68,32 @@ export default function EventModule(props: BodyComponentProps) {
 					{currentPage === '' && <SearchBox setModalOpen={open} />}
 				</AnimatePresence>
 			</div>
-			{/* {currentPage === '' && (
-					<motion.div
-						className="w-[1200px] rounded-[60px] bg-red-200 min-h-[180px]"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
+			{currentPage === '' && (
+				<motion.div
+					// className="w-[1200px] rounded-[60px] bg-red-200 min-h-[180px]"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+				>
+					<div
+						className="w-screen h-[460px] flex flex-col justify-center"
+						style={{ backgroundColor: '#D9D9D9' }}
 					>
-						<SequentialComponents<EventCardProps>
-							node={EventCard}
-							initialState={events}
-							onChildClick={(i: number) => setCurrentPage('#event-' + i.toString())}
-							parentStyle="py-[72px] flex flex-col justify-between"
-							emptyState="No events available"
-						/>
-					</motion.div>
-				)} */}
-			<div className="w-screen h-[460px] flex flex-col justify-center" style={{ backgroundColor: '#D9D9D9' }}>
-				<GitHubCarousel />
-			</div>
+						<GitHubCarousel />
+					</div>
+					<div className="my-[160px] flex flex-col items-center">
+						{/* <div className="flex flex-row justify-between w-[1200px] pb-8">
+							<EventCard id={0} title="event1" description="desc1" onChildClick={clickPost} />
+							<EventCard id={1} title="event2" description="desc2" onChildClick={clickPost} />
+						</div>
+						<div className="flex flex-row justify-between w-[1200px] pb-8">
+							<EventCard id={2} title="event3" description="desc3" onChildClick={clickPost} />
+							<EventCard id={3} title="event4" description="desc4" onChildClick={clickPost} />
+						</div> */}
+						<HoverEffect items={requests} />
+					</div>
+				</motion.div>
+			)}
 			{/* Event Card Post */}
 			<AnimatePresence initial={false} mode="wait">
 				{currentPage.includes('#event-') && (

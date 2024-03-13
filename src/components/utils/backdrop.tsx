@@ -4,7 +4,7 @@ const Backdrop = ({ children, onClick }: any) => {
 	return (
 		<motion.div
 			onClick={onClick}
-			className="backdrop"
+			className="backdrop z-50"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
