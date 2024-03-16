@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 export const HoverEffect = ({
 	items,
 	className,
+	onCardClick,
 }: {
 	items: {
 		title: string;
@@ -14,6 +15,7 @@ export const HoverEffect = ({
 		link: string;
 	}[];
 	className?: string;
+	onCardClick: (index: number) => void;
 }) => {
 	let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -44,7 +46,11 @@ export const HoverEffect = ({
 							/>
 						)}
 					</AnimatePresence>
-					<CardHover>
+					<CardHover
+						onCardClick={() => {
+							onCardClick(idx);
+						}}
+					>
 						<CardTitle>{item.title}</CardTitle>
 						<CardDescription>{item.description}</CardDescription>
 					</CardHover>
@@ -54,11 +60,19 @@ export const HoverEffect = ({
 	);
 };
 
-export const CardHover = ({ className, children }: { className?: string; children: React.ReactNode }) => {
+export const CardHover = ({
+	onCardClick,
+	className,
+	children,
+}: {
+	onCardClick?: () => void;
+	className?: string;
+	children: React.ReactNode;
+}) => {
 	return (
 		<Card
 			className={cn(
-				'flex flex-row items-center rounded-2xl w-[580px] h-[140px] p-4 m-2 overflow-hidden dark:border-white/[0.2] group-hover:border-slate-700 relative z-20',
+				'flex flex-row cursor-pointer items-center rounded-2xl w-[580px] h-[140px] p-4 m-2 overflow-hidden dark:border-white/[0.2] group-hover:border-slate-700 relative z-20',
 				className
 			)}
 		>

@@ -12,29 +12,6 @@ import { Card } from '@/components/ui/card';
 import { HoverEffect } from '@/components/ui/cardHoverEffect';
 import { title } from 'process';
 
-export const requests = [
-	{
-		title: 'Just want to install a package. How do I do that?',
-		description: 'I am trying to install a package but I am not able to do that. Can someone help me?',
-		link: '',
-	},
-	{
-		title: 'How to use a package?',
-		description: 'I have installed a package but I am not able to use it. Can someone help me?',
-		link: '',
-	},
-	{
-		title: 'อยากได้ไอเดียสำหรับโปรเจค',
-		description: 'อยากได้ไอเดียสำหรับโปรเจคที่จะทำ มีใครมีไอเดียบ้าง?',
-		link: '',
-	},
-	{
-		title: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส',
-		description: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส มีใครมีไอเดียบ้าง?',
-		link: '',
-	},
-];
-
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events } = props;
 
@@ -85,16 +62,25 @@ export default function EventModule(props: BodyComponentProps) {
 						<p className="mt-[40px] text-3xl font-bold">Non project requests</p>
 						<p>This is a place for people who ask for help or give ideas for a project.</p>
 					</div>
-					<div className="mb-[120px] flex flex-col items-center">
-						{/* <div className="flex flex-row justify-between w-[1200px] pb-8">
-							<EventCard id={0} title="event1" description="desc1" onChildClick={clickPost} />
+					<div className="mt-8 mb-[120px] flex flex-col items-center">
+						<div className="flex flex-row flex-wrap justify-between w-[1200px] pb-8">
+							{events.map((event) => {
+								return (
+									<EventCard
+										key={event.id}
+										id={event.id}
+										title={event.title}
+										description={event.description}
+										onChildClick={clickPost}
+									/>
+								);
+							})}
+							{/* <EventCard id={0} title="event1" description="desc1" onChildClick={clickPost} />
 							<EventCard id={1} title="event2" description="desc2" onChildClick={clickPost} />
-						</div>
-						<div className="flex flex-row justify-between w-[1200px] pb-8">
 							<EventCard id={2} title="event3" description="desc3" onChildClick={clickPost} />
-							<EventCard id={3} title="event4" description="desc4" onChildClick={clickPost} />
-						</div> */}
-						<HoverEffect items={requests} />
+							<EventCard id={3} title="event4" description="desc4" onChildClick={clickPost} /> */}
+						</div>
+						{/* <HoverEffect items={requests} onCardClick={clickPost} /> */}
 					</div>
 				</motion.div>
 			)}
