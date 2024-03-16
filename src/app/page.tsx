@@ -7,10 +7,22 @@ import { useState } from 'react';
 import { EventCardProps } from '@/types';
 
 const sampleEvents: EventCardProps[] = [
-	{ id: 0, title: 'Event 1', description: 'Description 1' },
-	{ id: 1, title: 'Event 2', description: 'Description 2' },
-	{ id: 2, title: 'Event 3', description: 'Description 3' },
-	{ id: 3, title: 'Event 4', description: 'Description 4' },
+	{
+		id: 0,
+		title: 'Just want to install a package. How do I do that?',
+		description: 'I am trying to install a package but I am not able to do that. Can someone help me?',
+	},
+	{
+		id: 1,
+		title: 'How to use a package?',
+		description: 'I have installed a package but I am not able to use it. Can someone help me?',
+	},
+	{ id: 2, title: 'อยากได้ไอเดียสำหรับโปรเจค', description: 'อยากได้ไอเดียสำหรับโปรเจคที่จะทำ มีใครมีไอเดียบ้าง?' },
+	{
+		id: 3,
+		title: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส',
+		description: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส มีใครมีไอเดียบ้าง?',
+	},
 ];
 
 export default function App() {
