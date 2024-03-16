@@ -41,7 +41,7 @@ interface EventModalInputProps {
 	label: string;
 	marginTop: number;
 	width: number;
-	textSize: string;
+	icon?: React.ReactElement;
 }
 
 interface GitHubRepoProps {

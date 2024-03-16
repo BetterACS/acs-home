@@ -31,7 +31,10 @@ export default function SearchBox(props: any) {
 			animate={{ opacity: 1 }}
 			exit={{ scaleY: 0 }}
 		>
-			<button className="rounded-2xl text-2xl w-[477px] h-[104px] relative overflow-hidden border border-blue-500 bg-blue-500 text-white transition-all hover: transform hover:scale-105">
+			<button
+				className="rounded-2xl text-2xl w-[477px] h-[104px] relative overflow-hidden border border-blue-500 bg-blue-500 text-white transition-all hover: transform hover:scale-105"
+				onClick={setModalOpen}
+			>
 				<span className="relative z-10">Create</span>
 				<Meteors className="bg-white" />
 			</button>
