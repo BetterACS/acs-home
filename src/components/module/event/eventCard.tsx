@@ -14,16 +14,16 @@ export default function EventCard(props: any) {
 	} = props;
 	return (
 		<Card
-			className="w-[580px] h-[140px] flex flex-row items-center cursor-pointer"
+			className="hover:shadow-xl hover:scale-[101%] my-2 w-[590px] h-[132px] flex flex-row items-center cursor-pointer"
 			onClick={() => onChildClick(id)}
 		>
 			<Avatar className="w-[60px] h-[60px] mx-6">
 				<AvatarImage src={avatar} alt="@shadcn" />
 				<AvatarFallback>Avatar</AvatarFallback>
 			</Avatar>
-			<div className="flex flex-col">
-				<p className="text-xl">{title}</p>
-				<p className="text-gray-800">{description}</p>
+			<div className="flex flex-col w-[455px] overflow-x-hidden">
+				<p className="text-xl line-clamp-1">{title}</p>
+				<p className="text-gray-800 line-clamp-1">{description}</p>
 			</div>
 		</Card>
 	);
