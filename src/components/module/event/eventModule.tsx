@@ -76,12 +76,16 @@ export default function EventModule(props: BodyComponentProps) {
 					exit={{ opacity: 0 }}
 				>
 					<div
-						className="w-screen h-[460px] flex flex-col justify-center items-center"
+						className="w-full h-[460px] flex flex-col justify-center items-center"
 						style={{ backgroundColor: '#4287f5' }}
 					>
 						<GitHubCarousel />
 					</div>
-					<div className="my-[160px] flex flex-col items-center">
+					<div className="flex flex-col items-center">
+						<p className="mt-[40px] text-3xl font-bold">Non project requests</p>
+						<p>This is a place for people who ask for help or give ideas for a project.</p>
+					</div>
+					<div className="mb-[120px] flex flex-col items-center">
 						{/* <div className="flex flex-row justify-between w-[1200px] pb-8">
 							<EventCard id={0} title="event1" description="desc1" onChildClick={clickPost} />
 							<EventCard id={1} title="event2" description="desc2" onChildClick={clickPost} />
