@@ -5,7 +5,7 @@ import Backdrop from '../../utils/backdrop';
 import DatePicker from '../../utils/datepicker';
 import type { TagItem } from '@/types';
 import { caller } from '@/server';
-import { trpc } from '../../../_trpc/client';
+import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import EventModalInput, { SelfExpandTextarea, TagInput } from './eventModalInput';
 import { set } from 'mongoose';
