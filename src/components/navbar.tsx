@@ -5,36 +5,8 @@ import { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import { set } from 'mongoose';
 import { User } from '@/database/models';
-export default function Navbar({ isLoggedIn, discordId }: NavbarProps) {
+export default function Navbar({ isLoggedIn, data }: NavbarProps) {
 	const redCircle = 'rounded-full w-[64px] h-[64px] bg-red-400 mx-4';
-	const [data, setData] = useState({} as User);
-	const [isLoad, setIsLoad] = useState(false);
-	async function Loaddata() {
-		await fetch(`/api/trpc/getUser?input=${encodeURIComponent(JSON.stringify({ discord_id: discordId }))}`).then(
-			async (res) => {
-				const query = await res.json();
-				const query_data = query.result.data.data.data as User;
-				console.log(query_data);
-				console.log(query_data.avatar);
-				setData(query_data);
-				setIsLoad(true);
-			}
-		);
-	}
-
-	useEffect(() => {
-		const fetchData = async () => {
-			console.log('useEffect is running');
-			if (isLoggedIn) {
-				console.log(isLoggedIn);
-				await Loaddata();
-				if (isLoad) {
-					console.log(data);
-				}
-			}
-		};
-		fetchData();
-	}, []);
 
 	return (
 		<div className="bg-green-200 sticky top-0 w-full h-[80px]">
@@ -43,12 +15,17 @@ export default function Navbar({ isLoggedIn, discordId }: NavbarProps) {
 				<div className="flex flex-row">
 					<div className="flex flex-row mx-8">
 						<div className={redCircle}></div>
-						<p>{data.display_name}</p>
-						<p>{data.coin} coin</p>
+						{isLoggedIn ? (
+							<>
+								<p>{data.display_name}</p>
+								<p>{data.coin} coin</p>
+							</>
+						) : (
+							<p> plase login</p>
+						)}
 					</div>
 					{/* icon */}
-					{isLoggedIn && isLoad ? (
-						// Render this when user is logged in
+					{isLoggedIn ? (
 						//<div>{data.avatar}</div>
 						<img src={`https://cdn.discordapp.com/avatars/${data.discord_id}/${data.avatar}.png`} alt="" />
 					) : (

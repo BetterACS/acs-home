@@ -1,3 +1,5 @@
+import { User } from './database/models';
+
 interface GroupComponentProps {
 	children: React.ReactNode;
 }
@@ -16,6 +18,8 @@ interface WebComponentProps {
 interface BodyComponentProps extends WebComponentProps {
 	events: EventCardProps[];
 	setEvents: (events: EventCardProps[]) => void;
+	isLoggedIn: boolean;
+	data: User;
 }
 
 interface SequentialComponentsProps<T> {
@@ -45,7 +49,7 @@ interface EventModalInputProps {
 }
 interface NavbarProps {
 	isLoggedIn: boolean;
-	discordId: string;
+	data: User;
 }
 
 export type { EventModalInputProps, TagInputProps, TagItem };
