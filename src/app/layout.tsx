@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import Provider from '@/app/_trpc/Provider';
 import './globals.css';
 import { Inter as FontSans } from 'next/font/google';
+import { CookiesProvider } from 'next-client-cookies/server';
 export const fontSans = FontSans({
 	subsets: ['latin'],
 	variable: '--font-sans',
@@ -15,7 +16,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>
-				<Provider>{children}</Provider>
+				<CookiesProvider>
+					<Provider>{children}</Provider>
+				</CookiesProvider>
 			</body>
 		</html>
 	);

@@ -43,7 +43,18 @@ interface EventModalInputProps {
 	width: number;
 	textSize: string;
 }
+interface NavbarProps {
+	isLoggedIn: boolean;
+	discordId: string;
+}
 
 export type { EventModalInputProps, TagInputProps, TagItem };
 
-export type { BodyComponentProps, EventCardProps, GroupComponentProps, SequentialComponentsProps, WebComponentProps };
+export type {
+	BodyComponentProps,
+	EventCardProps,
+	GroupComponentProps,
+	NavbarProps,
+	SequentialComponentsProps,
+	WebComponentProps,
+};
