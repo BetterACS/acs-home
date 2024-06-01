@@ -1,3 +1,5 @@
+import { User } from './database/models';
+
 interface GroupComponentProps {
 	children: React.ReactNode;
 }
@@ -16,6 +18,8 @@ interface WebComponentProps {
 interface BodyComponentProps extends WebComponentProps {
 	events: EventCardProps[];
 	setEvents: (events: EventCardProps[]) => void;
+	isLoggedIn: boolean;
+	data: User;
 }
 
 interface SequentialComponentsProps<T> {
@@ -43,6 +47,10 @@ interface EventModalInputProps {
 	width: number;
 	icon?: React.ReactElement;
 }
+interface NavbarProps {
+	isLoggedIn: boolean;
+	data: User;
+}
 
 interface GitHubRepoProps {
 	id: number;
@@ -63,4 +71,11 @@ interface GitHubEventCardProps {
 
 export type { EventModalInputProps, GitHubEventCardProps, GitHubRepoProps, TagInputProps, TagItem };
 
-export type { BodyComponentProps, EventCardProps, GroupComponentProps, SequentialComponentsProps, WebComponentProps };
+export type {
+	BodyComponentProps,
+	EventCardProps,
+	GroupComponentProps,
+	NavbarProps,
+	SequentialComponentsProps,
+	WebComponentProps,
+};

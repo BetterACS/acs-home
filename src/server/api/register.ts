@@ -14,10 +14,12 @@ export default function register() {
 					display_name: z.string(),
 					discord_id: z.string(),
 					coin: z.number(),
+					avatar: z.string(),
 				})
 			)
 			.mutation(async ({ input }) => {
-				const { email, password, display_name, coin, discord_id } = input;
+				const { email, password, display_name, coin, discord_id, avatar } = input;
+				console.log('avatar', avatar);
 				try {
 					await connectDB();
 					const hashedPassword = await bcrypt.hash(password, 12);
@@ -27,7 +29,9 @@ export default function register() {
 						display_name: display_name,
 						coin: coin,
 						discord_id: discord_id,
+						avatar: avatar,
 					});
+					console.log('newUser:', newUser);
 					await newUser.save();
 					return {
 						status: 200,

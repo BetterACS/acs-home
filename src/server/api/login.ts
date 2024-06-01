@@ -11,9 +11,10 @@ export default function login() {
 					email: z.string(),
 					discord_id: z.string(),
 					display_name: z.string(),
+					avatar: z.string(),
 				})
 			)
-			.query(async ({ input }) => {
+			.mutation(async ({ input }) => {
 				await connectDB();
 				const { email, discord_id, display_name } = input;
 

@@ -1,6 +1,11 @@
 'use client';
-
-export default function Navbar() {
+import { caller } from '@/server';
+import { NavbarProps } from '@/types';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'next-client-cookies';
+import { set } from 'mongoose';
+import { User } from '@/database/models';
+export default function Navbar({ isLoggedIn, data }: NavbarProps) {
 	const redCircle = 'rounded-full w-[64px] h-[64px] bg-red-400 mx-4';
 
 	return (
@@ -10,9 +15,23 @@ export default function Navbar() {
 				<div className="flex flex-row">
 					<div className="flex flex-row mx-8">
 						<div className={redCircle}></div>
-						<p>200 coin</p>
+						{isLoggedIn ? (
+							<>
+								<p>{data.display_name}</p>
+								<p>{data.coin} coin</p>
+							</>
+						) : (
+							<p> plase login</p>
+						)}
 					</div>
-					<div className={redCircle}></div>
+					{/* icon */}
+					{isLoggedIn ? (
+						//<div>{data.avatar}</div>
+						<img src={`https://cdn.discordapp.com/avatars/${data.discord_id}/${data.avatar}.png`} alt="" />
+					) : (
+						// Render this when user is not logged in
+						<div className={'rounded-full w-[64px] h-[64px] bg-blue-400 mx-4'}></div>
+					)}
 					<div className={redCircle}></div>
 				</div>
 			</div>

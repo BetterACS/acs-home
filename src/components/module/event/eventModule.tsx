@@ -13,7 +13,7 @@ import { HoverEffect } from '@/components/ui/cardHoverEffect';
 import { title } from 'process';
 
 export default function EventModule(props: BodyComponentProps) {
-	const { currentPage, setCurrentPage, events } = props;
+	const { currentPage, setCurrentPage, events, isLoggedIn, data } = props;
 
 	const [modalOpen, setModalOpen] = useState(false);
 
@@ -37,7 +37,7 @@ export default function EventModule(props: BodyComponentProps) {
 	return (
 		<div>
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
-				{modalOpen && <EventModal modalOpen={modalOpen} handleClose={close} />}
+				{modalOpen && isLoggedIn && <EventModal modalOpen={modalOpen} handleClose={close} data={data} />}
 			</AnimatePresence>
 			{/* Event Card List */}
 			<div className="pt-[234px] w-[1200px] pb-[34px] mx-[360px]">

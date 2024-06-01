@@ -11,6 +11,7 @@ interface User extends Document {
 	coin?: number;
 	role: string;
 	discord_id?: string;
+	avatar: string;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -23,24 +24,31 @@ const UserSchema: Schema<User> = new Schema({
 	coin: { type: Number },
 	role: { type: String, default: 'User' },
 	discord_id: { type: String },
+	avatar: { type: String, required: true },
 });
 
 const UserModel = mongoose.models.User || mongoose.model<User>('User', UserSchema);
 
 // Define Post Schema
 interface Post extends Document {
+	title: string;
 	post_text?: string;
 	created_at: Date;
+	due_date?: Date;
 	vote?: number;
 	coin_reward?: number;
+	type?: string;
 	user_id: mongoose.Types.ObjectId;
 }
 
 const PostSchema: Schema<Post> = new Schema({
+	title: { type: String, required: true },
 	post_text: { type: String },
 	created_at: { type: Date, default: Date.now },
+	due_date: { type: Date },
 	vote: { type: Number, default: 0 },
-	coin_reward: { type: Number },
+	coin_reward: { type: Number, default: 0 },
+	type: { type: String },
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
