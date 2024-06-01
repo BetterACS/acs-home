@@ -45,14 +45,31 @@ interface EventModalInputProps {
 	label: string;
 	marginTop: number;
 	width: number;
-	textSize: string;
+	icon?: React.ReactElement;
 }
 interface NavbarProps {
 	isLoggedIn: boolean;
 	data: User;
 }
 
-export type { EventModalInputProps, TagInputProps, TagItem };
+interface GitHubRepoProps {
+	id: number;
+	title: string;
+	fullName: string;
+	avatar: string;
+	description: string;
+	language: string;
+	stars: number;
+}
+
+interface GitHubEventCardProps {
+	id: number;
+	title: string;
+	description: string;
+	githubLink: string;
+}
+
+export type { EventModalInputProps, GitHubEventCardProps, GitHubRepoProps, TagInputProps, TagItem };
 
 export type {
 	BodyComponentProps,

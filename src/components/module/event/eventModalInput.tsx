@@ -39,7 +39,7 @@ export function SelfExpandTextarea({ onChange }: { onChange: (text: string) => v
 
 	return (
 		<Textarea
-			className="focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 border-0"
+			className="text-md focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 border-0"
 			style={{ resize: 'none' }}
 			ref={textAreaRef}
 			placeholder={placeholder}
@@ -94,11 +94,12 @@ export function TagInput(props: TagInputProps & { onChange: (value: string) => v
 }
 
 export default function EventModalInput(props: EventModalInputProps) {
-	const { children, label, marginTop, width, textSize } = props;
+	const { children, label, marginTop, width, icon } = props;
 
 	return (
-		<div className={`w-full mt-[${marginTop}px] flex flex-row items-center`}>
-			<Label className={`text-${textSize}} w-[${width}px]`} htmlFor="title">
+		<div className={`w-full flex flex-row items-center`} style={{ marginTop: marginTop }}>
+			{icon}
+			<Label className="pl-4 text-lg" style={{ width: width }} htmlFor="title">
 				{label}
 			</Label>
 			{children}

@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 import dotenv from 'dotenv';
 dotenv.config();
-
+const cspHeader = `
+    frame-ancestors 'self'
+`;
+// Content-Security-Policy:
 export default {
 	env: {
 		MONGO_URI: process.env.MONGO_URI,
@@ -11,5 +14,18 @@ export default {
 		DISCORD_REDIRECT_URI: process.env.DISCORD_REDIRECT_URI,
 		ORIGIN: process.env.ORIGIN,
 		SECRET_KEY: process.env.SECRET_KEY,
+	},
+	async headers() {
+		return [
+			{
+				source: '/(.*)',
+				headers: [
+					{
+						key: 'Content-Security-Policy',
+						value: cspHeader.replace(/\n/g, ''),
+					},
+				],
+			},
+		];
 	},
 };
