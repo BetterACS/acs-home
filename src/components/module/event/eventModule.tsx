@@ -14,7 +14,7 @@ import { title } from 'process';
 
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events, isLoggedIn, data } = props;
-
+	console.log('events : ', events);
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const open = () => setModalOpen(true);
