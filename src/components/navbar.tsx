@@ -6,7 +6,6 @@ import { useCookies } from 'next-client-cookies';
 import { set } from 'mongoose';
 import { User } from '@/database/models';
 import { HoveredLink, Menu, MenuItem, ProductItem } from '@/components/ui/navbar_menu';
-import { cn } from '@/components/utils/ui';
 import Image from 'next/image';
 
 export default function Navbar({ isLoggedIn, data }: NavbarProps) {
@@ -28,32 +27,20 @@ export default function Navbar({ isLoggedIn, data }: NavbarProps) {
 						</div>
 					</MenuItem>
 					<MenuItem setActive={setActive} active={active} item="Shop">
-						{/* <div className="  text-sm grid grid-cols-2 gap-10 p-4">
+						<div className="  text-sm grid grid-cols-2 gap-10 p-4">
 							<ProductItem
-								title="Algochurn"
-								href="https://algochurn.com"
-								src="https://assets.aceternity.com/demos/algochurn.webp"
-								description="Prepare for tech interviews like never before."
+								title="ACS Developer Shirt"
+								href=""
+								src="/shop_acsshirt.jpg"
+								description="A shirt for developer by developer"
 							/>
 							<ProductItem
-								title="Tailwind Master Kit"
-								href="https://tailwindmasterkit.com"
-								src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
-								description="Production ready Tailwind css components for your next project"
+								title="Community Tools"
+								href=""
+								src="/shop_colab.jpg"
+								description="Get the tools to help you in your project"
 							/>
-							<ProductItem
-								title="Moonbeam"
-								href="https://gomoonbeam.com"
-								src="https://assets.aceternity.com/demos/Screenshot+2024-02-21+at+11.51.31%E2%80%AFPM.png"
-								description="Never write from scratch again. Go from idea to blog in minutes."
-							/>
-							<ProductItem
-								title="Rogue"
-								href="https://userogue.com"
-								src="https://assets.aceternity.com/demos/Screenshot+2024-02-21+at+11.47.07%E2%80%AFPM.png"
-								description="Respond to government RFPs, RFIs and RFQs 10x faster using AI"
-							/>
-						</div> */}
+						</div>
 					</MenuItem>
 					<MenuItem setActive={setActive} active={active} item="Abouts">
 						<div className="flex flex-col space-y-4 text-sm">
