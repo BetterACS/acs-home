@@ -3,7 +3,7 @@ import { connectDB } from '@/server/db';
 import { z } from 'zod';
 import { publicProcedure } from '../trpc';
 
-export default function createPost() {
+function createPost() {
 	return {
 		post: publicProcedure
 			.input(
@@ -39,3 +39,31 @@ export default function createPost() {
 			}),
 	};
 }
+
+function getPost() {
+	return {
+		getPost: publicProcedure
+			.input(
+				z.object({
+					type: z.string(),
+				})
+			)
+			.query(async ({ input }) => {
+				await connectDB();
+				const { type } = input;
+				console.log('Fetching post with ID:', type);
+				try {
+					const fetchedPosts = await PostModel.find({ type }); // Rename the variable 'post' to 'fetchedPosts'
+					if (!fetchedPosts) {
+						return { status: 404, data: { message: 'Post not found' } };
+					}
+					return { status: 200, data: { message: 'Post retrieved successfully', post: fetchedPosts } }; // Update the variable name here as well
+				} catch (error) {
+					console.error('Error fetching post:', error);
+					return { status: 500, data: { message: 'Failed to fetch post' } };
+				}
+			}),
+	};
+}
+
+export { createPost, getPost };

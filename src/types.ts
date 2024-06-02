@@ -1,13 +1,19 @@
+import mongoose, { Document } from 'mongoose';
 import { User } from './database/models';
-
 interface GroupComponentProps {
 	children: React.ReactNode;
 }
 
-interface EventCardProps {
-	id: number;
+interface EventCardProps extends Document {
 	title: string;
-	description: string;
+	description?: string;
+	created_at: Date;
+	due_date?: Date;
+	vote?: number;
+	coin_reward?: number;
+	type?: string;
+	user_id: mongoose.Types.ObjectId;
+	githubLink?: string;
 }
 
 interface WebComponentProps {
@@ -62,11 +68,21 @@ interface GitHubRepoProps {
 	stars: number;
 }
 
-interface GitHubEventCardProps {
-	id: number;
+interface GitHubEventCardProps extends Document {
 	title: string;
-	description: string;
+	description?: string;
+	created_at: Date;
+	due_date?: Date;
+	vote?: number;
+	coin_reward?: number;
+	type?: string;
+	user_id: mongoose.Types.ObjectId;
 	githubLink: string;
+
+	// id: number;
+	// title: string;
+	// description: string;
+	// githubLink: string;
 }
 
 export type { EventModalInputProps, GitHubEventCardProps, GitHubRepoProps, TagInputProps, TagItem };

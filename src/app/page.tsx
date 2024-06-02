@@ -11,29 +11,29 @@ import { NextRequest } from 'next/server';
 import { verifyToken } from '@/utils/Token';
 import { useCookies } from 'next-client-cookies';
 import { NextPage } from 'next';
-import { User } from '@/database/models';
-const sampleEvents: EventCardProps[] = [
-	{
-		id: 0,
-		title: 'Just want to install a package. How do I do that?',
-		description: 'I am trying to install a package but I am not able to do that. Can someone help me?',
-	},
-	{
-		id: 1,
-		title: 'How to use a package?',
-		description: 'I have installed a package but I am not able to use it. Can someone help me?',
-	},
-	{ id: 2, title: 'อยากได้ไอเดียสำหรับโปรเจค', description: 'อยากได้ไอเดียสำหรับโปรเจคที่จะทำ มีใครมีไอเดียบ้าง?' },
-	{
-		id: 3,
-		title: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส',
-		description: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส มีใครมีไอเดียบ้าง?',
-	},
-];
+import { Post, User } from '@/database/models';
+// const sampleEvents: EventCardProps[] = [
+// 	{
+// 		id: 0,
+// 		title: 'Just want to install a package. How do I do that?',
+// 		description: 'I am trying to install a package but I am not able to do that. Can someone help me?',
+// 	},
+// 	{
+// 		id: 1,
+// 		title: 'How to use a package?',
+// 		description: 'I have installed a package but I am not able to use it. Can someone help me?',
+// 	},
+// 	{ id: 2, title: 'อยากได้ไอเดียสำหรับโปรเจค', description: 'อยากได้ไอเดียสำหรับโปรเจคที่จะทำ มีใครมีไอเดียบ้าง?' },
+// 	{
+// 		id: 3,
+// 		title: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส',
+// 		description: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส มีใครมีไอเดียบ้าง?',
+// 	},
+// ];
 
 export default function App() {
 	const [currentPage, setCurrentPage] = useState('');
-	const [events, setEvents] = useState<EventCardProps[]>(sampleEvents);
+	const [events, setEvents] = useState<EventCardProps[]>();
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [discord, setDiscord] = useState('');
@@ -69,6 +69,16 @@ export default function App() {
 				//console.log('query_data', query_data);
 				//console.log(query_data.avatar);
 				setData(query_data);
+			}
+		);
+		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'event_card' }))}`).then(
+			async (res) => {
+				const query = await res.json();
+				const query_data = query.result.data.data.post;
+				//console.log('query_data', query_data);
+				setEvents(query_data);
+				//console.log('query_data', query_data);
+				//console.log(query_data.avatar);
 			}
 		);
 	}
@@ -109,7 +119,7 @@ export default function App() {
 					data={data}
 					isLoggedIn={isLoggedIn}
 					setCurrentPage={setCurrentPage}
-					events={events}
+					events={events || []} // Assign an empty array if events is undefined
 					setEvents={setEvents}
 				/>
 			</div>

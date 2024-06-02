@@ -14,7 +14,7 @@ export default function getUser() {
 			.query(async ({ input }) => {
 				await connectDB();
 				const { discord_id } = input;
-				//console.log('discord_id:', discord_id);
+				console.log('discord_id:', discord_id);
 				try {
 					const existingUser = await UserModel.findOne({ discord_id });
 					//console.log('existingUser:', existingUser);

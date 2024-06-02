@@ -1,5 +1,5 @@
 import login from './api/login';
-import createPost from './api/post';
+import { createPost, getPost } from './api/post';
 import register from './api/register';
 import apiTest from './api/testTRPC';
 import getUser from './api/user';
@@ -10,6 +10,7 @@ export const appRouter = router({
 	...register(),
 	...getUser(),
 	...createPost(),
+	...getPost(),
 });
 const createCaller = createCallerFactory(appRouter);
 
