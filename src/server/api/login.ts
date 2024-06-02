@@ -16,8 +16,7 @@ export default function login() {
 			)
 			.mutation(async ({ input }) => {
 				await connectDB();
-				const { email, discord_id, display_name } = input;
-
+				const { email, discord_id, display_name, avatar } = input;
 				try {
 					const existingUser = await UserModel.findOne({ email });
 

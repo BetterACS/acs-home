@@ -7,7 +7,8 @@ import Provider from '@/app/_trpc/Provider';
 import './globals.css';
 import { Inter as FontSans } from 'next/font/google';
 import { CookiesProvider } from 'next-client-cookies/server';
-export const fontSans = FontSans({
+
+const fontSans = FontSans({
 	subsets: ['latin'],
 	variable: '--font-sans',
 });

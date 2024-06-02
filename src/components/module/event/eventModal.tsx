@@ -108,20 +108,26 @@ const EventModal = ({ handleClose, data }: any) => {
 
 					<div className="self-start w-[433px] ml-[156px]">
 						<EventModalInput label="Due date" marginTop={30} width={200} icon={<CalendarDays />}>
-							<DatePicker />
+							<DatePicker onChange={handleDueDateChange} />
 						</EventModalInput>
 
 						<EventModalInput label="Coin" marginTop={16} width={200} icon={<Coins />}>
-							<Input className="w-[200px]" placeholder="100+" />
+							<Input className="w-[200px]" placeholder="100+" value={coin} onChange={handleCoinChange} />
 						</EventModalInput>
 
 						<EventModalInput label="Github repo" marginTop={16} width={200} icon={<Github />}>
-							<Input className="w-[200px]" placeholder="owner / repository" />
+							<Input
+								className="w-[200px]"
+								placeholder="owner / repository"
+								// message="Select item"
+								// items={example_items}
+								// onChange={handleTypeChange}
+							/>
 						</EventModalInput>
 					</div>
 
 					<div className="w-[700px] mt-[40px] h-full">
-						<SelfExpandTextarea />
+						<SelfExpandTextarea onChange={handleDescriptionChange} />
 					</div>
 				</div>
 				<center>
