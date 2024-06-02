@@ -95,7 +95,12 @@ export default function App() {
 	}
 
 	return (
-		<div>
+		<div
+			style={{
+				backgroundImage:
+					'linear-gradient(65deg, hsl(200deg 65% 80%) 0%, hsl(200deg 62% 83%) 11%, hsl(201deg 57% 87%) 25%, hsl(202deg 51% 90%) 39%,hsl(205deg 39% 93%) 50%,hsl(220deg 14% 96%) 61%,hsl(316deg 22% 92%) 70%,hsl(325deg 34% 89%) 78%,hsl(327deg 42% 86%) 86%,hsl(328deg 47% 82%) 93%,hsl(328deg 50% 79%) 100%)',
+			}}
+		>
 			<p>{}</p>
 			<Navbar isLoggedIn={isLoggedIn} data={data} />
 			<div className="flex flex-col justify-center items-center w-full">
