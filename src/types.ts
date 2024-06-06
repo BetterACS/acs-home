@@ -66,6 +66,7 @@ interface GitHubRepoProps {
 	description: string;
 	language: string;
 	stars: number;
+	onClick?: (_title: any, _description: any, _avatar: any, ref: any) => void;
 }
 
 interface GitHubEventCardProps extends Document {

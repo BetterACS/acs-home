@@ -19,14 +19,16 @@ export default function EventModule(props: BodyComponentProps) {
 
 	const open = () => setModalOpen(true);
 	const close = () => setModalOpen(false);
+
 	const clickPost = (id: number) => {
-		console.log('clickPost', id, '#event-' + id.toString());
-		setCurrentPage('#event-' + id.toString());
+		console.log('clickPost', id);
+		// console.log('clickPost', id, '#event-' + id.toString());
+		// setCurrentPage('#event-' + id.toString());
 	};
 
 	function getEventFromEventString(eventString: string): EventCardProps | undefined {
 		const id = parseInt(eventString.split('-')[1]);
-		return events.find((event) => event.id === id);
+		return events.find((event) => event._id === id);
 	}
 
 	useEffect(() => {
@@ -60,7 +62,7 @@ export default function EventModule(props: BodyComponentProps) {
 					className="w-full h-[460px] flex flex-col justify-center items-center"
 					style={{ backgroundColor: '#4287f5' }}
 				>
-					<GitHubCarousel />
+					<GitHubCarousel onCardClick={clickPost} />
 				</div>
 				<div className="flex flex-col items-center">
 					<p className="mt-[40px] text-3xl font-bold">Non project requests</p>
@@ -71,8 +73,8 @@ export default function EventModule(props: BodyComponentProps) {
 						{events.map((event) => {
 							return (
 								<EventCard
-									key={event.id}
-									id={event.id}
+									key={event._id}
+									id={event._id}
 									title={event.title}
 									description={event.description}
 									onChildClick={clickPost}

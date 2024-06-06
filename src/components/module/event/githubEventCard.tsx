@@ -1,15 +1,21 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star } from 'lucide-react';
 import { GitHubRepoProps } from '@/types';
 import clsx from 'clsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useRef } from 'react';
 
 export default function GitHubEventCard(props: GitHubRepoProps) {
-	const { title, fullName, avatar, description, language, stars } = props;
+	const cardRef = useRef<any>();
+	const { title, fullName, avatar, description, language, stars, onClick } = props;
 
 	return (
-		<Card className="cursor-pointer scale-[98%] hover:scale-100 h-[318px] w-[381px] flex flex-col justify-evenly items-center drop-shadow-lg">
+		<Card
+			ref={cardRef}
+			onClick={() => onClick?.(title, description, avatar, cardRef.current)}
+			className="cursor-pointer scale-[98%] hover:scale-100 h-[318px] w-[381px] flex flex-col justify-evenly items-center drop-shadow-lg"
+		>
 			<div className="flex flex-row w-[320px]">
 				<Avatar className="w-[38px] h-[38px] mr-4 mt-2">
 					<AvatarImage src={avatar} alt="@shadcn" />

@@ -20,6 +20,7 @@ export default function EventCard(props: any) {
 	const open = () => {
 		setModalOpen(true);
 		onChildClick(id);
+		console.log('open', id);
 	};
 
 	return (
@@ -78,7 +79,7 @@ export default function EventCard(props: any) {
 									animate={{ fontSize: '3rem' }}
 									transition={{ duration: 0.45 }}
 								>
-									<p>{title}</p>
+									{title}
 								</motion.p>
 								<motion.p className="mx-24 text-gray-800">{description}</motion.p>
 							</motion.div>
