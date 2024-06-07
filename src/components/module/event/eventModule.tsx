@@ -11,9 +11,34 @@ import GitHubCarousel from './githubCarousel';
 import { Card } from '@/components/ui/card';
 import { HoverEffect } from '@/components/ui/cardHoverEffect';
 import { title } from 'process';
+import { User } from '@/database/models';
 
 export default function EventModule(props: BodyComponentProps) {
 	const { currentPage, setCurrentPage, events, isLoggedIn, data } = props;
+	console.log('events:', events);
+	
+	async function loadAllUserData(events: EventCardProps[]) {
+		const userPromises = events.map(async (event) => {
+			const res = await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`);
+			const query = await res.json();
+			return {
+				...event,
+				user: query.result.data.data.data as User,
+			};
+		});
+		return Promise.all(userPromises);
+	}
+
+	const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
+
+	useEffect(() => {
+		async function fetchData() {
+			const data = await loadAllUserData(events);
+			setEventsWithUserData(data);
+		}
+		fetchData();
+	}, [events]);
+
 
 	const [modalOpen, setModalOpen] = useState(false);
 
@@ -70,7 +95,8 @@ export default function EventModule(props: BodyComponentProps) {
 				</div>
 				<div className="mt-8 mb-[120px] flex flex-col items-center">
 					<div className="flex flex-row flex-wrap justify-between w-[1200px] pb-8">
-						{events.map((event) => {
+						{eventsWithUserData.map((event) => {
+							//await LoaddataUser(event.user_id.toString())
 							return (
 								<EventCard
 									key={event._id}
@@ -78,6 +104,7 @@ export default function EventModule(props: BodyComponentProps) {
 									title={event.title}
 									description={event.description}
 									onChildClick={clickPost}
+									avatar={`https://cdn.discordapp.com/avatars/${event.user.discord_id}/${event.user.avatar}.png`}
 								/>
 							);
 						})}

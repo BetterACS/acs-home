@@ -21,35 +21,46 @@ const EventModal = ({ handleClose, data }: any) => {
 	const [title, setTitle] = useState('' as string);
 	const [dueDate, setDueDate] = useState<Date>(new Date(Date.now() + 24 * 60 * 60 * 1000)); // tomorrow
 	const [coin, setCoin] = useState<number>(0);
-	const [type, setType] = useState('');
+	const [type, setType] = useState('event_card');
 	const [description, setDescription] = useState('');
 	const [_id, setId] = useState('');
+	const [github, setGithub] = useState('');
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log('e.target.value:', e.target.value);
 		setTitle(e.target.value);
 	};
 
 	const handleDueDateChange = (date: Date) => {
 		setDueDate(new Date(date.getTime() + 7 * 60 * 60 * 1000)); // plus 7 hours for the date
+		console.log('dueDate:', dueDate);
 	};
 
 	const handleCoinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCoin(Number(e.target.value));
+		console.log('coin:', e.target.value);
 	};
 
-	const handleTypeChange = (value: string) => {
-		setType(value);
+	const handleTypeChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+		setGithub(event.target.value);
+		if (event.target.value !== ""){
+			setType("github_carousel");
+		}
+		else{
+			setType("event_card")
+		}
 	};
 	const handleDescriptionChange = (text: string) => {
 		setDescription(text);
+		console.log('description:', description);
 	};
 	const mutation = trpc.post.useMutation({
 		onSuccess: (data) => {
-			//console.log('data:', data);
-			//console.log('data.data._id:', data.data._id);
+			console.log('data:', data);
+			console.log('data.data._id:', data.data._id);
 			setId(data.data._id);
 			handleClose();
 		},
-		onError: (error) => {
+		onError: (error: any) => {
 			console.error('Error creating post:', error);
 			alert('Failed to create post');
 		},
@@ -60,14 +71,15 @@ const EventModal = ({ handleClose, data }: any) => {
 	const handleSubmit = async () => {
 		const postData = {
 			title: title,
-			post_text: description,
+			description: description,
 			due_date: dueDate,
 			coin_reward: coin,
 			type: type,
 			user_id: data._id,
+			githubLink: github,
 		};
-		//console.log('dueDate:', dueDate);
-		//console.log('dueDate Type:', typeof dueDate);
+		console.log('dueDate:', dueDate);
+		console.log('dueDate Type:', typeof dueDate);
 
 		const response = await mutation.mutate(postData);
 		console.log('response:', response);
@@ -121,7 +133,7 @@ const EventModal = ({ handleClose, data }: any) => {
 								placeholder="owner / repository"
 								// message="Select item"
 								// items={example_items}
-								// onChange={handleTypeChange}
+								onChange={handleTypeChange}
 							/>
 						</EventModalInput>
 					</div>
@@ -131,7 +143,7 @@ const EventModal = ({ handleClose, data }: any) => {
 					</div>
 				</div>
 				<center>
-					<Button className="text-lg bg-blue-600 hover:bg-blue-500 transition-all duration-200 hover:shadow-xl hover:scale-105">
+					<Button onClick={handleSubmit} className="text-lg bg-blue-600 hover:bg-blue-500 transition-all duration-200 hover:shadow-xl hover:scale-105">
 						Create
 					</Button>
 				</center>

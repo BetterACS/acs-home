@@ -66,6 +66,7 @@ interface GitHubRepoProps {
 	description: string;
 	language: string;
 	stars: number;
+	userID: mongoose.Types.ObjectId;
 	onClick?: (_title: any, _description: any, _avatar: any, ref: any) => void;
 }
 

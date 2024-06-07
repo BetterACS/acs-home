@@ -7,6 +7,8 @@ import Backdrop from '@/components/utils/backdrop';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { User } from '@/database/models';
+import { set } from 'mongoose';
 
 const octokit = new Octokit();
 
@@ -27,20 +29,40 @@ const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
 	const { onCardClick } = props;
+	//const { onCardClick } = props.onCardClick.clickPost;
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const [title, setTitle] = useState('');
 	const [description, setDescription] = useState('');
 	const [avatar, setAvatar] = useState('');
+	const [name, setName] = useState('');
 	const cardRef = useRef<any>();
+	const [data, setData] = useState({} as User);
 
-	const open = (id: any, _title: any, _description: any, _avatar: any, ref: any) => {
+	async function LoaddataUser(_userID: string) {
+		('use server');
+		await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: _userID }))}`).then(
+			async (res) => {
+				const query = await res.json();
+				const query_data = query.result.data.data.data as User;
+				setData(query_data);
+				setName(query_data.display_name);
+				console.log("display_name",query_data.display_name, "_id",_userID)
+			}
+		);
+	}
+
+	const open = async (id: any, _title: any, _description: any, _avatar: any, ref: any,_userID:any) => {
+		console.log('open', _userID);
+		await LoaddataUser(_userID);
 		setTitle(_title);
 		setDescription(_description);
 		setAvatar(_avatar);
 		cardRef.current = ref;
 		setModalOpen(true);
 		onCardClick(id);
+		
+		
 	};
 
 	const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
@@ -59,6 +81,7 @@ export default function GitHubCarousel(props: any) {
 			}
 		);
 	}
+	
 	useEffect(() => {
 		if (isLoading) {
 		}
@@ -93,6 +116,7 @@ export default function GitHubCarousel(props: any) {
 						description: data.description,
 						language: data.language,
 						stars: data.stargazers_count,
+						userID : event.user_id,
 					} as GitHubRepoProps;
 					eventsArray.push(repo);
 				})
@@ -142,7 +166,7 @@ export default function GitHubCarousel(props: any) {
 										<AvatarImage src={avatar} alt="@shadcn" />
 										<AvatarFallback>Avatar</AvatarFallback>
 									</Avatar>
-									<p>Monchinawat</p>
+									<p>{name}</p>
 								</div>
 								<motion.div
 									className="rounded-full"
@@ -182,7 +206,7 @@ export default function GitHubCarousel(props: any) {
 							<GitHubEventCard
 								{...repo}
 								onClick={(_title: any, _description: any, _avatar: any, ref: any) =>
-									open(repo.id, _title, _description, _avatar, ref)
+									open(repo.id, _title, _description, _avatar, ref,repo.userID)
 								}
 							/>
 						</CarouselItem>

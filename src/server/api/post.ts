@@ -9,25 +9,27 @@ function createPost() {
 			.input(
 				z.object({
 					title: z.string(),
-					post_text: z.string(),
+					description: z.string(),
 					due_date: z.coerce.date(),
 					coin_reward: z.number(),
 					type: z.string(),
 					user_id: z.string(),
+					githubLink:z.string().optional(),
 				})
 			)
 			.mutation(async ({ input }) => {
 				await connectDB();
-				const { title, post_text, due_date, coin_reward, type, user_id } = input;
+				const { title, description, due_date, coin_reward, type, user_id,githubLink } = input;
 				console.log('input:', input);
 				try {
 					const newPost = new PostModel({
 						title: title,
-						post_text: post_text,
+						description: description,
 						due_date: due_date,
 						coin_reward: coin_reward,
 						type: type,
 						user_id: user_id,
+						githubLink:githubLink
 					});
 					const savedPost = await newPost.save();
 
