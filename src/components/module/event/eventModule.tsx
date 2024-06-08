@@ -8,27 +8,6 @@ import { useEffect, useState } from 'react';
 import EventModal from './eventModal';
 import GitHubCarousel from './githubCarousel';
 import { User } from '@/database/models';
-import { TypewriterEffectSmooth } from '@/components/ui/type-writer';
-
-export function Logo() {
-	const words = [
-		{
-			text: 'ACS',
-		},
-		{
-			text: 'Home',
-			className: 'text-blue-500 dark:text-blue-500',
-		},
-	];
-	return (
-		<div className="pt-[200px] flex flex-col items-center justify-center">
-			<p className="text-neutral-600 dark:text-neutral-200 text-xs sm:text-base  ">
-				Where community lives and grows
-			</p>
-			<TypewriterEffectSmooth words={words} />
-		</div>
-	);
-}
 
 export default function EventModule(props: BodyComponentProps) {
 	const {
@@ -109,7 +88,7 @@ export default function EventModule(props: BodyComponentProps) {
 					/>
 				)}
 			</AnimatePresence>
-			<Logo />
+
 			{/* Event Card List */}
 			<div className="w-[1200px] pb-[34px] mx-[360px]">
 				{/* <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>

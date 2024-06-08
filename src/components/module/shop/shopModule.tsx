@@ -71,7 +71,7 @@ const items = [
 
 export default function ShopModule() {
 	return (
-		<div className="mt-48">
+		<div className="mt-24">
 			<BentoGrid className="max-w-4xl mx-auto">
 				{items.map((item, i) => (
 					<BentoGridItem
