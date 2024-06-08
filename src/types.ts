@@ -26,6 +26,8 @@ interface BodyComponentProps extends WebComponentProps {
 	setEvents: (events: EventCardProps[]) => void;
 	isLoggedIn: boolean;
 	data: User;
+	eventDependency: boolean;
+	handleEventCallBack: () => void;
 }
 
 interface SequentialComponentsProps<T> {
@@ -68,7 +70,8 @@ interface GitHubRepoProps {
 	language: string;
 	stars: number;
 	userID: mongoose.Types.ObjectId;
-	onClick?: (_title: any, _description: any, _avatar: any, ref: any) => void;
+	userAvatar: string;
+	onClick?: (_title: any, _description: any, _avatar: any, ref: any,_userAvatar:any) => void;
 }
 
 interface GitHubEventCardProps extends Document {
@@ -81,14 +84,31 @@ interface GitHubEventCardProps extends Document {
 	type?: string;
 	user_id: mongoose.Types.ObjectId;
 	githubLink: string;
-
+	user: User;
 	// id: number;
 	// title: string;
 	// description: string;
 	// githubLink: string;
 }
 
-export type { EventModalInputProps, GitHubEventCardProps, GitHubRepoProps, TagInputProps, TagItem };
+interface EventCardPopupProps {
+	avatar: string;
+	name: string;
+	title: string;
+	description: string;
+	setModalOpen: (modalOpen: boolean) => void;
+	coin: number;
+	due_date: number;
+}
+
+export type {
+	EventCardPopupProps,
+	EventModalInputProps,
+	GitHubEventCardProps,
+	GitHubRepoProps,
+	TagInputProps,
+	TagItem,
+};
 
 export type {
 	BodyComponentProps,
