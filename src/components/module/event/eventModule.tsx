@@ -1,25 +1,22 @@
 'use client';
 
 import { BodyComponentProps, EventCardProps } from '@/types';
-import SequentialComponents from '../../utils/sequentialComponents';
 import EventCard from './eventCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchBox from './searchBox';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import EventModal from './eventModal';
 import GitHubCarousel from './githubCarousel';
-import { Card } from '@/components/ui/card';
-import { HoverEffect } from '@/components/ui/cardHoverEffect';
-import { title } from 'process';
 import { User } from '@/database/models';
 
 export default function EventModule(props: BodyComponentProps) {
-	const { currentPage, setCurrentPage, events, isLoggedIn, data } = props;
-	console.log('events:', events);
+	const { currentPage, setCurrentPage, events, isLoggedIn, data ,eventDependency, handleEventCallBack} = props;
 	
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
-			const res = await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`);
+			const res = await fetch(
+				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
+			);
 			const query = await res.json();
 			return {
 				...event,
@@ -30,7 +27,7 @@ export default function EventModule(props: BodyComponentProps) {
 	}
 
 	const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
-
+	const [carouselDependency, setCarouselDependency] = useState(false);
 	useEffect(() => {
 		async function fetchData() {
 			const data = await loadAllUserData(events);
@@ -38,7 +35,6 @@ export default function EventModule(props: BodyComponentProps) {
 		}
 		fetchData();
 	}, [events]);
-
 
 	const [modalOpen, setModalOpen] = useState(false);
 
@@ -64,10 +60,16 @@ export default function EventModule(props: BodyComponentProps) {
 		}
 	}, [modalOpen]);
 
+	
+
+	const handleCarouselCallBack = () => {
+		setCarouselDependency((prev) => !prev);
+	};
+
 	return (
 		<div>
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
-				{modalOpen && isLoggedIn && <EventModal modalOpen={modalOpen} handleClose={close} data={data} />}
+				{modalOpen && isLoggedIn && <EventModal modalOpen={modalOpen} handleClose={close} data={data} carouselCallBack={handleCarouselCallBack} eventCallBack={handleEventCallBack}/>}
 			</AnimatePresence>
 			{/* Event Card List */}
 			<div className="pt-[234px] w-[1200px] pb-[34px] mx-[360px]">
@@ -87,7 +89,7 @@ export default function EventModule(props: BodyComponentProps) {
 					className="w-full h-[460px] flex flex-col justify-center items-center"
 					style={{ backgroundColor: '#4287f5' }}
 				>
-					<GitHubCarousel onCardClick={clickPost} />
+					<GitHubCarousel onCardClick={clickPost} callBack={handleCarouselCallBack} dependency={carouselDependency}/>
 				</div>
 				<div className="flex flex-col items-center">
 					<p className="mt-[40px] text-3xl font-bold">Non project requests</p>
@@ -101,6 +103,7 @@ export default function EventModule(props: BodyComponentProps) {
 								<EventCard
 									key={event._id}
 									id={event._id}
+									name={event.user.name}
 									title={event.title}
 									description={event.description}
 									onChildClick={clickPost}

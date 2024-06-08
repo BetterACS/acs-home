@@ -39,6 +39,10 @@ export default function App() {
 	const [discord, setDiscord] = useState('');
 	const [data, setData] = useState({} as User);
 	const cookies = useCookies();
+	const [eventDependency, setEventDependency] = useState(false);
+	const handleEventCallBack = () => {
+		setEventDependency((prev) => !prev);
+	};
 
 	async function isLoginClient(cookies: string) {
 		('use server');
@@ -71,6 +75,10 @@ export default function App() {
 				setData(query_data);
 			}
 		);
+	}
+
+	async function LoadEvent() {
+		('use server');
 		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'event_card' }))}`).then(
 			async (res) => {
 				const query = await res.json();
@@ -91,6 +99,13 @@ export default function App() {
 		fetchData();
 	}, [cookies]);
 	useEffect(() => {
+		const fetchData = async () => {
+			await LoadEvent();
+		};
+		fetchData();
+	}, [eventDependency]);
+
+	useEffect(() => {	
 		if (!isfetch) {
 			return;
 		}
@@ -100,6 +115,7 @@ export default function App() {
 		};
 		fetchData();
 	}, [isfetch]);
+
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
@@ -121,6 +137,8 @@ export default function App() {
 					setCurrentPage={setCurrentPage}
 					events={events || []} // Assign an empty array if events is undefined
 					setEvents={setEvents}
+					eventDependency={eventDependency}
+					handleEventCallBack={handleEventCallBack}
 				/>
 			</div>
 			<Footer />
