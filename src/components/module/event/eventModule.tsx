@@ -108,6 +108,8 @@ export default function EventModule(props: BodyComponentProps) {
 									description={event.description}
 									onChildClick={clickPost}
 									avatar={`https://cdn.discordapp.com/avatars/${event.user.discord_id}/${event.user.avatar}.png`}
+									coin={event.coin_reward}
+									due_date={Math.max(Math.ceil((new Date(event.due_date).getTime()-Date.now()) / (1000 * 60 * 60 * 24)),0)}
 								/>
 							);
 						})}
