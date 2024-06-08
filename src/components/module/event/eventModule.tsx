@@ -76,7 +76,11 @@ export default function EventModule(props: BodyComponentProps) {
 	};
 
 	return (
-		<div>
+		<motion.div
+			initial={{ y: 600, opacity: 0 }}
+			animate={{ y: 0, opacity: 1, transition: { duration: 1 } }}
+			exit={{ translateY: 1000, opacity: 0, transition: { duration: 1.2 } }}
+		>
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 				{modalOpen && isLoggedIn && (
 					<EventModal
@@ -164,6 +168,6 @@ export default function EventModule(props: BodyComponentProps) {
 					/>
 				)}
 			</AnimatePresence>{' '} */}
-		</div>
+		</motion.div>
 	);
 }

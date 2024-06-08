@@ -12,6 +12,7 @@ import {
 } from '@tabler/icons-react';
 
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const Skeleton = () => (
 	<div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100"></div>
@@ -71,7 +72,12 @@ const items = [
 
 export default function ShopModule() {
 	return (
-		<div className="mt-24">
+		<motion.div
+			className="mt-8"
+			initial={{ y: 600, opacity: 0 }}
+			animate={{ y: 0, opacity: 1, transition: { duration: 1 } }}
+			exit={{ translateY: 1000, opacity: 0, transition: { duration: 1.2 } }}
+		>
 			<BentoGrid className="max-w-4xl mx-auto">
 				{items.map((item, i) => (
 					<BentoGridItem
@@ -85,7 +91,7 @@ export default function ShopModule() {
 					/>
 				))}
 			</BentoGrid>
-		</div>
+		</motion.div>
 	);
 }
 

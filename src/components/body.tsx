@@ -17,7 +17,7 @@ export function Logo() {
 		},
 	];
 	return (
-		<div className="pt-[200px] flex flex-col items-center justify-center">
+		<div className="pt-[160px] pb-[40px] flex flex-col items-center justify-center">
 			<p className="text-neutral-600 dark:text-neutral-200 text-xs sm:text-base  ">
 				Where community lives and grows
 			</p>
@@ -30,10 +30,8 @@ export default function Body(props: BodyComponentProps) {
 	return (
 		<div>
 			<Logo />
-			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
+			<AnimatePresence initial={true} mode="wait" onExitComplete={() => null}>
 				{(currentPage === '' || currentPage.includes('#event-')) && <EventModule {...props} />}
-			</AnimatePresence>
-			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 				{currentPage.includes('shop') && <ShopModule />}
 			</AnimatePresence>
 		</div>
