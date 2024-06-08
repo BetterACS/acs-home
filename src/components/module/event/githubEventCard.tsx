@@ -3,26 +3,56 @@ import { Badge } from '@/components/ui/badge';
 import { Star } from 'lucide-react';
 import { GitHubRepoProps } from '@/types';
 import clsx from 'clsx';
+import Image from 'next/image';
+import bookmarkImage from '/public/bookmark-anim.gif';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 export default function GitHubEventCard(props: GitHubRepoProps) {
 	const cardRef = useRef<any>();
-	const { title, fullName, avatar, description, language, stars,userID,userAvatar, onClick } = props;
+	const { title, fullName, avatar, description, language, stars, userID, userAvatar, onClick } = props;
+	const [isBookmark, setIsBookmark] = useState(false);
+
+	const bookmark = (e: any) => {
+		e.stopPropagation();
+		setIsBookmark(!isBookmark);
+	};
 
 	return (
 		<Card
 			ref={cardRef}
 			onClick={() => onClick?.(title, description, avatar, cardRef.current, userAvatar)}
-			className="cursor-pointer scale-[98%] hover:scale-100 h-[318px] w-[381px] flex flex-col justify-evenly items-center drop-shadow-lg"
+			className="cursor-pointer scale-[92%] h-[318px] w-[381px] flex flex-col justify-evenly items-center drop-shadow-lg hover:scale-[95%] transition-transform duration-100 ease-in-out"
 		>
-			<div className="flex flex-row w-[320px]">
-				<Avatar className="w-[38px] h-[38px] mr-4 mt-2">
-					<AvatarImage src={userAvatar} alt="@shadcn" />
-					<AvatarFallback>Avatar</AvatarFallback>
-				</Avatar>
-				<div>
-					<p className="text-2xl font-bold">{title}</p>
+			<div className="flex flex-row w-[320px] items-top justify-between">
+				<div className="flex flex-row items-top">
+					<Avatar className="w-[38px] h-[38px] mr-4 mt-2">
+						<AvatarImage src={userAvatar} alt="@shadcn" />
+						<AvatarFallback>Avatar</AvatarFallback>
+					</Avatar>
+					<div>
+						<p className="text-2xl leading-tight font-bold line-clamp-2">{title}</p>
+					</div>
+				</div>
+				<div className="mt-1 cursor-pointer" onClick={bookmark}>
+					{isBookmark ? (
+						<Image
+							className="hover:scale-[114%]"
+							alt="bookmark"
+							src={bookmarkImage}
+							width={36}
+							height={36}
+							priority
+						/>
+					) : (
+						<Image
+							className="hover:scale-[114%]"
+							alt="bookmark"
+							src={'/bookmark.png'}
+							width={36}
+							height={36}
+						/>
+					)}
 				</div>
 			</div>
 			<Card className="h-[170px] w-[320px] flex flex-col justify-between p-4">
