@@ -87,7 +87,22 @@ interface GitHubEventCardProps extends Document {
 	// githubLink: string;
 }
 
-export type { EventModalInputProps, GitHubEventCardProps, GitHubRepoProps, TagInputProps, TagItem };
+interface EventCardPopupProps {
+	avatar: string;
+	name: string;
+	title: string;
+	description: string;
+	setModalOpen: (modalOpen: boolean) => void;
+}
+
+export type {
+	EventCardPopupProps,
+	EventModalInputProps,
+	GitHubEventCardProps,
+	GitHubRepoProps,
+	TagInputProps,
+	TagItem,
+};
 
 export type {
 	BodyComponentProps,
