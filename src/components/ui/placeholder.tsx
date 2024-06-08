@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/components/utils/ui';
+import { set } from 'mongoose';
 
 export function PlaceholdersAndVanishInput({
 	placeholders,
@@ -131,11 +132,14 @@ export function PlaceholdersAndVanishInput({
 	};
 
 	const vanishAndSubmit = () => {
+		if (inputRef.current?.value == '') {
+			setAnimating(false);
+			return;
+		}
 		setAnimating(true);
 		draw();
-
-		const value = inputRef.current?.value || '';
-		if (value && inputRef.current) {
+		const refValue = inputRef.current?.value || '';
+		if (refValue && inputRef.current) {
 			const maxX = newDataRef.current.reduce((prev, current) => (current.x > prev ? current.x : prev), 0);
 			animate(maxX);
 		}
@@ -179,7 +183,7 @@ export function PlaceholdersAndVanishInput({
 			/>
 
 			<button
-				disabled={!value}
+				// disabled={!value}
 				type="submit"
 				className="absolute right-2 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full disabled:bg-gray-100 bg-black dark:bg-zinc-900 dark:disabled:bg-zinc-800 transition duration-200 flex items-center justify-center"
 			>

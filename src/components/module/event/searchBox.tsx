@@ -15,7 +15,13 @@ interface MultiFunctionButtonProps {
 
 import { PlaceholdersAndVanishInput } from '@/components/ui/placeholder';
 
-export function PlaceholdersAndVanishInputDemo({ setQueryTitleEvent, setQueryTitleCarousel }: { setQueryTitleEvent: (title: String) => void, setQueryTitleCarousel: (title: String) => void }){
+export function PlaceholdersAndVanishInputDemo({
+	setQueryTitleEvent,
+	setQueryTitleCarousel,
+}: {
+	setQueryTitleEvent: (title: String) => void;
+	setQueryTitleCarousel: (title: String) => void;
+}) {
 	const placeholders = [
 		'Help me with my homework',
 		'I need help with my project',
@@ -26,15 +32,15 @@ export function PlaceholdersAndVanishInputDemo({ setQueryTitleEvent, setQueryTit
 		console.log('Typing in search box', e.target.value);
 	};
 	const onSubmit = (value: String) => {
-
-		console.log('submitted', value);
-		if (value !== 'reset'){
-			setQueryTitleEvent(value);
-			setQueryTitleCarousel(value);}
-		else{
-			setQueryTitleEvent('')
+		console.log('search', value);
+		if (value == '') {
+			setQueryTitleEvent('');
 			setQueryTitleCarousel('');
+			return;
 		}
+
+		setQueryTitleEvent(value);
+		setQueryTitleCarousel(value);
 	};
 	return (
 		<div className="flex flex-row items-center space-x-4 w-full">
@@ -46,17 +52,8 @@ export function PlaceholdersAndVanishInputDemo({ setQueryTitleEvent, setQueryTit
 	);
 }
 
-function MultiFunctionButton(props: MultiFunctionButtonProps) {
-	const { children, width, icon, onClick } = props;
-	return (
-		<div className="relative bg-red-200 rounded-[33px] overflow-hidden" style={{ width: width }} onClick={onClick}>
-			{children}
-		</div>
-	);
-}
-
 export default function SearchBox(props: any) {
-	const { setModalOpen,setQueryTitleEvent,setQueryTitleCarousel } = props;
+	const { setModalOpen, setQueryTitleEvent, setQueryTitleCarousel } = props;
 	return (
 		<motion.div
 			className="flex flex-row h-[104px] w-full justify-between items-center"
@@ -75,7 +72,10 @@ export default function SearchBox(props: any) {
 				<Meteors className="bg-white" />
 			</button>
 			<div className="w-[685px] rounded-full bg-white p-2 flex flex-row items-center shadow-md">
-				<PlaceholdersAndVanishInputDemo setQueryTitleEvent={setQueryTitleEvent} setQueryTitleCarousel={setQueryTitleCarousel}/>
+				<PlaceholdersAndVanishInputDemo
+					setQueryTitleEvent={setQueryTitleEvent}
+					setQueryTitleCarousel={setQueryTitleCarousel}
+				/>
 			</div>
 		</motion.div>
 	);
