@@ -43,7 +43,7 @@ export default function GitHubCarousel(props: any) {
 		const dueDateTimestamp = new Date(due_date).getTime();
 		const currentTimestamp = Date.now();
 		const differenceInMilliseconds = dueDateTimestamp - currentTimestamp;
-		setDueDate(Math.max(Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24)),0));
+		setDueDate(Math.max(Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24)),0));
 		
 	};
 
