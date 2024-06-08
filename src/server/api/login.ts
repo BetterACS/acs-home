@@ -22,6 +22,7 @@ export default function login() {
 
 					if (existingUser) {
 						existingUser.display_name = display_name;
+						existingUser.avatar = avatar;
 						await existingUser.save();
 
 						return { status: 200, data: { message: 'Login success' } };
