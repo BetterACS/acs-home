@@ -56,6 +56,7 @@ interface EventModalInputProps {
 interface NavbarProps {
 	isLoggedIn: boolean;
 	data: User;
+	setCurrentPage: (page: string) => void;
 }
 
 interface GitHubRepoProps {

@@ -6,30 +6,9 @@ import Body from '@/components/body';
 import Footer from '@/components/footer';
 import { EventCardProps } from '@/types';
 import { isLogin } from '@/utils/Token';
-import { NextRequest } from 'next/server';
-
 import { verifyToken } from '@/utils/Token';
 import { useCookies } from 'next-client-cookies';
-import { NextPage } from 'next';
 import { Post, User } from '@/database/models';
-// const sampleEvents: EventCardProps[] = [
-// 	{
-// 		id: 0,
-// 		title: 'Just want to install a package. How do I do that?',
-// 		description: 'I am trying to install a package but I am not able to do that. Can someone help me?',
-// 	},
-// 	{
-// 		id: 1,
-// 		title: 'How to use a package?',
-// 		description: 'I have installed a package but I am not able to use it. Can someone help me?',
-// 	},
-// 	{ id: 2, title: 'อยากได้ไอเดียสำหรับโปรเจค', description: 'อยากได้ไอเดียสำหรับโปรเจคที่จะทำ มีใครมีไอเดียบ้าง?' },
-// 	{
-// 		id: 3,
-// 		title: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส',
-// 		description: 'แจก 100 coin ขอไอเดียทำเว็บอาจารย์แก๊ส มีใครมีไอเดียบ้าง?',
-// 	},
-// ];
 
 export default function App() {
 	const [currentPage, setCurrentPage] = useState('');
@@ -112,7 +91,7 @@ export default function App() {
 			}}
 		>
 			<p>{}</p>
-			<Navbar isLoggedIn={isLoggedIn} data={data} />
+			<Navbar isLoggedIn={isLoggedIn} data={data} setCurrentPage={setCurrentPage} />
 			<div className="flex flex-col justify-center items-center w-full">
 				<Body
 					currentPage={currentPage}
