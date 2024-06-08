@@ -28,6 +28,7 @@ interface BodyComponentProps extends WebComponentProps {
 	data: User;
 	eventDependency: boolean;
 	handleEventCallBack: () => void;
+	setQueryTitleEvent: (title: string) => void;
 }
 
 interface SequentialComponentsProps<T> {

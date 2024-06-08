@@ -76,10 +76,11 @@ export default function App() {
 			}
 		);
 	}
+	const [query_title_event, setQueryTitleEvent] = useState('');
 
 	async function LoadEvent() {
 		('use server');
-		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'event_card' }))}`).then(
+		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'event_card',title:query_title_event }))}`).then(
 			async (res) => {
 				const query = await res.json();
 				const query_data = query.result.data.data.post;
@@ -103,7 +104,7 @@ export default function App() {
 			await LoadEvent();
 		};
 		fetchData();
-	}, [eventDependency]);
+	}, [eventDependency,query_title_event]);
 
 	useEffect(() => {	
 		if (!isfetch) {
@@ -139,6 +140,7 @@ export default function App() {
 					setEvents={setEvents}
 					eventDependency={eventDependency}
 					handleEventCallBack={handleEventCallBack}
+					setQueryTitleEvent={setQueryTitleEvent}
 				/>
 			</div>
 			<Footer />

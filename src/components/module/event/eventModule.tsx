@@ -10,7 +10,7 @@ import GitHubCarousel from './githubCarousel';
 import { User } from '@/database/models';
 
 export default function EventModule(props: BodyComponentProps) {
-	const { currentPage, setCurrentPage, events, isLoggedIn, data ,eventDependency, handleEventCallBack} = props;
+	const { currentPage, setCurrentPage, events, isLoggedIn, data ,eventDependency, handleEventCallBack,setQueryTitleEvent} = props;
 	
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
@@ -28,6 +28,7 @@ export default function EventModule(props: BodyComponentProps) {
 
 	const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
 	const [carouselDependency, setCarouselDependency] = useState(false);
+	const [query_title_carousel, setQueryTitleCarousel] = useState('');
 	useEffect(() => {
 		async function fetchData() {
 			const data = await loadAllUserData(events);
@@ -60,12 +61,10 @@ export default function EventModule(props: BodyComponentProps) {
 		}
 	}, [modalOpen]);
 
-	
-
 	const handleCarouselCallBack = () => {
 		setCarouselDependency((prev) => !prev);
 	};
-
+	
 	return (
 		<div>
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
@@ -76,7 +75,7 @@ export default function EventModule(props: BodyComponentProps) {
 				{/* <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 					{currentPage === '' && }
 				</AnimatePresence> */}
-				<SearchBox setModalOpen={open} />
+				<SearchBox setModalOpen={open} setQueryTitleEvent={setQueryTitleEvent} setQueryTitleCarousel={setQueryTitleCarousel}/>
 			</div>
 
 			<motion.div
@@ -89,7 +88,7 @@ export default function EventModule(props: BodyComponentProps) {
 					className="w-full h-[460px] flex flex-col justify-center items-center"
 					style={{ backgroundColor: '#4287f5' }}
 				>
-					<GitHubCarousel onCardClick={clickPost} callBack={handleCarouselCallBack} dependency={carouselDependency}/>
+					<GitHubCarousel onCardClick={clickPost} callBack={handleCarouselCallBack} dependency={carouselDependency} query_title_carousel={query_title_carousel}/>
 				</div>
 				<div className="flex flex-col items-center">
 					<p className="mt-[40px] text-3xl font-bold">Non project requests</p>

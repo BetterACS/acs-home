@@ -8,7 +8,7 @@ import EventCardPopup from './eventCardPopup';
 const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
-	const { onCardClick,callBack,dependency } = props;
+	const { onCardClick,callBack,dependency,query_title_carousel } = props;
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const [title, setTitle] = useState('');
@@ -51,10 +51,10 @@ export default function GitHubCarousel(props: any) {
 	const [repos, setRepos] = useState<GitHubRepoProps[]>([]);
 	const [repoIsLoading, setRepoIsLoading] = useState(true);
 	const [isLoading, setIsLoading] = useState(true);
-
+	
 	async function Loaddata() {
 		('use server');
-		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'github_carousel' }))}`).then(
+		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'github_carousel' ,title:query_title_carousel}))}`).then(
 			async (res) => {
 				const query = await res.json();
 				const query_data = query.result.data.data.post;
@@ -103,7 +103,7 @@ export default function GitHubCarousel(props: any) {
 			}	
 		};
 		fetchData();
-	}, [dependency]);
+	}, [dependency,query_title_carousel]);
 
 	useEffect(() => {
 		if (!isLoading && eventsWithUserData.length > 0) {
