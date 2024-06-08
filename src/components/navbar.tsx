@@ -9,8 +9,13 @@ import { HoveredLink, Menu, MenuItem, ProductItem } from '@/components/ui/navbar
 import Image from 'next/image';
 
 export default function Navbar({ isLoggedIn, data }: NavbarProps) {
-	const redCircle = 'rounded-full w-[64px] h-[64px] bg-red-400 mx-4';
 	const [active, setActive] = useState<string | null>(null);
+	const DISCORD_API = process.env.DISCORD_API || '';
+
+	function handleClick() {
+		console.log('This button was clicked');
+		window.location.assign(DISCORD_API);
+	}
 
 	return (
 		<div className="relative w-full flex items-center justify-center">
@@ -68,9 +73,12 @@ export default function Navbar({ isLoggedIn, data }: NavbarProps) {
 								<p className="pl-2">{data.display_name}</p>
 							</div>
 						) : (
-							// Render this when user is not logged in
-							<div className="flex flex-row items-center">
-								<div className={'rounded-full w-[32px] h-[32px] bg-blue-400 mx-4'}></div>
+							<div
+								className="flex flex-row items-center space-x-2 cursor-pointer hover:scale-110 transition-all duration-200 ease-in-out"
+								onClick={handleClick}
+							>
+								<Image priority src="/discord.svg" height={32} width={32} alt="Sign in" />
+								<p>Sign in</p>
 							</div>
 						)}
 					</div>
