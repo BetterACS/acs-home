@@ -55,19 +55,22 @@ export default function App() {
 			}
 		);
 	}
+	const [queryTitleEvent, setQueryTitleEvent] = useState('');
 
 	async function LoadEvent() {
 		('use server');
-		await fetch(`/api/trpc/getPost?input=${encodeURIComponent(JSON.stringify({ type: 'event_card' }))}`).then(
-			async (res) => {
-				const query = await res.json();
-				const query_data = query.result.data.data.post;
-				//console.log('query_data', query_data);
-				setEvents(query_data);
-				//console.log('query_data', query_data);
-				//console.log(query_data.avatar);
-			}
-		);
+		await fetch(
+			`/api/trpc/getPost?input=${encodeURIComponent(
+				JSON.stringify({ type: 'event_card', title: queryTitleEvent })
+			)}`
+		).then(async (res) => {
+			const query = await res.json();
+			const query_data = query.result.data.data.post;
+			//console.log('query_data', query_data);
+			setEvents(query_data);
+			//console.log('query_data', query_data);
+			//console.log(query_data.avatar);
+		});
 	}
 
 	useEffect(() => {
@@ -82,9 +85,9 @@ export default function App() {
 			await LoadEvent();
 		};
 		fetchData();
-	}, [eventDependency]);
+	}, [eventDependency, queryTitleEvent]);
 
-	useEffect(() => {	
+	useEffect(() => {
 		if (!isfetch) {
 			return;
 		}
@@ -118,6 +121,8 @@ export default function App() {
 					setEvents={setEvents}
 					eventDependency={eventDependency}
 					handleEventCallBack={handleEventCallBack}
+					queryTitleEvent={queryTitleEvent}
+					setQueryTitleEvent={setQueryTitleEvent}
 				/>
 			</div>
 			<Footer />

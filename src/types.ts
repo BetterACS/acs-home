@@ -28,6 +28,8 @@ interface BodyComponentProps extends WebComponentProps {
 	data: User;
 	eventDependency: boolean;
 	handleEventCallBack: () => void;
+	queryTitleEvent: string;
+	setQueryTitleEvent: (title: string) => void;
 }
 
 interface SequentialComponentsProps<T> {
@@ -71,7 +73,7 @@ interface GitHubRepoProps {
 	stars: number;
 	userID: mongoose.Types.ObjectId;
 	userAvatar: string;
-	onClick?: (_title: any, _description: any, _avatar: any, ref: any,_userAvatar:any) => void;
+	onClick?: (_title: any, _description: any, _avatar: any, ref: any, _userAvatar: any) => void;
 }
 
 interface GitHubEventCardProps extends Document {
