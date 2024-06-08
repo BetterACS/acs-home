@@ -10,8 +10,18 @@ import GitHubCarousel from './githubCarousel';
 import { User } from '@/database/models';
 
 export default function EventModule(props: BodyComponentProps) {
-	const { currentPage, setCurrentPage, events, isLoggedIn, data ,eventDependency, handleEventCallBack} = props;
-	
+	const {
+		currentPage,
+		setCurrentPage,
+		events,
+		isLoggedIn,
+		data,
+		eventDependency,
+		handleEventCallBack,
+		queryTitleEvent,
+		setQueryTitleEvent,
+	} = props;
+
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
 			const res = await fetch(
@@ -28,6 +38,7 @@ export default function EventModule(props: BodyComponentProps) {
 
 	const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
 	const [carouselDependency, setCarouselDependency] = useState(false);
+	const [query_title_carousel, setQueryTitleCarousel] = useState('');
 	useEffect(() => {
 		async function fetchData() {
 			const data = await loadAllUserData(events);
@@ -60,8 +71,6 @@ export default function EventModule(props: BodyComponentProps) {
 		}
 	}, [modalOpen]);
 
-	
-
 	const handleCarouselCallBack = () => {
 		setCarouselDependency((prev) => !prev);
 	};
@@ -69,14 +78,26 @@ export default function EventModule(props: BodyComponentProps) {
 	return (
 		<div>
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
-				{modalOpen && isLoggedIn && <EventModal modalOpen={modalOpen} handleClose={close} data={data} carouselCallBack={handleCarouselCallBack} eventCallBack={handleEventCallBack}/>}
+				{modalOpen && isLoggedIn && (
+					<EventModal
+						modalOpen={modalOpen}
+						handleClose={close}
+						data={data}
+						carouselCallBack={handleCarouselCallBack}
+						eventCallBack={handleEventCallBack}
+					/>
+				)}
 			</AnimatePresence>
 			{/* Event Card List */}
 			<div className="pt-[234px] w-[1200px] pb-[34px] mx-[360px]">
 				{/* <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 					{currentPage === '' && }
 				</AnimatePresence> */}
-				<SearchBox setModalOpen={open} />
+				<SearchBox
+					setModalOpen={open}
+					setQueryTitleEvent={setQueryTitleEvent}
+					setQueryTitleCarousel={setQueryTitleCarousel}
+				/>
 			</div>
 
 			<motion.div
@@ -89,7 +110,13 @@ export default function EventModule(props: BodyComponentProps) {
 					className="w-full h-[460px] flex flex-col justify-center items-center"
 					style={{ backgroundColor: '#4287f5' }}
 				>
-					<GitHubCarousel onCardClick={clickPost} callBack={handleCarouselCallBack} dependency={carouselDependency}/>
+					{queryTitleEvent !== '' && <p className="text-white text-2xl">Search: {queryTitleEvent}</p>}
+					<GitHubCarousel
+						onCardClick={clickPost}
+						callBack={handleCarouselCallBack}
+						dependency={carouselDependency}
+						query_title_carousel={query_title_carousel}
+					/>
 				</div>
 				<div className="flex flex-col items-center">
 					<p className="mt-[40px] text-3xl font-bold">Non project requests</p>
@@ -109,7 +136,12 @@ export default function EventModule(props: BodyComponentProps) {
 									onChildClick={clickPost}
 									avatar={`https://cdn.discordapp.com/avatars/${event.user.discord_id}/${event.user.avatar}.png`}
 									coin={event.coin_reward}
-									due_date={Math.max(Math.ceil((new Date(event.due_date).getTime()-Date.now()) / (1000 * 60 * 60 * 24)),0)}
+									due_date={Math.max(
+										Math.ceil(
+											(new Date(event.due_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+										),
+										0
+									)}
 								/>
 							);
 						})}

@@ -58,6 +58,6 @@ function getUserBy_id() {
                 }
             }),
     };
-}
+}	
 
 export {getUser,getUserBy_id};

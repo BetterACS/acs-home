@@ -42,24 +42,58 @@ function createPost() {
 	};
 }
 
+// function getPost() {
+// 	return {
+// 		getPost: publicProcedure
+// 			.input(
+// 				z.object({
+// 					type: z.string(),
+// 				})
+// 			)
+// 			.query(async ({ input }) => {
+// 				await connectDB();
+// 				const { type } = input;
+// 				console.log('Fetching post with ID:', type);
+// 				try {
+// 					const fetchedPosts = await PostModel.find({ type }); // Rename the variable 'post' to 'fetchedPosts'
+// 					if (!fetchedPosts) {
+// 						return { status: 404, data: { message: 'Post not found' } };
+// 					}
+// 					return { status: 200, data: { message: 'Post retrieved successfully', post: fetchedPosts } }; // Update the variable name here as well
+// 				} catch (error) {
+// 					console.error('Error fetching post:', error);
+// 					return { status: 500, data: { message: 'Failed to fetch post' } };
+// 				}
+// 			}),
+// 	};
+// }
+
 function getPost() {
 	return {
 		getPost: publicProcedure
 			.input(
 				z.object({
 					type: z.string(),
+					title: z.string().optional(),
 				})
 			)
 			.query(async ({ input }) => {
 				await connectDB();
-				const { type } = input;
-				console.log('Fetching post with ID:', type);
+				const { type, title } = input;
+				console.log('Fetching post with Type:', type, 'and Title:', title);
+
 				try {
-					const fetchedPosts = await PostModel.find({ type }); // Rename the variable 'post' to 'fetchedPosts'
-					if (!fetchedPosts) {
+					const query: { type: string; title?: { $regex: string; $options: string } } = { type };
+					
+					if (title && title.trim() !== "") {
+						query.title = { $regex: title, $options: 'i' }; // 'i' for case-insensitive search
+					}
+
+					const fetchedPosts = await PostModel.find(query);
+					if (!fetchedPosts.length) {
 						return { status: 404, data: { message: 'Post not found' } };
 					}
-					return { status: 200, data: { message: 'Post retrieved successfully', post: fetchedPosts } }; // Update the variable name here as well
+					return { status: 200, data: { message: 'Post retrieved successfully', post: fetchedPosts } };
 				} catch (error) {
 					console.error('Error fetching post:', error);
 					return { status: 500, data: { message: 'Failed to fetch post' } };
@@ -67,5 +101,7 @@ function getPost() {
 			}),
 	};
 }
+
+
 
 export { createPost, getPost };
