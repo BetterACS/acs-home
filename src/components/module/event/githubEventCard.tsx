@@ -8,17 +8,17 @@ import { useRef } from 'react';
 
 export default function GitHubEventCard(props: GitHubRepoProps) {
 	const cardRef = useRef<any>();
-	const { title, fullName, avatar, description, language, stars, onClick } = props;
+	const { title, fullName, avatar, description, language, stars,userID,userAvatar, onClick } = props;
 
 	return (
 		<Card
 			ref={cardRef}
-			onClick={() => onClick?.(title, description, avatar, cardRef.current)}
+			onClick={() => onClick?.(title, description, avatar, cardRef.current, userAvatar)}
 			className="cursor-pointer scale-[98%] hover:scale-100 h-[318px] w-[381px] flex flex-col justify-evenly items-center drop-shadow-lg"
 		>
 			<div className="flex flex-row w-[320px]">
 				<Avatar className="w-[38px] h-[38px] mr-4 mt-2">
-					<AvatarImage src={avatar} alt="@shadcn" />
+					<AvatarImage src={userAvatar} alt="@shadcn" />
 					<AvatarFallback>Avatar</AvatarFallback>
 				</Avatar>
 				<div>

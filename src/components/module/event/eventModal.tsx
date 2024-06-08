@@ -17,7 +17,7 @@ const example_items: TagItem[] = [
 	{ value: '3', label: 'Three' },
 ];
 
-const EventModal = ({ handleClose, data }: any) => {
+const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack}: any) => {
 	const [title, setTitle] = useState('' as string);
 	const [dueDate, setDueDate] = useState<Date>(new Date(Date.now() + 24 * 60 * 60 * 1000)); // tomorrow
 	const [coin, setCoin] = useState<number>(0);
@@ -59,6 +59,11 @@ const EventModal = ({ handleClose, data }: any) => {
 			console.log('data.data._id:', data.data._id);
 			setId(data.data._id);
 			handleClose();
+			if (type!=='event_card') {
+				carouselCallBack();
+			}else{
+				eventCallBack();
+			}
 		},
 		onError: (error: any) => {
 			console.error('Error creating post:', error);

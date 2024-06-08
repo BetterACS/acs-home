@@ -7,8 +7,7 @@ import { EventCardPopupProps } from '@/types';
 import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-	const { avatar, name, title, description, setModalOpen } = props;
-
+	const { avatar, name, title, description, setModalOpen,coin,due_date } = props;
 	return (
 		<Backdrop onClick={() => {}}>
 			<motion.div
@@ -73,12 +72,12 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 						{/* Badges */}
 						<motion.div className="flex flex-row space-x-4">
 							<motion.div className="flex flex-row items-center space-x-2 rounded-md border-2 pl-2 pr-1 py-1">
-								<p>100</p>
+								<p>{coin}</p>
 								<Image src={'/coin.gif'} alt="avatar" width={32} height={32} />
 							</motion.div>
 							<motion.div className="flex flex-row items-center space-x-2 rounded-md border-2 pl-2 pr-1 py-1">
 								<p>Close in:</p>
-								<p>2 days</p>
+								<p>{due_date.toString()} days</p>
 							</motion.div>
 						</motion.div>
 
