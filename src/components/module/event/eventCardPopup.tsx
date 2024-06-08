@@ -59,7 +59,7 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 					</motion.div>
 
 					{/* Content */}
-					<motion.div className="mx-32 flex flex-col w-full h-full">
+					<motion.div className="px-32 flex flex-col w-full h-full">
 						<motion.p
 							className="mb-4"
 							initial={{ fontSize: '1.25rem' }}

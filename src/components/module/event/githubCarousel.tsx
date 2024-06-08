@@ -9,7 +9,6 @@ const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
 	const { onCardClick } = props;
-	//const { onCardClick } = props.onCardClick.clickPost;
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const [title, setTitle] = useState('');
