@@ -47,6 +47,7 @@ export default function GitHubCarousel(props: any) {
 				const query_data = query.result.data.data.data as User;
 				setData(query_data);
 				setName(query_data.display_name);
+				setAvatar(`https://cdn.discordapp.com/avatars/${query_data.discord_id}/${query_data.avatar}.png`);
 				console.log("display_name",query_data.display_name, "_id",_userID)
 			}
 		);
@@ -57,12 +58,9 @@ export default function GitHubCarousel(props: any) {
 		await LoaddataUser(_userID);
 		setTitle(_title);
 		setDescription(_description);
-		setAvatar(_avatar);
 		cardRef.current = ref;
 		setModalOpen(true);
 		onCardClick(id);
-		
-		
 	};
 
 	const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
