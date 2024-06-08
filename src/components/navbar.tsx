@@ -19,8 +19,6 @@ export default function Navbar({ isLoggedIn, data, setCurrentPage }: NavbarProps
 
 	return (
 		<div className="relative w-full flex items-center justify-center">
-			{/* <Navbars className="top-2" /> */}
-			{/* <p className="text-black dark:text-white">The Navbar will show on top of the page</p> */}
 			<div className="fixed top-6 inset-x-0 max-w-md mx-auto z-50 items-center">
 				<Menu setActive={setActive}>
 					<MenuItem
@@ -32,41 +30,13 @@ export default function Navbar({ isLoggedIn, data, setCurrentPage }: NavbarProps
 						}}
 					>
 						<div className="flex flex-col space-y-4 text-sm">
-							<HoveredLink href="/web-dev">Web Development</HoveredLink>
-							<HoveredLink href="/interface-design">Interface Design</HoveredLink>
-							<HoveredLink href="/seo">Search Engine Optimization</HoveredLink>
-							<HoveredLink href="/branding">Branding</HoveredLink>
+							<HoveredLink href="/web-dev">+ Create</HoveredLink>
 						</div>
 					</MenuItem>
-					<MenuItem
-						setActive={setActive}
-						active={active}
-						item="Shop"
-						onClick={() => {
-							setCurrentPage('shop');
-						}}
-					>
-						<div className="  text-sm grid grid-cols-2 gap-10 p-4">
-							<ProductItem
-								title="ACS Developer Shirt"
-								href=""
-								src="/shop_acsshirt.jpg"
-								description="A shirt for developer by developer"
-							/>
-							<ProductItem
-								title="Community Tools"
-								href=""
-								src="/shop_colab.jpg"
-								description="Get the tools to help you in your project"
-							/>
-						</div>
-					</MenuItem>
-					{/* <MenuItem setActive={setActive} active={active} item="Abouts">
-						<div className="flex flex-col space-y-4 text-sm">
-							<HoveredLink href="/project">Projects</HoveredLink>
-							<HoveredLink href="/teams">Teams</HoveredLink>
-						</div>
-					</MenuItem> */}
+
+					<div className="cursor-pointer" onClick={() => setCurrentPage('shop')}>
+						Shop
+					</div>
 					<div className="pl-6">
 						{isLoggedIn ? (
 							<div className="flex flex-row items-center ">
