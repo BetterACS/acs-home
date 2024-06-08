@@ -10,7 +10,7 @@ import { LoadingTemplate } from '@/components/module/loading/loadingGithubCard';
 const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
-	const { onCardClick, callBack, dependency, query_title_carousel } = props;
+	const { onCardClick, callBack, dependency, query_title_carousel,userData } = props;
 	const [modalOpen, setModalOpen] = useState(false);
 
 	const [title, setTitle] = useState('');
@@ -21,6 +21,7 @@ export default function GitHubCarousel(props: any) {
 	const [data, setData] = useState({} as User);
 	const [coin, setCoin] = useState(0);
 	const [due_date, setDueDate] = useState(0); // tomorrow
+	const [postID, setPostID] = useState('');
 	async function LoaddataUser(_userID: string) {
 		('use server');
 		await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: _userID }))}`).then(
@@ -55,6 +56,7 @@ export default function GitHubCarousel(props: any) {
 		const currentTimestamp = Date.now();
 		const differenceInMilliseconds = dueDateTimestamp - currentTimestamp;
 		setDueDate(Math.max(Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24)), 0));
+		setPostID(id);
 	};
 
 	const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
@@ -187,6 +189,8 @@ export default function GitHubCarousel(props: any) {
 					setModalOpen={setModalOpen}
 					coin={coin}
 					due_date={due_date}
+					postID={postID}
+					userData={userData}
 				/>
 			)}
 

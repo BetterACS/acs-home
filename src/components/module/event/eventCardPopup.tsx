@@ -7,7 +7,7 @@ import { EventCardPopupProps } from '@/types';
 import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-	const { avatar, name, title, description, setModalOpen,coin,due_date } = props;
+	const { avatar, name, title, description, setModalOpen,coin,due_date,postID,userData } = props;
 	return (
 		<Backdrop onClick={() => {}}>
 			<motion.div
@@ -86,7 +86,7 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 							<p>{description}</p>
 						</motion.div>
 
-						<CommentsElement className="mt-24" />
+						<CommentsElement className="mt-24" postID={postID} userData={userData}/>
 					</motion.div>
 				</div>
 			</motion.div>

@@ -100,6 +100,8 @@ interface EventCardPopupProps {
 	setModalOpen: (modalOpen: boolean) => void;
 	coin: number;
 	due_date: number;
+	postID: string;
+	userData: User;
 }
 
 export type {

@@ -116,6 +116,7 @@ export default function EventModule(props: BodyComponentProps) {
 						callBack={handleCarouselCallBack}
 						dependency={carouselDependency}
 						query_title_carousel={query_title_carousel}
+						userData={data}
 					/>
 				</div>
 				<div className="flex flex-col items-center">
@@ -142,6 +143,7 @@ export default function EventModule(props: BodyComponentProps) {
 										),
 										0
 									)}
+									user={data}
 								/>
 							);
 						})}

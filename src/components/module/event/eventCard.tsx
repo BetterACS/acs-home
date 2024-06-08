@@ -15,6 +15,7 @@ export default function EventCard(props: any) {
 		avatar = 'https://avatars.githubusercontent.com/u/66357924?v=4',
 		due_date,
 		coin,
+		user,
 	} = props;
 	const [modalOpen, setModalOpen] = useState(false);
 	const cardRef = useRef<any>();
@@ -36,6 +37,8 @@ export default function EventCard(props: any) {
 					setModalOpen={setModalOpen}
 					coin={coin}
 					due_date={due_date}
+					postID={id}
+					userData={user}
 				/>
 			)}
 			<Card
