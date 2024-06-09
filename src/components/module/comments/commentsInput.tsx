@@ -4,12 +4,16 @@ import { useEffect, useRef, useState, forwardRef, useMemo } from 'react';
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { set } from 'mongoose';
-// { onChange: (text: string) => void,postID:string,userID:string }
 
-function CommentInputTextArea({ onChange, postID, userID }: any) {
+const CommentInput = forwardRef((props: any, ref: any) => {
+	const { name, parent_id, postID, userData, setDependency, replyReference, setParentId } = props;
+	const isReply = useMemo(() => parent_id !== '', [parent_id]);
+	const [_id, setId] = useState('');
+
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [value, setValue] = useState('');
 	const [placeholder, setPlaceholder] = useState('Type your message here.');
+	// const replyReference = useRef<any>(replyRef);
 
 	useEffect(() => {
 		if (textAreaRef.current) {
@@ -17,45 +21,6 @@ function CommentInputTextArea({ onChange, postID, userID }: any) {
 			textAreaRef.current.style.height = textAreaRef.current.scrollHeight + 'px';
 		}
 	}, [value]);
-
-	const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		setValue(e.target.value);
-		onChange(e.target.value);
-	};
-
-	const onFocus = () => {
-		if (value === '') {
-			setPlaceholder('');
-		}
-	};
-
-	const onBlur = () => {
-		if (value === '') {
-			setPlaceholder('Type your message here.');
-		}
-	};
-
-	return (
-		<Textarea
-			className="text-md focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 border-0"
-			style={{ resize: 'none' }}
-			ref={textAreaRef}
-			placeholder={placeholder}
-			value={value}
-			onChange={handleOnChange}
-			onFocus={onFocus}
-			onBlur={onBlur}
-		/>
-	);
-}
-
-const CommentInput = forwardRef((props: any, ref: any) => {
-	const { name, parent_id, postID, userData, setDependency, replyReference, setParentId } = props;
-	const [value, setValue] = useState('');
-	const [placeholder, setPlaceholder] = useState('Type your message here.');
-	const isReply = useMemo(() => parent_id !== '', [parent_id]);
-	const [_id, setId] = useState('');
-	// const replyReference = useRef<any>(replyRef);
 
 	const mutation = trpc.createComment.useMutation({
 		onSuccess: (data) => {
@@ -87,12 +52,13 @@ const CommentInput = forwardRef((props: any, ref: any) => {
 		}
 		console.log('commentData', commentData);
 
+		setValue('');
 		const response = await mutation.mutate(commentData);
 	};
 
-	const handleOnChange = (value: string) => {
+	const handleOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		console.log('outer', value);
-		setValue(value);
+		setValue(e.target.value);
 	};
 
 	const onFocus = () => {
@@ -140,7 +106,17 @@ const CommentInput = forwardRef((props: any, ref: any) => {
 				/>
 				<p>{name}</p>
 			</div>
-			<CommentInputTextArea onChange={handleOnChange} postID={postID} userID={userData._id} />
+			{/* <CommentInputTextArea onChange={handleOnChange} postID={postID} userID={userData._id} /> */}
+			<Textarea
+				className="text-md focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0 border-0"
+				style={{ resize: 'none' }}
+				ref={textAreaRef}
+				placeholder={placeholder}
+				value={value}
+				onChange={handleOnChange}
+				onFocus={onFocus}
+				onBlur={onBlur}
+			/>
 			<div className="w-full flex flex-row justify-endz">
 				<Button onClick={handleSubmit} className="" color="blue">
 					Sent
