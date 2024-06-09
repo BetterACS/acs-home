@@ -72,13 +72,14 @@ interface GitHubRepoProps {
 	fullName: string;
 	avatar: string;
 	description: string;
+	userDescription: string;
 	language: string;
 	stars: number;
 	userID: mongoose.Types.ObjectId;
 	userAvatar: string;
 	onClick?: (_title: any, _description: any, _avatar: any, ref: any, _userAvatar: any) => void;
-	bookmark_status:boolean,
-	bookmark:Bookmark,
+	bookmark_status: boolean;
+	bookmark: Bookmark;
 	userData: User;
 	setBookMarkDependency: (bookMarkDependency: boolean) => void;
 }

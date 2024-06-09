@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useRef, forwardRef } from 'react';
+import { useRef, forwardRef, useMemo } from 'react';
 import Backdrop from '@/components/utils/backdrop';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -7,54 +7,60 @@ import { EventCardPopupProps } from '@/types';
 import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-    const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData, setCoinDependency: setMainCoinDependency, setCoinGithubDependency } = props;
-    console.log("event-card-type", typeof setCoinGithubDependency, "coin dependency", typeof setMainCoinDependency);
-    return (
-        <Backdrop onClick={() => {}}>
-            <motion.div
-                className="absolute rounded-lg border bg-card text-card-foreground shadow-sm my-2 overflow-x-hidden overflow-y-auto"
-                initial={{
-                    position: 'absolute',
-                    zIndex: 60,
-                    top: ref.current?.getBoundingClientRect().top,
-                    left: ref.current?.getBoundingClientRect().left,
-                    width: '590px',
-                    height: '10%',
-                }}
-                animate={{
-                    width: '1200px',
-                    height: '80%',
-                    borderRadius: '60px',
-                    top: '120px',
-                    left: '352.5px',
-                }}
-                exit={{ opacity: 0, scale: 0, transition: { duration: 0.25 } }}
-                transition={{ duration: 0.45, ease: 'easeIn' }}
-            >
-                <div className="flex flex-col w-full">
-                    <motion.div className="mt-24 mb-4 mx-32 flex flex-row justify-between items-center">
-                        <div className="space-x-4 flex flex-row items-center">
-                            <Avatar className="w-[40px] h-[40px]">
-                                <AvatarImage src={avatar} alt="@shadcn" />
-                                <AvatarFallback>Avatar</AvatarFallback>
-                            </Avatar>
-                            <p>{name}</p>
-                        </div>
-                        <motion.div
-                            className="rounded-full"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            onClick={() => setModalOpen(false)}
-                        >
-                            <Image
-                                src={'/close.gif'}
-                                alt="close-icon"
-                                width={28}
-                                height={28}
-                                className="bg-transparent hover:scale-110"
-                            />
-                        </motion.div>
-                    </motion.div>
+	const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData, setCoinDependency: setMainCoinDependency, setCoinGithubDependency } = props;
+	const windowSize = useMemo(
+		() => (window.innerWidth > 1800 ? 1200 : Math.floor(window.innerWidth * 0.7)),
+		[window.innerWidth]
+	);
+
+	return (
+		<Backdrop onClick={() => {}}>
+			<motion.div
+				className="absolute border bg-card text-card-foreground shadow-sm my-2"
+				initial={{
+					position: 'absolute',
+					zIndex: 60,
+					top: ref.current?.getBoundingClientRect().top,
+					left: ref.current?.getBoundingClientRect().left,
+
+					width: '590px',
+					height: '10%',
+				}}
+				animate={{
+					width: windowSize + 'px',
+					height: '80%',
+					borderRadius: '20px',
+					left: window.innerWidth / 2 - windowSize / 2 - 6, //#window.innerWidth / 2 - 606,
+					top: '18%',
+				}}
+				exit={{ opacity: 0, scale: 0, transition: { duration: 0.25 } }}
+				transition={{ duration: 0.45, ease: 'easeIn' }}
+			>
+				<div className="flex flex-col px-4 w-full h-full overflow-x-hidden overflow-y-auto">
+					{/* Header */}
+					<motion.div className="mt-24 mb-4 mx-32 flex flex-row justify-between items-center">
+						<div className="space-x-4 flex flex-row items-center">
+							<Avatar className="w-[40px] h-[40px]">
+								<AvatarImage src={avatar} alt="@shadcn" />
+								<AvatarFallback>Avatar</AvatarFallback>
+							</Avatar>
+							<p>{name}</p>
+						</div>
+						<motion.div
+							className="rounded-full"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							onClick={() => setModalOpen(false)}
+						>
+							<Image
+								src={'/close.gif'}
+								alt="close-icon"
+								width={28}
+								height={28}
+								className="bg-transparent hover:scale-110"
+							/>
+						</motion.div>
+					</motion.div>
 
                     <motion.div className="px-32 flex flex-col w-full h-full">
                         <motion.p
@@ -81,12 +87,12 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
                             <p>{description}</p>
                         </motion.div>
 
-                        <CommentsElement className="mt-24" postID={postID} userData={userData} setCoinDependency={setMainCoinDependency} postCoin={coin} setCoinGithubDependency={setCoinGithubDependency}/>
-                    </motion.div>
-                </div>
-            </motion.div>
-        </Backdrop>
-    );
+						<CommentsElement className="mt-8 pb-12" postID={postID} userData={userData} setCoinDependency={setMainCoinDependency} postCoin={coin} setCoinGithubDependency={setCoinGithubDependency} />
+					</motion.div>
+				</div>
+			</motion.div>
+		</Backdrop>
+	);
 });
 
 export default EventCardPopup;

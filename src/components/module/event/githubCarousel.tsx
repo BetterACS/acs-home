@@ -7,6 +7,9 @@ import { GitHubRepoProps, GitHubEventCardProps } from '@/types';
 import { Bookmark, User } from '@/database/models';
 import EventCardPopup from './eventCardPopup';
 import { LoadingTemplate } from '@/components/module/loading/loadingGithubCard';
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import Link from 'next/link';
 const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
@@ -14,7 +17,7 @@ export default function GitHubCarousel(props: any) {
     const [modalOpen, setModalOpen] = useState(false);
 
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState<any>('');
     const [avatar, setAvatar] = useState('');
     const [name, setName] = useState('');
     const cardRef = useRef<any>();
@@ -23,12 +26,8 @@ export default function GitHubCarousel(props: any) {
     const [due_date, setDueDate] = useState(0);
     const [postID, setPostID] = useState('');
     
-    const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
-    const [repos, setRepos] = useState<GitHubRepoProps[]>([]);
-    const [repoIsLoading, setRepoIsLoading] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
-    const [bookMarkDependency, setBookMarkDependency] = useState(false);
-    
+	const [repoGitHub, setRepoGitHub] = useState('');
+
     async function LoaddataUser(_userID: string) {
         await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: _userID }))}`).then(
             async (res) => {
@@ -41,92 +40,127 @@ export default function GitHubCarousel(props: any) {
         );
     }
 
-    const open = async (
-        id: any,
-        _title: any,
-        _description: any,
-        _avatar: any,
-        ref: any,
-        _userID: any,
-        coin: any,
-        due_date: any
-    ) => {
-        await LoaddataUser(_userID);
-        setTitle(_title);
-        setDescription(_description);
-        cardRef.current = ref;
-        setModalOpen(true);
-        onCardClick(id);
-        setCoin(coin);
-        const dueDateTimestamp = new Date(due_date).getTime();
-        const currentTimestamp = Date.now();
-        const differenceInMilliseconds = dueDateTimestamp - currentTimestamp;
-        setDueDate(Math.max(Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24)), 0));
-        setPostID(id);
-    };
+	const open = async (
+		id: any,
+		_title: any,
+		_description: any,
+		userDescription: any,
+		githubAvatar: any,
+		_avatar: any,
+		ref: any,
+		_userID: any,
+		coin: any,
+		due_date: any
+	) => {
+		await LoaddataUser(_userID);
+		setTitle(_title);
+		setDescription(
+			<div>
+				{userDescription}
+				<Link href={`https://github.com/${_description}`}>
+					<Card
+						className="mt-4 hover:scale-[105%] cursor-pointer h-[100px] w-[320px] flex flex-col justify-between p-4"
+						// onClick={}
+					>
+						<div className="flex flex-row justify-between">
+							<div className="mr-4 mt-2 w-[200px]">
+								<p className="text-[1.25rem] break-words ...">{_description}</p>
+							</div>
+							<Avatar className="w-[64px] h-[64px] rounded-lg">
+								<AvatarImage src={githubAvatar} alt="@shadcn" />
+								<AvatarFallback>Icon</AvatarFallback>
+							</Avatar>
+						</div>
+					</Card>
+				</Link>
+			</div>
+		);
+		// setRepoGitHub()
+		cardRef.current = ref;
+		setModalOpen(true);
+		onCardClick(id);
+		setCoin(coin);
+		const dueDateTimestamp = new Date(due_date).getTime();
+		const currentTimestamp = Date.now();
+		const differenceInMilliseconds = dueDateTimestamp - currentTimestamp;
+		setDueDate(Math.max(Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24)), 0));
+		setPostID(id);
+	};
 
-    // console.log("type of setCoinDependency CCCC", typeof setCoinGithubDependency, "type of mark CCCC", typeof setBookMarkDependency);
+	const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
+	const [repos, setRepos] = useState<GitHubRepoProps[]>([]);
+	const [repoIsLoading, setRepoIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
+	const [bookMarkDependency, setBookMarkDependency] = useState(false);
+	async function Loaddata() {
+		('use server');
+		await fetch(
+			`/api/trpc/getPost?input=${encodeURIComponent(
+				JSON.stringify({ type: 'github_carousel', title: query_title_carousel, user_id: userData._id })
+			)}`
+		).then(async (res) => {
+			const query = await res.json();
+			const query_data = query.result.data.data.post;
+			console.log('query_data_new_carousel', query_data);
+			setEvent(query_data);
+		});
+	}
 
-    async function Loaddata() {
-        await fetch(
-            `/api/trpc/getPost?input=${encodeURIComponent(
-                JSON.stringify({ type: 'github_carousel', title: query_title_carousel, user_id: userData._id })
-            )}`
-        ).then(async (res) => {
-            const query = await res.json();
-            const query_data = query.result.data.data.post;
-            console.log('query_data_new_carousel', query_data);
-            setEvent(query_data);
-        });
-    }
-
-    async function loadAllUserData(events: GitHubEventCardProps[]) {
-        if (events === undefined) {
-            return [];
-        }
-        if (events.length === 0) {
-            return [];
-        }
-        const userPromises = events.map(async (event) => {
-            const res = await fetch(
-                `/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
-            );
-            const query = await res.json();
-            const bookmarkRes = await fetch(`/api/trpc/getBookMark?input=${encodeURIComponent(JSON.stringify({ post_id: event._id, user_id: userData._id, type: 'github_carousel' }))}`);
-            const bookmarkQuery = await bookmarkRes.json();
-            return {
-                ...event,
-                user: query.result.data.data.data as User,
-                bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
-                bookmark: bookmarkQuery.result.data.data.bookmark as Bookmark
-            };
-        });
-        return Promise.all(userPromises);
-    }
+	async function loadAllUserData(events: GitHubEventCardProps[]) {
+		if (events === undefined) {
+			return [];
+		}
+		if (events.length === 0) {
+			return [];
+		}
+		const userPromises = events.map(async (event) => {
+			const res = await fetch(
+				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
+			);
+			const query = await res.json();
+			const bookmarkRes = await fetch(
+				`/api/trpc/getBookMark?input=${encodeURIComponent(
+					JSON.stringify({ post_id: event._id, user_id: userData._id, type: 'github_carousel' })
+				)}`
+			);
+			const bookmarkQuery = await bookmarkRes.json();
+			return {
+				...event,
+				user: query.result.data.data.data as User,
+				bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
+				bookmark: bookmarkQuery.result.data.data.bookmark as Bookmark,
+			};
+		});
+		return Promise.all(userPromises);
+	}
 
     const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
 
-    useEffect(() => {
-        async function fetchData() {
-            const data = await loadAllUserData(event);
+	useEffect(() => {
+		async function fetchData() {
+			const data = await loadAllUserData(event);
 
-            if (data.length > 0) {
-                const sortedData = data.sort((a, b) => {
-                    if (a.title < b.title) return -1;
-                    if (a.title > b.title) return 1;
-                    return 0;
-                });
+			if (data.length > 0) {
+				// Sort data by title
+				const sortedData = data.sort((a, b) => {
+					if (a.title < b.title) return -1;
+					if (a.title > b.title) return 1;
+					return 0;
+				});
 
-                setEventsWithUserData(sortedData);
-                console.log("sortedData", sortedData);
-                return;
-            }
+				setEventsWithUserData(sortedData);
+				console.log('sortedData', sortedData);
+				return;
+			}
 
-            setEventsWithUserData([404]);
-        }
+			setEventsWithUserData([404]);
+		}
 
-        fetchData();
-    }, [event]);
+		fetchData();
+	}, [event]);
+	// useEffect(() => {
+	// 	console.log('eventsWithUserData updated', eventsWithUserData);
+	// }, [eventsWithUserData]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -170,14 +204,15 @@ export default function GitHubCarousel(props: any) {
                         fullName: data.full_name,
                         avatar: data.owner.avatar_url,
                         description: data.description,
+						userDescription: event.description,
                         language: data.language,
                         stars: data.stargazers_count,
                         userID: event.user_id,
                         userAvatar: `https://cdn.discordapp.com/avatars/${event.user.discord_id}/${event.user.avatar}.png`,
-                        bookmark_status: event.bookmark_status,
-                        bookmark: event.bookmark,
-                        userData: userData,
-                        setBookMarkDependency: setBookMarkDependency,
+                        bookmark_status:  event.bookmark_status,
+                        bookmark:  event.bookmark,
+                        userData:  userData,
+                        setBookMarkDependency:  setBookMarkDependency,
                     } as GitHubRepoProps;
                     eventsArray.push(repo);
                 })
@@ -219,32 +254,36 @@ export default function GitHubCarousel(props: any) {
                 />
             )}
 
-            <Carousel className="w-[1200px] h-[318px] mx-[360px]">
-                <CarouselContent className="w-[1200px] h-[318px]">
-                    {repos.map((repo: GitHubRepoProps, index: number) => (
-                        <CarouselItem key={repo.id} className="basis-1/3">
-                            <GitHubEventCard
-                                {...repo}
-                                onClick={(_title: any, _description: any, _avatar: any, ref: any) =>
-                                    open(
-                                        repo.id,
-                                        _title,
-                                        _description,
-                                        _avatar,
-                                        ref,
-                                        repo.userID,
-                                        eventsWithUserData[index].coin_reward,
-                                        eventsWithUserData[index].due_date
-                                    )
-                                }
-                            />
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-            </Carousel>
-        </div>
-    );
+			<Carousel className="w-[1200px] h-[318px] mx-[360px]">
+				<CarouselContent className="w-[1200px] h-[318px]">
+					{/* Display no events found if there are no events else display nothing */}
+					{repos.map((repo: GitHubRepoProps, index: number) => (
+						<CarouselItem key={repo.id} className="basis-1/3">
+							<GitHubEventCard
+								{...repo}
+								onClick={(_title: any, _description: any, _avatar: any, ref: any) => {
+									open(
+										repo.id,
+										_title,
+										repo.fullName,
+										repo.userDescription,
+										repo.avatar,
+										_avatar,
+										ref,
+										repo.userID,
+										eventsWithUserData[index].coin_reward,
+										eventsWithUserData[index].due_date
+									);
+									// setRepoGitHubDescription(repo.fullName);
+								}}
+							/>
+						</CarouselItem>
+					))}
+				</CarouselContent>
+				<CarouselPrevious />
+				<CarouselNext />
+			</Carousel>
+		</div>
+	);
 }
 
