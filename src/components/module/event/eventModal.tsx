@@ -17,7 +17,7 @@ const example_items: TagItem[] = [
 	{ value: '3', label: 'Three' },
 ];
 
-const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack}: any) => {
+const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinDependency}: any) => {
 	const [title, setTitle] = useState('' as string);
 	const [dueDate, setDueDate] = useState<Date>(new Date(Date.now() + 24 * 60 * 60 * 1000)); // tomorrow
 	const [coin, setCoin] = useState<number>(0);
@@ -53,8 +53,24 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack}: any) =
 		setDescription(text);
 		console.log('description:', description);
 	};
-	const mutation = trpc.post.useMutation({
+
+
+
+	const coinMutation = trpc.editUserCoin.useMutation({
 		onSuccess: (data) => {
+			setCoinDependency(true);
+		},
+		onError: (error: any) => {
+			console.error('Error creating post:', error);
+			alert('Failed to create post');
+		},
+		onSettled: () => {
+			console.log('settled');
+		},
+	});
+
+	const mutation = trpc.post.useMutation({
+		onSuccess: async (data) => {
 			console.log('data:', data);
 			console.log('data.data._id:', data.data._id);
 			setId(data.data._id);
@@ -64,6 +80,7 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack}: any) =
 			}else{
 				eventCallBack();
 			}
+
 		},
 		onError: (error: any) => {
 			console.error('Error creating post:', error);
@@ -74,6 +91,11 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack}: any) =
 		},
 	});
 	const handleSubmit = async () => {
+		const currentCoin = data.coin;
+		if (currentCoin < coin) {
+			alert('You do not have enough coin');
+			return;
+		}
 		const postData = {
 			title: title,
 			description: description,
@@ -87,7 +109,13 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack}: any) =
 		console.log('dueDate Type:', typeof dueDate);
 
 		const response = await mutation.mutate(postData);
-		console.log('response:', response);
+
+		const coinData = {
+			_id: data._id,
+			newCoinValue: currentCoin-coin,
+		};
+
+		const coinResponse = await coinMutation.mutate(coinData)
 	};
 
 	return (

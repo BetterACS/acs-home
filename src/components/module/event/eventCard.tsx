@@ -22,6 +22,9 @@ export default function EventCard(props: any) {
 		bookmark_status,
 		bookmark,
 		setBookMarkDependency,
+		setCoinDependency,
+		setCoinGithubDependency,
+		coinGithubDependency
 	} = props;
 	const [modalOpen, setModalOpen] = useState(false);
 	const [isBookmark, setIsBookmark] = useState(bookmark_status);
@@ -79,7 +82,6 @@ export default function EventCard(props: any) {
 	});
 
 	const handleDelete = async () => {	
-		console.log("_________________",bookmark)
 		const bookmarkData = {
 			_id: bookmark._id,
 		};
@@ -120,6 +122,8 @@ export default function EventCard(props: any) {
 					due_date={due_date}
 					postID={id}
 					userData={user}
+					setCoinDependency={setCoinDependency}
+					setCoinGithubDependency={setCoinGithubDependency}
 				/>
 			)}
 			<Card

@@ -20,6 +20,7 @@ export default function App() {
 	const cookies = useCookies();
 	const [eventDependency, setEventDependency] = useState(false);
 	const [eventBookMarkDependency, setBookMarkDependency] = useState(false);
+	const [coinDependency, setCoinDependency] = useState(false);
 	const handleEventCallBack = () => {
 		setEventDependency((prev) => !prev);
 	};
@@ -52,6 +53,7 @@ export default function App() {
 				const query_data = query.result.data.data.data as User;
 				console.log('user', query_data);
 				setData(query_data);
+				console.log('data-from-page', data);
 			}
 		);
 	}
@@ -87,13 +89,15 @@ export default function App() {
 		const fetchData = async () => {
 			await Loaddata();
 			setIsLoading(false);
+			setCoinDependency(false)
 		};
 		fetchData();
-	}, [isfetch]);
+	}, [isfetch,coinDependency]);
 
 	useEffect(() => {
 		if (!data||isLoading) return;
 		const fetchData = async () => {
+			console.log("data-inLoadEvent",data)
 			await LoadEvent();
 			setBookMarkDependency(false);
 		};
@@ -126,6 +130,8 @@ export default function App() {
 					queryTitleEvent={queryTitleEvent}
 					setQueryTitleEvent={setQueryTitleEvent}
 					setBookMarkDependency={setBookMarkDependency}
+					setCoinDependency={setCoinDependency}
+					coinDependency={coinDependency}
 				/>
 			</div>
 			<Footer />

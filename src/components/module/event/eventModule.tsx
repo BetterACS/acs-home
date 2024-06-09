@@ -22,9 +22,11 @@ export default function EventModule(props: BodyComponentProps) {
 		queryTitleEvent,
 		setQueryTitleEvent,
 		setBookMarkDependency,
+		setCoinDependency,
+		coinDependency
 	} = props;
 	const query = trpc.useUtils();
-
+	const [coinGithubDependency, setCoinGithubDependency] = useState(false);
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
 			const userResult = await query.getUserBy_id.fetch({ _id: JSON.stringify(event.user_id).replace(/"/g, '') });
@@ -94,6 +96,9 @@ export default function EventModule(props: BodyComponentProps) {
 						data={data}
 						carouselCallBack={handleCarouselCallBack}
 						eventCallBack={handleEventCallBack}
+						setCoinDependency={setCoinDependency}
+						setCoinGithubDependency={setCoinGithubDependency}
+						coinGithubDependency={coinGithubDependency}
 					/>
 				)}
 			</AnimatePresence>
@@ -127,6 +132,10 @@ export default function EventModule(props: BodyComponentProps) {
 						dependency={carouselDependency}
 						query_title_carousel={query_title_carousel}
 						userData={data}
+						setCoinDependency={setCoinDependency}
+						setCoinGithubDependency={setCoinGithubDependency}
+						coinGithubDependency={coinGithubDependency}
+						coinDependency={coinDependency}
 					/>
 				</div>
 				<div className="flex flex-col items-center">
@@ -157,6 +166,7 @@ export default function EventModule(props: BodyComponentProps) {
 									bookmark_status={event.bookmark_status}
 									bookmark={event.bookmark}
 									setBookMarkDependency={setBookMarkDependency}
+									setCoinDependency={setCoinDependency}
 								/>
 							);
 						})}

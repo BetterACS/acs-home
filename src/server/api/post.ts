@@ -54,7 +54,7 @@ function getPost() {
 			.query(async ({ input }) => {
 				await connectDB();
 				const { type, title,user_id } = input;
-				console.log('userId',user_id);
+				console.log('postId',user_id);
 
 				try {
 					const query: { type: string; title?: { $regex: string; $options: string } } = { type };
@@ -85,4 +85,35 @@ function getPost() {
 	};
 }
 
-export { createPost, getPost };
+function editPostCoin() {
+    return {
+        editPostCoin: publicProcedure
+            .input(
+                z.object({
+                    _id: z.string(),
+                    newCoinValue: z.number(), // Assuming the new coin value is a number
+                })
+            )
+            .mutation(async ({ input }) => {
+                await connectDB();
+                const { _id, newCoinValue } = input;
+
+                try {
+                    const existingPost = await PostModel.findById(_id);
+                    if (!existingPost) {
+                        return { status: 404, data: { message: 'Post not found' } };
+                    }
+                    // Update the post's coin value
+                    existingPost.coin_reward = newCoinValue;
+                    await existingPost.save();
+
+                    return { status: 200, data: { message: 'Coin value updated successfully', data: existingPost } };
+                } catch (error) {
+                    console.error('Error updating post coin:', error);
+                    return { status: 500, data: { message: 'Failed to update coin value' } };
+                }
+            }),
+    };
+}
+
+export { createPost, getPost,editPostCoin };

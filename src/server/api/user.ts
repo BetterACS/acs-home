@@ -59,5 +59,36 @@ function getUserBy_id() {
 			}),
 	};
 }
+function editUserCoin() {
+    return {
+        editUserCoin: publicProcedure
+            .input(
+                z.object({
+                    _id: z.string(),
+                    newCoinValue: z.number(), // Assuming the new coin value is a number
+                })
+            )
+            .mutation(async ({ input }) => {
+                await connectDB();
+                const { _id, newCoinValue } = input;
 
-export { getUser, getUserBy_id };
+                try {
+                    const existingUser = await UserModel.findById(_id);
+                    if (!existingUser) {
+                        return { status: 404, data: { message: 'User not found' } };
+                    }
+
+                    // Update the user's coin value
+                    existingUser.coin = newCoinValue;
+                    await existingUser.save();
+
+                    return { status: 200, data: { message: 'Coin value updated successfully', data: existingUser } };
+                } catch (error) {
+                    console.error('Error updating user coin:', error);
+                    return { status: 500, data: { message: 'Failed to update coin value' } };
+                }
+            }),
+    };
+}
+
+export { getUser, getUserBy_id,editUserCoin };

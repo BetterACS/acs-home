@@ -31,6 +31,8 @@ interface BodyComponentProps extends WebComponentProps {
 	queryTitleEvent: string;
 	setQueryTitleEvent: (title: string) => void;
 	setBookMarkDependency: (bookMarkDependency: boolean) => void;
+	setCoinDependency: (coinDependency: boolean) => void;
+	coinDependency: boolean;
 }
 
 interface SequentialComponentsProps<T> {
@@ -108,6 +110,8 @@ interface EventCardPopupProps {
 	due_date: number;
 	postID: string;
 	userData: User;
+	setCoinDependency: (coinDependency: boolean) => void;
+	setCoinGithubDependency: (coinGithubDependency: boolean) => void;
 }
 
 export type {
