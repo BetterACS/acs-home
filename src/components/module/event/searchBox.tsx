@@ -2,16 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Meteors } from '@/components/ui/meteors';
-import { Search } from 'lucide-react';
-// import logo from '../assets/search.gif';
 import Image from 'next/image';
-
-interface MultiFunctionButtonProps {
-	children: React.ReactNode;
-	width: number;
-	icon?: React.ReactNode;
-	onClick?: () => void;
-}
 
 import { PlaceholdersAndVanishInput } from '@/components/ui/placeholder';
 
@@ -43,7 +34,7 @@ export function PlaceholdersAndVanishInputDemo({
 		setQueryTitleCarousel(value);
 	};
 	return (
-		<div className="flex flex-row items-center space-x-4 w-full">
+		<div className="flex flex-row items-center space-x-4 w-full jusitfy-stretch">
 			<div className="rounded-full bg-blue-500 w-12 h-12 flex flex-col items-center justify-center">
 				<Image src={'/search-white.gif'} alt="search-icon" width={30} height={30} className="bg-transparent" />
 			</div>
@@ -62,7 +53,7 @@ export default function SearchBox(props: any) {
 			exit={{ scaleY: 0 }}
 		>
 			<button
-				className="rounded-2xl text-2xl w-[477px] h-[104px] relative overflow-hidden border border-blue-500 bg-blue-500 text-white transition-all hover: transform hover:scale-105"
+				className="rounded-2xl text-2xl w-[360px] h-[84px] relative overflow-hidden border border-blue-500 bg-blue-500 text-white transition-all hover: transform hover:scale-105"
 				onClick={setModalOpen}
 			>
 				<div className="relative z-10 flex flex-row items-center justify-center">
@@ -71,7 +62,7 @@ export default function SearchBox(props: any) {
 				</div>
 				<Meteors className="bg-white" />
 			</button>
-			<div className="w-[685px] rounded-full bg-white p-2 flex flex-row items-center shadow-md">
+			<div className="flex flex-row rounded-full bg-white p-2 items-center shadow-md w-[820px]">
 				<PlaceholdersAndVanishInputDemo
 					setQueryTitleEvent={setQueryTitleEvent}
 					setQueryTitleCarousel={setQueryTitleCarousel}

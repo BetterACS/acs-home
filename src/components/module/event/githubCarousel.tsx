@@ -113,13 +113,11 @@ export default function GitHubCarousel(props: any) {
 		fetchData();
 	}, [event]);
 
-	useEffect(() => {
-		console.log('eventsWithUserData updated', eventsWithUserData);
-	}, [eventsWithUserData]);
+	// useEffect(() => {
+	// 	console.log('eventsWithUserData updated', eventsWithUserData);
+	// }, [eventsWithUserData]);
 
 	useEffect(() => {
-		if (isLoading) {
-		}
 		const fetchData = async () => {
 			await Loaddata();
 			setIsLoading(false);
@@ -141,6 +139,8 @@ export default function GitHubCarousel(props: any) {
 			if (eventsWithUserData[0] === 404) {
 				console.log('No events found');
 				setRepos([]);
+				setRepoIsLoading(false);
+				setIsLoading(false);
 				return;
 			}
 			await Promise.all(
@@ -166,14 +166,19 @@ export default function GitHubCarousel(props: any) {
 			);
 			setRepos(eventsArray);
 			setRepoIsLoading(false);
+			setIsLoading(false);
 		}
 	};
 
-	if (isLoading) {
-		return <LoadingTemplate />;
-	}
-
-	if (repoIsLoading) {
+	if (
+		repos.length === 0 &&
+		eventsWithUserData.length === 1 &&
+		!repoIsLoading &&
+		!isLoading &&
+		eventsWithUserData[0] === 404
+	) {
+		return <div className="text-lg text-white">No Github events found</div>;
+	} else if (isLoading || repoIsLoading) {
 		return <LoadingTemplate />;
 	}
 
@@ -194,36 +199,32 @@ export default function GitHubCarousel(props: any) {
 				/>
 			)}
 
-			{repos.length === 0 && !repoIsLoading && !isLoading ? (
-				<div className="text-lg text-white">No Github events found</div>
-			) : (
-				<Carousel className="w-[1200px] h-[318px] mx-[360px]">
-					<CarouselContent className="w-[1200px] h-[318px]">
-						{/* Display no events found if there are no events else display nothing */}
-						{repos.map((repo: GitHubRepoProps, index: number) => (
-							<CarouselItem key={repo.id} className="basis-1/3">
-								<GitHubEventCard
-									{...repo}
-									onClick={(_title: any, _description: any, _avatar: any, ref: any) =>
-										open(
-											repo.id,
-											_title,
-											_description,
-											_avatar,
-											ref,
-											repo.userID,
-											eventsWithUserData[index].coin_reward,
-											eventsWithUserData[index].due_date
-										)
-									}
-								/>
-							</CarouselItem>
-						))}
-					</CarouselContent>
-					<CarouselPrevious />
-					<CarouselNext />
-				</Carousel>
-			)}
+			<Carousel className="w-[1200px] h-[318px] mx-[360px]">
+				<CarouselContent className="w-[1200px] h-[318px]">
+					{/* Display no events found if there are no events else display nothing */}
+					{repos.map((repo: GitHubRepoProps, index: number) => (
+						<CarouselItem key={repo.id} className="basis-1/3">
+							<GitHubEventCard
+								{...repo}
+								onClick={(_title: any, _description: any, _avatar: any, ref: any) =>
+									open(
+										repo.id,
+										_title,
+										_description,
+										_avatar,
+										ref,
+										repo.userID,
+										eventsWithUserData[index].coin_reward,
+										eventsWithUserData[index].due_date
+									)
+								}
+							/>
+						</CarouselItem>
+					))}
+				</CarouselContent>
+				<CarouselPrevious />
+				<CarouselNext />
+			</Carousel>
 		</div>
 	);
 }
