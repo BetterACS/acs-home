@@ -1,5 +1,6 @@
 import { trpc } from '@/app/_trpc/client';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { User } from '@/database/models';
 import Image from 'next/image';
 import { useState } from 'react';
 
@@ -47,14 +48,27 @@ export default function GiveCoinButton(props:any) {
 			// setCoinGithubDependency(true);
 		},
 		onError: (error: any) => {
-			console.error('Error creating post:', error);
-			alert('Failed to create post');
+			console.error('Failed to pay:', error);
+			alert('Failed to pay');
+		},
+		onSettled: () => {
+			console.log('settled');
+		},
+	});
+	const coinMutation = trpc.editUserCoin.useMutation({
+		onSuccess: (data) => {
+			
+		},
+		onError: (error: any) => {
+			console.error('Failed to pay to payee:', error);
+			alert('Failed to pay to payee');
 		},
 		onSettled: () => {
 			console.log('settled');
 		},
 	});
 
+	const query = trpc.useUtils();
 	const onClickcoin = async (coin:number) => {
 		const currentCoin = postCoin;
 		if (currentCoin < coin) {
@@ -72,6 +86,19 @@ export default function GiveCoinButton(props:any) {
 		console.log('coinData', coin);
 		
 		const response = await mutation.mutate(coinData);
+
+		const userResult = await query.getUserBy_id.fetch({ _id: JSON.stringify(user_id_foreign_comment).replace(/"/g, '') });
+		const userPayee = userResult.data.data as User;
+		// console.log('userPayee', userPayee);
+		// console.log('userPayee.coin', userPayee.coin);
+		// console.log('userResult', userResult);
+		const coinAddData = {
+			_id: user_id_foreign_comment,
+			newCoinValue: (userPayee?.coin || 0) + coin,
+		};
+
+		const coinResponse = await coinMutation.mutate(coinAddData)
+		
 	};
 	return (
 		<HoverCard>
