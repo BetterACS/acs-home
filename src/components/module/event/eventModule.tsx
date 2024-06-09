@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import EventModal from './eventModal';
 import GitHubCarousel from './githubCarousel';
 import { Bookmark, User } from '@/database/models';
+import { trpc } from '@/app/_trpc/client';
 
 export default function EventModule(props: BodyComponentProps) {
 	const {
@@ -22,25 +23,26 @@ export default function EventModule(props: BodyComponentProps) {
 		setQueryTitleEvent,
 		setBookMarkDependency,
 	} = props;
+	const query = trpc.useUtils();
 
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
-			const res = await fetch(
-				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
-			);
-			const query = await res.json();
+			const userResult = await query.getUserBy_id.fetch({ _id: JSON.stringify(event.user_id).replace(/"/g, '') });
+			const bookmarkResult = await query.getBookMark.fetch({
+				post_id: event._id,
+				user_id: data._id,
+				type: 'event_card',
+			});
 
-			const bookmarkRes = await fetch(`/api/trpc/getBookMark?input=${encodeURIComponent(JSON.stringify({ post_id: event._id, user_id: data._id, type: 'event_card'}))}`);
-			const bookmarkQuery = await bookmarkRes.json();
-			if(bookmarkQuery.result.data.status === 200) {
-				console.log('bookmarkQuery', bookmarkQuery)
-				console.log('bookmarkQuery.data', bookmarkQuery.result.data.data.bookmark as Bookmark)
-				;}
+			if (bookmarkResult.status === 200) {
+				console.log('bookmarkQuery', bookmarkResult);
+				console.log('bookmarkQuery.data', bookmarkResult.data.bookmark as Bookmark);
+			}
 			return {
 				...event,
-				user: query.result.data.data.data as User,
-				bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
-				bookmark:bookmarkQuery.result.data.data.bookmark as Bookmark
+				user: userResult.data.data as User,
+				bookmark_status: bookmarkResult.status === 200 ? true : false,
+				bookmark: bookmarkResult.data.bookmark as Bookmark,
 			};
 		});
 		return Promise.all(userPromises);
@@ -64,14 +66,7 @@ export default function EventModule(props: BodyComponentProps) {
 
 	const clickPost = (id: number) => {
 		console.log('clickPost', id);
-		// console.log('clickPost', id, '#event-' + id.toString());
-		// setCurrentPage('#event-' + id.toString());
 	};
-
-	function getEventFromEventString(eventString: string): EventCardProps | undefined {
-		const id = parseInt(eventString.split('-')[1]);
-		return events.find((event) => event._id === id);
-	}
 
 	useEffect(() => {
 		if (modalOpen) {
@@ -165,24 +160,9 @@ export default function EventModule(props: BodyComponentProps) {
 								/>
 							);
 						})}
-						{/* <EventCard id={0} title="event1" description="desc1" onChildClick={clickPost} />
-							<EventCard id={1} title="event2" description="desc2" onChildClick={clickPost} />
-							<EventCard id={2} title="event3" description="desc3" onChildClick={clickPost} />
-							<EventCard id={3} title="event4" description="desc4" onChildClick={clickPost} /> */}
 					</div>
-					{/* <HoverEffect items={requests} onCardClick={clickPost} /> */}
 				</div>
 			</motion.div>
-			{/* Event Card Post */}
-			{/* <AnimatePresence initial={false} mode="wait">
-				{currentPage.includes('#event-') && (
-					<EventCardPost
-						currentPage={currentPage}
-						setCurrentPage={setCurrentPage}
-						event={getEventFromEventString(currentPage)}
-					/>
-				)}
-			</AnimatePresence>{' '} */}
 		</motion.div>
 	);
 }

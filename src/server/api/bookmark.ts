@@ -1,8 +1,7 @@
-import { BookmarkModel} from '@/database/models';
+import { BookmarkModel } from '@/database/models';
 import { connectDB } from '@/server/db';
 import { z } from 'zod';
 import { publicProcedure } from '../trpc';
-import exp from 'constants';
 
 function createBookMark() {
 	return {
@@ -15,11 +14,11 @@ function createBookMark() {
 			)
 			.mutation(async ({ input }) => {
 				await connectDB();
-				const { post_id, user_id} = input;
+				const { post_id, user_id } = input;
 				try {
 					// Create the bookmark object dynamically
-					const bookmarkData: { post_id: string; user_id:string } = { post_id, user_id};
-				
+					const bookmarkData: { post_id: string; user_id: string } = { post_id, user_id };
+
 					const newBookMark = new BookmarkModel(bookmarkData);
 					const savedBookMark = await newBookMark.save();
 					return { status: 200, data: { message: 'success to create bookmark', _id: savedBookMark._id } };
@@ -27,7 +26,7 @@ function createBookMark() {
 					console.error('Error to create bookmark:', error);
 					return { status: 500, data: { message: 'Fail to create bookmark', _id: '' } };
 				}
-			}),	
+			}),
 	};
 }
 
@@ -65,8 +64,7 @@ function createBookMark() {
 //     };
 //   }
 
-
-  function getBookMark() {
+function getBookMark() {
 	return {
 		getBookMark: publicProcedure
 			.input(
@@ -81,16 +79,15 @@ function createBookMark() {
 				const { post_id, user_id, type } = input;
 				// console.log('Fetching bookmark with Post ID:', post_id, 'User ID:', user_id, 'and Type:', type);
 				try {
-
-					const bookmark = await BookmarkModel.findOne({ post_id, user_id}).populate('post_id');
-                    console.log('query_', bookmark)
+					const bookmark = await BookmarkModel.findOne({ post_id, user_id }).populate('post_id');
+					console.log('query_', bookmark);
 					if (!bookmark) {
-						return { status: 404, data: { message: 'Bookmark not found', post: null } };
+						return { status: 404, data: { message: 'Bookmark not found', bookmark: null, post: null } };
 					}
-					return { status: 200, data: { message: 'Bookmark found', bookmark } };
+					return { status: 200, data: { message: 'Bookmark found', bookmark: bookmark, post: null } };
 				} catch (error) {
 					console.error('Error retrieving bookmark:', error);
-					return { status: 500, data: { message: 'Fail to retrieve bookmark', post: null } };
+					return { status: 500, data: { message: 'Fail to retrieve bookmark', bookmark: null, post: null } };
 				}
 			}),
 	};
@@ -121,4 +118,4 @@ function deleteBookMark() {
 	};
 }
 
-export { createBookMark, getBookMark, deleteBookMark };
+export { createBookMark, deleteBookMark, getBookMark };
