@@ -3,6 +3,7 @@ import CommentInput from './commentsInput';
 import { Comment } from '@/database/models';
 import { motion, useAnimationControls } from 'framer-motion';
 import { cn } from '@/components/utils/ui';
+import GiveCoinButton from './giveCoinButton';
 // function Component() {
 // 	const controls = useAnimationControls();
 
@@ -50,7 +51,8 @@ function CommentComponent(props: any) {
 			<div className="py-2">{comment_text}</div>
 			{onReply !== undefined ? (
 				<div className="flex flex-row items-center space-x-2">
-					<div className="py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer">Give</div>
+					{/* <div className="py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer">Give</div> */}
+					<GiveCoinButton />
 					<div
 						className={cn('py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer')}
 						onClick={() => onReply(_id)}
