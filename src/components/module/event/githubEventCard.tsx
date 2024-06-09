@@ -11,7 +11,7 @@ import { trpc } from '@/app/_trpc/client';
 
 export default function GitHubEventCard(props: GitHubRepoProps) {
 	const cardRef = useRef<any>();
-	const { id,title, fullName, avatar, description, language, stars, userID, userAvatar, onClick ,bookmark_status,bookmark,userData,setBookMarkDependency} = props;
+	const { id, title, fullName, avatar, description, language, stars, userID, userAvatar, onClick, bookmark_status, bookmark, userData, setBookMarkDependency, isLoggedIn } = props;
 	const [isBookmark, setIsBookmark] = useState(bookmark_status);
 
 	const [dependency, setDependency] = useState(false);
@@ -57,8 +57,8 @@ export default function GitHubEventCard(props: GitHubRepoProps) {
 		},
 	});
 
-	const handleDelete = async () => {	
-		console.log('bookmark', bookmark)
+	const handleDelete = async () => {
+		console.log('bookmark', bookmark);
 		const bookmarkData = {
 			_id: bookmark._id,
 		};
@@ -68,9 +68,9 @@ export default function GitHubEventCard(props: GitHubRepoProps) {
 		const response = await mutationDelete.mutate(bookmarkData);
 	};
 
-	const bookmarkButton = async (e:any) => {
+	const bookmarkButton = async (e: any) => {
 		e.stopPropagation();
-	
+
 		if (isBookmark) {
 			console.log('Unbookmark');
 			await handleDelete();
@@ -81,7 +81,7 @@ export default function GitHubEventCard(props: GitHubRepoProps) {
 			setIsBookmark(true);
 			console.log('State set to bookmark');
 		}
-		console.log("Bookmark function called");
+		console.log('Bookmark function called');
 	};
 
 	return (
@@ -101,23 +101,25 @@ export default function GitHubEventCard(props: GitHubRepoProps) {
 					</div>
 				</div>
 				<div className="mt-1 cursor-pointer" onClick={bookmarkButton}>
-					{isBookmark ? (
-						<Image
-							className="hover:scale-[114%]"
-							alt="bookmark"
-							src={bookmarkImage}
-							width={36}
-							height={36}
-							priority
-						/>
-					) : (
-						<Image
-							className="hover:scale-[114%]"
-							alt="bookmark"
-							src={'/bookmark.png'}
-							width={36}
-							height={36}
-						/>
+					{isLoggedIn && (
+						isBookmark ? (
+							<Image
+								className="hover:scale-[114%]"
+								alt="bookmark"
+								src={bookmarkImage}
+								width={36}
+								height={36}
+								priority
+							/>
+						) : (
+							<Image
+								className="hover:scale-[114%]"
+								alt="bookmark"
+								src={'/bookmark.png'}
+								width={36}
+								height={36}
+							/>
+						)
 					)}
 				</div>
 			</div>

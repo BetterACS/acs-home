@@ -13,7 +13,7 @@ import Link from 'next/link';
 const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
-    const { onCardClick, callBack, dependency, query_title_carousel, userData, setCoinDependency: setMainCoinDependency,coinGithubDependency,setCoinGithubDependency,coinDependency } = props;
+    const { onCardClick, callBack, dependency, query_title_carousel, userData, setCoinDependency: setMainCoinDependency,coinGithubDependency,setCoinGithubDependency,coinDependency ,isLoggedIn} = props;
     const [modalOpen, setModalOpen] = useState(false);
 
     const [title, setTitle] = useState('');
@@ -25,7 +25,7 @@ export default function GitHubCarousel(props: any) {
     const [coin, setCoin] = useState(0);
     const [due_date, setDueDate] = useState(0);
     const [postID, setPostID] = useState('');
-    
+    const [user_id_foreign, setUser_id_foreign] = useState(''); 
 	const [repoGitHub, setRepoGitHub] = useState('');
 
     async function LoaddataUser(_userID: string) {
@@ -50,7 +50,8 @@ export default function GitHubCarousel(props: any) {
 		ref: any,
 		_userID: any,
 		coin: any,
-		due_date: any
+		due_date: any,
+		user_id_foreign: any
 	) => {
 		await LoaddataUser(_userID);
 		setTitle(_title);
@@ -85,6 +86,7 @@ export default function GitHubCarousel(props: any) {
 		const differenceInMilliseconds = dueDateTimestamp - currentTimestamp;
 		setDueDate(Math.max(Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24)), 0));
 		setPostID(id);
+		setUser_id_foreign(user_id_foreign);
 	};
 
 	const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
@@ -96,7 +98,7 @@ export default function GitHubCarousel(props: any) {
 		('use server');
 		await fetch(
 			`/api/trpc/getPost?input=${encodeURIComponent(
-				JSON.stringify({ type: 'github_carousel', title: query_title_carousel, user_id: userData._id })
+				JSON.stringify({ type: 'github_carousel', title: query_title_carousel, user_id: userData?._id })
 			)}`
 		).then(async (res) => {
 			const query = await res.json();
@@ -118,18 +120,33 @@ export default function GitHubCarousel(props: any) {
 				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
 			);
 			const query = await res.json();
-			const bookmarkRes = await fetch(
-				`/api/trpc/getBookMark?input=${encodeURIComponent(
-					JSON.stringify({ post_id: event._id, user_id: userData._id, type: 'github_carousel' })
-				)}`
-			);
-			const bookmarkQuery = await bookmarkRes.json();
-			return {
-				...event,
-				user: query.result.data.data.data as User,
-				bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
-				bookmark: bookmarkQuery.result.data.data.bookmark as Bookmark,
-			};
+			let bookmarkRes;
+			if (isLoggedIn){
+				bookmarkRes = await fetch(
+					`/api/trpc/getBookMark?input=${encodeURIComponent(
+						JSON.stringify({ post_id: event._id, user_id: userData._id, type: 'github_carousel' })
+					)}`
+				);
+				const bookmarkQuery = await bookmarkRes.json();
+				return {
+					...event,
+					user: query.result.data.data.data as User,
+					bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
+					bookmark: bookmarkQuery.result.data.data.bookmark as Bookmark,
+				};
+			}else{
+				bookmarkRes = await fetch(
+					`/api/trpc/getBookMark?input=${encodeURIComponent(
+						JSON.stringify({ post_id: event._id, type: 'github_carousel' })
+					)}`
+				);
+				const bookmarkQuery = await bookmarkRes.json();
+				return {
+					...event,
+					user: query.result.data.data.data as User,
+				};
+			}
+			
 		});
 		return Promise.all(userPromises);
 	}
@@ -212,6 +229,7 @@ export default function GitHubCarousel(props: any) {
                         bookmark_status:  event.bookmark_status,
                         bookmark:  event.bookmark,
                         userData:  userData,
+						isLoggedIn: isLoggedIn,
                         setBookMarkDependency:  setBookMarkDependency,
                     } as GitHubRepoProps;
                     eventsArray.push(repo);
@@ -251,6 +269,8 @@ export default function GitHubCarousel(props: any) {
                     userData={userData}
                     setCoinDependency={setMainCoinDependency}
                     setCoinGithubDependency={setCoinGithubDependency}
+					user_id_foreign={user_id_foreign}
+					isLoggedIn={isLoggedIn}
                 />
             )}
 
@@ -272,7 +292,8 @@ export default function GitHubCarousel(props: any) {
 										ref,
 										repo.userID,
 										eventsWithUserData[index].coin_reward,
-										eventsWithUserData[index].due_date
+										eventsWithUserData[index].due_date,
+										eventsWithUserData[index].user_id
 									);
 									// setRepoGitHubDescription(repo.fullName);
 								}}

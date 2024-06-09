@@ -48,7 +48,7 @@ function getPost() {
 				z.object({
 					type: z.string(),
 					title: z.string().optional(),
-					user_id: z.string()
+					user_id: z.string().optional(),
 				})
 			)
 			.query(async ({ input }) => {

@@ -7,7 +7,7 @@ import { EventCardPopupProps } from '@/types';
 import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-	const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData, setCoinDependency: setMainCoinDependency, setCoinGithubDependency } = props;
+	const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData, setCoinDependency: setMainCoinDependency, setCoinGithubDependency,user_id_foreign,isLoggedIn} = props;
 	const windowSize = useMemo(
 		() => (window.innerWidth > 1800 ? 1200 : Math.floor(window.innerWidth * 0.7)),
 		[window.innerWidth]
@@ -87,7 +87,7 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
                             <p>{description}</p>
                         </motion.div>
 
-						<CommentsElement className="mt-8 pb-12" postID={postID} userData={userData} setCoinDependency={setMainCoinDependency} postCoin={coin} setCoinGithubDependency={setCoinGithubDependency} />
+						<CommentsElement className="mt-8 pb-12" postID={postID} userData={userData} setCoinDependency={setMainCoinDependency} postCoin={coin} setCoinGithubDependency={setCoinGithubDependency} user_id_foreign={user_id_foreign} isLoggedIn={isLoggedIn}/>
 					</motion.div>
 				</div>
 			</motion.div>

@@ -61,9 +61,10 @@ export default function App() {
 
 	async function LoadEvent() {
 		('use server');
+		if (isLoggedIn){
 		await fetch(
 			`/api/trpc/getPost?input=${encodeURIComponent(
-				JSON.stringify({ type: 'event_card', title: queryTitleEvent ,user_id:data._id})
+				JSON.stringify({ type: 'event_card', title: queryTitleEvent ,user_id:data?._id})
 			)}`
 		).then(async (res) => {
 			const query = await res.json();
@@ -71,7 +72,21 @@ export default function App() {
 			// console.log("query2 err",query.error.message)
 			const query_data = query.result.data.data.post;
 			setEvents(query_data);
-		});
+		});}else{
+			await fetch(
+				`/api/trpc/getPost?input=${encodeURIComponent(
+					JSON.stringify({ type: 'event_card', title: queryTitleEvent })
+				)}`
+			).then(async (res) => {
+				const query = await res.json();
+				console.log("query2",query)
+				// console.log("query2 err",query.error.message)
+				const query_data = query.result.data.data.post;
+			
+				setEvents(query_data);
+			});
+		
+		}
 	}
 
 	useEffect(() => {
@@ -95,7 +110,7 @@ export default function App() {
 	}, [isfetch,coinDependency]);
 
 	useEffect(() => {
-		if (!data||isLoading) return;
+		if (isLoading) return;
 		const fetchData = async () => {
 			console.log("data-inLoadEvent",data)
 			await LoadEvent();

@@ -33,7 +33,7 @@ import GiveCoinButton from './giveCoinButton';
 // ];
 
 function CommentComponent(props: any) {
-	const { _id, comment_text, parent_id, onReply, comments, user_id, className,setCoinDependency,userData,postCoin,postID,setCoinGithubDependency } = props;
+	const { _id, comment_text, parent_id, onReply, comments, user_id, className,setCoinDependency,userData,postCoin,postID,setCoinGithubDependency,user_id_foreign,isLoggedIn } = props;
 
 	return (
 		<div className={className}>
@@ -52,13 +52,13 @@ function CommentComponent(props: any) {
 			{onReply !== undefined ? (
 				<div className="flex flex-row items-center space-x-2">
 					{/* <div className="py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer">Give</div> */}
-					<GiveCoinButton setCoinDependency={setCoinDependency} userData={userData} postCoin={postCoin} postID={postID} setCoinGithubDependency={setCoinGithubDependency}/>
-					<div
+					<GiveCoinButton setCoinDependency={setCoinDependency} userData={userData} postCoin={postCoin} postID={postID} setCoinGithubDependency={setCoinGithubDependency} user_id_foreign={user_id_foreign} isLoggedIn={isLoggedIn} user_id_foreign_comment={user_id._id}/>
+					{isLoggedIn&&<div
 						className={cn('py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer')}
 						onClick={() => onReply(_id)}
 					>
 						Reply
-					</div>
+					</div>}
 				</div>
 			) : null}
 		</div>
@@ -66,7 +66,7 @@ function CommentComponent(props: any) {
 }
 
 const CommentBlock = forwardRef((props: any, ref: any) => {
-	const { _id, comment_text, parent_id, onReply, comments, user_id,setCoinDependency,userData,postID, postCoin,setCoinGithubDependency} = props;
+	const { _id, comment_text, parent_id, onReply, comments, user_id,setCoinDependency,userData,postID, postCoin,setCoinGithubDependency,user_id_foreign,isLoggedIn} = props;
 	const [isToggle, setToggle] = useState(true);
 	const placeholder = useMemo(() => (isToggle ? 'Hide replies' : 'See replies'), [isToggle]);
 	const animation = useAnimationControls();
@@ -91,7 +91,7 @@ const CommentBlock = forwardRef((props: any, ref: any) => {
 				<div>
 					<div className="relative flex flex-row py-2">
 						<div className="border-l-[5px] border-gray-200"></div>
-						<CommentComponent className="pl-6 text-gray-400 mb-2" {...parent_id} onReply={undefined} setCoinDependency={setCoinDependency} userData={userData} postCoin={postCoin} postID={postID} setCoinGithubDependency={setCoinGithubDependency}/>
+						<CommentComponent className="pl-6 text-gray-400 mb-2" {...parent_id} onReply={undefined} setCoinDependency={setCoinDependency} userData={userData} postCoin={postCoin} postID={postID} setCoinGithubDependency={setCoinGithubDependency} user_id_foreign={user_id_foreign} isLoggedIn={isLoggedIn}/>
 					</div>
 				</div>
 			</>
@@ -123,7 +123,7 @@ const CommentBlock = forwardRef((props: any, ref: any) => {
 });
 
 export default function CommentsElement(props: any) {
-	const { className, postID, userData,setCoinDependency,postCoin,setCoinGithubDependency } = props;
+	const { className, postID, userData,setCoinDependency,postCoin,setCoinGithubDependency,user_id_foreign,isLoggedIn} = props;
 	const [parent_id, setParentId] = useState('');
 	const [dependency, setDependency] = useState(false);
 	const [comments, setComment] = useState<Comment[]>([]);
@@ -197,10 +197,10 @@ export default function CommentsElement(props: any) {
 			</div>
 			<div className="flex flex-col space-y-4" ref={commentsRef}>
 				{comments.map((comment) => (
-					<CommentBlock key={comment._id} {...comment} onReply={onReply} comments={comments} setCoinDependency={setCoinDependency} userData={userData} postID={postID} postCoin={postCoin} setCoinGithubDependency={setCoinGithubDependency}/>
+					<CommentBlock key={comment._id} {...comment} onReply={onReply} comments={comments} setCoinDependency={setCoinDependency} userData={userData} postID={postID} postCoin={postCoin} setCoinGithubDependency={setCoinGithubDependency} user_id_foreign={user_id_foreign} isLoggedIn={isLoggedIn}/>
 				))}
 
-				<CommentInput
+				{isLoggedIn && <CommentInput
 					ref={refToInput}
 					replyReference={replyToComment}
 					name={userData.display_name}
@@ -209,7 +209,7 @@ export default function CommentsElement(props: any) {
 					userData={userData}
 					setDependency={setDependency}
 					setParentId={setParentId}
-				/>
+				/>}
 			</div>
 		</div>
 	);

@@ -39,7 +39,7 @@ function CoinInputCard(props: any) {
 
 
 export default function GiveCoinButton(props:any) {
-	const { setCoinDependency,userData,postCoin,postID,setCoinGithubDependency } = props;
+	const { setCoinDependency,userData,postCoin,postID,setCoinGithubDependency,user_id_foreign,isLoggedIn ,user_id_foreign_comment} = props;
 	console.log("type",typeof setCoinGithubDependency)
 	const mutation = trpc.editPostCoin.useMutation({
 		onSuccess: (data) => {
@@ -70,14 +70,15 @@ export default function GiveCoinButton(props:any) {
 		};
 
 		console.log('coinData', coin);
-
+		
 		const response = await mutation.mutate(coinData);
 	};
 	return (
 		<HoverCard>
-			<HoverCardTrigger className="py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer">
+
+		{ isLoggedIn&&(user_id_foreign===userData._id)&&(userData._id!==user_id_foreign_comment)&&<HoverCardTrigger className="py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer">
 				Give
-			</HoverCardTrigger>
+			</HoverCardTrigger>}
 			<HoverCardContent>
 				<div className="flex flex-row items-center space-x-2 justify-center">
 					<CoinCard coin="5" onClick={onClickcoin}/>

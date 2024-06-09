@@ -82,6 +82,7 @@ interface GitHubRepoProps {
 	bookmark: Bookmark;
 	userData: User;
 	setBookMarkDependency: (bookMarkDependency: boolean) => void;
+	isLoggedIn: boolean;
 }
 
 interface GitHubEventCardProps extends Document {
@@ -113,6 +114,8 @@ interface EventCardPopupProps {
 	userData: User;
 	setCoinDependency: (coinDependency: boolean) => void;
 	setCoinGithubDependency: (coinGithubDependency: boolean) => void;
+	user_id_foreign: string;
+	isLoggedIn: boolean;
 }
 
 export type {

@@ -30,9 +30,10 @@ export default function EventModule(props: BodyComponentProps) {
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
 			const userResult = await query.getUserBy_id.fetch({ _id: JSON.stringify(event.user_id).replace(/"/g, '') });
+			if (isLoggedIn){
 			const bookmarkResult = await query.getBookMark.fetch({
 				post_id: event._id,
-				user_id: data._id,
+				user_id: data?._id,
 				type: 'event_card',
 			});
 
@@ -46,6 +47,14 @@ export default function EventModule(props: BodyComponentProps) {
 				bookmark_status: bookmarkResult.status === 200 ? true : false,
 				bookmark: bookmarkResult.data.bookmark as Bookmark,
 			};
+			}else{
+				return {
+					...event,
+					user: userResult.data.data as User,
+					// bookmark_status: false,
+					// bookmark: undefined,
+				};
+			}
 		});
 		return Promise.all(userPromises);
 	}
@@ -136,6 +145,7 @@ export default function EventModule(props: BodyComponentProps) {
 						setCoinGithubDependency={setCoinGithubDependency}
 						coinGithubDependency={coinGithubDependency}
 						coinDependency={coinDependency}
+						isLoggedIn={isLoggedIn}
 					/>
 				</div>
 				<div className="flex flex-col items-center">
@@ -167,6 +177,8 @@ export default function EventModule(props: BodyComponentProps) {
 									bookmark={event.bookmark}
 									setBookMarkDependency={setBookMarkDependency}
 									setCoinDependency={setCoinDependency}
+									user_id_foreign={event.user_id}
+									isLoggedIn={isLoggedIn}
 								/>
 							);
 						})}
