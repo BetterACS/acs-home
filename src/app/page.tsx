@@ -19,6 +19,7 @@ export default function App() {
 	const [data, setData] = useState({} as User);
 	const cookies = useCookies();
 	const [eventDependency, setEventDependency] = useState(false);
+	const [eventBookMarkDependency, setBookMarkDependency] = useState(false);
 	const handleEventCallBack = () => {
 		setEventDependency((prev) => !prev);
 	};
@@ -49,8 +50,7 @@ export default function App() {
 			async (res) => {
 				const query = await res.json();
 				const query_data = query.result.data.data.data as User;
-				//console.log('query_data', query_data);
-				//console.log(query_data.avatar);
+				console.log('user', query_data);
 				setData(query_data);
 			}
 		);
@@ -61,15 +61,14 @@ export default function App() {
 		('use server');
 		await fetch(
 			`/api/trpc/getPost?input=${encodeURIComponent(
-				JSON.stringify({ type: 'event_card', title: queryTitleEvent })
+				JSON.stringify({ type: 'event_card', title: queryTitleEvent ,user_id:data._id})
 			)}`
 		).then(async (res) => {
 			const query = await res.json();
+			// console.log("query2",query)
+			// console.log("query2 err",query.error.message)
 			const query_data = query.result.data.data.post;
-			//console.log('query_data', query_data);
 			setEvents(query_data);
-			//console.log('query_data', query_data);
-			//console.log(query_data.avatar);
 		});
 	}
 
@@ -80,12 +79,6 @@ export default function App() {
 		};
 		fetchData();
 	}, [cookies]);
-	useEffect(() => {
-		const fetchData = async () => {
-			await LoadEvent();
-		};
-		fetchData();
-	}, [eventDependency, queryTitleEvent]);
 
 	useEffect(() => {
 		if (!isfetch) {
@@ -97,6 +90,15 @@ export default function App() {
 		};
 		fetchData();
 	}, [isfetch]);
+
+	useEffect(() => {
+		if (!data||isLoading) return;
+		const fetchData = async () => {
+			await LoadEvent();
+			setBookMarkDependency(false);
+		};
+		fetchData();
+	}, [data,eventDependency, queryTitleEvent,eventBookMarkDependency]);
 
 	if (isLoading) {
 		return <div>Loading...</div>;
@@ -123,6 +125,7 @@ export default function App() {
 					handleEventCallBack={handleEventCallBack}
 					queryTitleEvent={queryTitleEvent}
 					setQueryTitleEvent={setQueryTitleEvent}
+					setBookMarkDependency={setBookMarkDependency}
 				/>
 			</div>
 			<Footer />

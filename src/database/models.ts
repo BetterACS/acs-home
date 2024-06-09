@@ -10,7 +10,7 @@ interface User extends Document {
 	reset_token_expire?: Date;
 	coin?: number;
 	role: string;
-	discord_id?: string;
+	discord_id: string;
 	avatar: string;
 }
 
@@ -90,13 +90,15 @@ interface Comment extends Document {
 	created_at: Date;
 	user_id: mongoose.Types.ObjectId;
 	post_id: mongoose.Types.ObjectId;
+	parent_id: mongoose.Types.ObjectId;
 }
 
 const CommentSchema: Schema<Comment> = new Schema({
-	comment_text: { type: String, required: true },
 	created_at: { type: Date, default: Date.now },
+	comment_text: { type: String, required: true },
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 	post_id: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
+	parent_id: {type: Schema.Types.ObjectId, ref: 'Comment',required: false, default: null},
 });
 
 const CommentModel = mongoose.models.Comment || mongoose.model<Comment>('Comment', CommentSchema);
@@ -119,13 +121,13 @@ const CommentPhotoModel =
 
 // Define Bookmark Schema
 interface Bookmark extends Document {
-	created_at: string;
+	created_at: Date;
 	user_id: mongoose.Types.ObjectId;
 	post_id: mongoose.Types.ObjectId;
 }
 
 const BookmarkSchema: Schema<Bookmark> = new Schema({
-	created_at: { type: String, required: true },
+	created_at: { type: Date, default: Date.now },
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 	post_id: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
 });

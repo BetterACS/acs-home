@@ -4,6 +4,8 @@ import register from './api/register';
 import apiTest from './api/testTRPC';
 import {getUser,getUserBy_id} from './api/user';
 import { createCallerFactory, router } from './trpc';
+import {createComment,getComment} from './api/comment';
+import {createBookMark,getBookMark,deleteBookMark} from './api/bookmark';
 export const appRouter = router({
 	...apiTest(),
 	...login(),
@@ -12,6 +14,11 @@ export const appRouter = router({
 	...createPost(),
 	...getPost(),
 	...getUserBy_id(),
+	...createComment(),
+	...getComment(),
+	...createBookMark(),
+	...getBookMark(),
+	...deleteBookMark(),
 });
 const createCaller = createCallerFactory(appRouter);
 
