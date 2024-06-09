@@ -34,30 +34,30 @@ function getUser() {
 }
 
 function getUserBy_id() {
-    return {
-        getUserBy_id: publicProcedure
-            .input(
-                z.object({
-                    _id: z.string(),  // Changed from user_id to _id and z.undefined() to z.string()
-                })
-            )
-            .query(async ({ input }) => {
-                await connectDB();
-                const { _id } = input;  // Changed from user_id to _id
-                console.log('user_id:', _id);  // Adjusted the console log message
-                try {
-                    const existingUser = await UserModel.findOne({ _id });  // Changed the query to use _id
-                    if (existingUser) {
-                        return { status: 200, data: { message: 'query success', data: existingUser } };
-                    }
+	return {
+		getUserBy_id: publicProcedure
+			.input(
+				z.object({
+					_id: z.string(), // Changed from user_id to _id and z.undefined() to z.string()
+				})
+			)
+			.query(async ({ input }) => {
+				await connectDB();
+				const { _id } = input; // Changed from user_id to _id
+				console.log('user_id:', _id); // Adjusted the console log message
+				try {
+					const existingUser = await UserModel.findOne({ _id }); // Changed the query to use _id
+					if (existingUser) {
+						return { status: 200, data: { message: 'query success', data: existingUser } };
+					}
 
-                    return { status: 404, data: { message: 'User not found' } };
-                } catch (error) {
-                    console.error('Error query user:', error);
-                    return { status: 500, data: { message: 'Fail to query' } };
-                }
-            }),
-    };
-}	
+					return { status: 404, data: { message: 'User not found', data: undefined } };
+				} catch (error) {
+					console.error('Error query user:', error);
+					return { status: 500, data: { message: 'Fail to query', data: undefined } };
+				}
+			}),
+	};
+}
 
-export {getUser,getUserBy_id};
+export { getUser, getUserBy_id };

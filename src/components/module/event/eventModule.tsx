@@ -8,6 +8,9 @@ import { useEffect, useState } from 'react';
 import EventModal from './eventModal';
 import GitHubCarousel from './githubCarousel';
 import { User } from '@/database/models';
+import { trpc } from '@/app/_trpc/client';
+import { z } from 'zod';
+import mongoose from 'mongoose';
 
 export default function EventModule(props: BodyComponentProps) {
 	const {
@@ -21,16 +24,22 @@ export default function EventModule(props: BodyComponentProps) {
 		queryTitleEvent,
 		setQueryTitleEvent,
 	} = props;
+	const query = trpc.useUtils();
 
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
-			const res = await fetch(
-				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
-			);
-			const query = await res.json();
+			// const res = await fetch(
+			// 	`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
+			// );
+			// console.log('event.user_id:', JSON.stringify(event.user_id).replace(/"/g, ''));
+			// console.log('event.user_id:', typeof event.user_id);
+			// if (typeof event.user_id === 'string') {
+			// 	event.user_id = mongoose.Types.ObjectId.createFromHexString(event.user_id);
+			// }
+			const result = await query.getUserBy_id.fetch({ _id: JSON.stringify(event.user_id).replace(/"/g, '') });
 			return {
 				...event,
-				user: query.result.data.data.data as User,
+				user: result.data.data,
 			};
 		});
 		return Promise.all(userPromises);
