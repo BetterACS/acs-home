@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useRef, forwardRef } from 'react';
+import { useRef, forwardRef, useMemo } from 'react';
 import Backdrop from '@/components/utils/backdrop';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -7,11 +7,16 @@ import { EventCardPopupProps } from '@/types';
 import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-	const { avatar, name, title, description, setModalOpen,coin,due_date,postID,userData } = props;
+	const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData } = props;
+	const windowSize = useMemo(
+		() => (window.innerWidth > 1800 ? 1200 : Math.floor(window.innerWidth * 0.7)),
+		[window.innerWidth]
+	);
+
 	return (
 		<Backdrop onClick={() => {}}>
 			<motion.div
-				className="absolute rounded-lg border bg-card text-card-foreground shadow-sm my-2 overflow-x-hidden overflow-y-auto"
+				className="absolute border bg-card text-card-foreground shadow-sm my-2"
 				initial={{
 					position: 'absolute',
 					zIndex: 60,
@@ -22,17 +27,16 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 					height: '10%',
 				}}
 				animate={{
-					width: '1200px',
-					// minHeight: '240px',
+					width: windowSize + 'px',
 					height: '80%',
-					borderRadius: '60px',
-					top: '120px',
-					left: '352.5px',
+					borderRadius: '20px',
+					left: window.innerWidth / 2 - windowSize / 2 - 6, //#window.innerWidth / 2 - 606,
+					top: '18%',
 				}}
 				exit={{ opacity: 0, scale: 0, transition: { duration: 0.25 } }}
 				transition={{ duration: 0.45, ease: 'easeIn' }}
 			>
-				<div className="flex flex-col w-full">
+				<div className="flex flex-col px-4 w-full h-full overflow-x-hidden overflow-y-auto">
 					{/* Header */}
 					<motion.div className="mt-24 mb-4 mx-32 flex flex-row justify-between items-center">
 						<div className="space-x-4 flex flex-row items-center">
@@ -86,7 +90,7 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 							<p>{description}</p>
 						</motion.div>
 
-						<CommentsElement className="mt-24" postID={postID} userData={userData}/>
+						<CommentsElement className="mt-8 pb-12" postID={postID} userData={userData} />
 					</motion.div>
 				</div>
 			</motion.div>

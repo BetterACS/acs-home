@@ -141,7 +141,7 @@ export default function EventModule(props: BodyComponentProps) {
 								<EventCard
 									key={event._id}
 									id={event._id}
-									name={event.user.name}
+									name={event.user.display_name}
 									title={event.title}
 									description={event.description}
 									onChildClick={clickPost}
