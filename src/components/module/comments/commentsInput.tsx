@@ -1,10 +1,12 @@
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, forwardRef, useMemo } from 'react';
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { set } from 'mongoose';
-function CommentInputTextArea({ onChange,postID,userID }: { onChange: (text: string) => void,postID:string,userID:string }) {
+// { onChange: (text: string) => void,postID:string,userID:string }
+
+function CommentInputTextArea({ onChange, postID, userID }: any) {
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [value, setValue] = useState('');
 	const [placeholder, setPlaceholder] = useState('Type your message here.');
@@ -47,11 +49,13 @@ function CommentInputTextArea({ onChange,postID,userID }: { onChange: (text: str
 	);
 }
 
-export default function CommentInput(props: any) {
-	const { name, parent_id,postID,userData,setDependency } = props;
+const CommentInput = forwardRef((props: any, ref: any) => {
+	const { name, parent_id, postID, userData, setDependency, replyReference, setParentId } = props;
 	const [value, setValue] = useState('');
 	const [placeholder, setPlaceholder] = useState('Type your message here.');
+	const isReply = useMemo(() => parent_id !== '', [parent_id]);
 	const [_id, setId] = useState('');
+	// const replyReference = useRef<any>(replyRef);
 
 	const mutation = trpc.createComment.useMutation({
 		onSuccess: (data) => {
@@ -71,24 +75,23 @@ export default function CommentInput(props: any) {
 	});
 
 	const handleSubmit = async () => {
-
 		const commentData = {
-			post_id:postID,
-			user_id:userData._id,
-			comment_text:value,
-			parent_id:""
+			post_id: postID,
+			user_id: userData._id,
+			comment_text: value,
+			parent_id: '',
 		};
 
 		if (parent_id) {
 			commentData.parent_id = parent_id;
 		}
-		console.log("commentData",commentData);
+		console.log('commentData', commentData);
 
 		const response = await mutation.mutate(commentData);
 	};
 
 	const handleOnChange = (value: string) => {
-		console.log("outer",value);
+		console.log('outer', value);
 		setValue(value);
 	};
 
@@ -103,13 +106,41 @@ export default function CommentInput(props: any) {
 			setPlaceholder('Type your message here.');
 		}
 	};
+
+	useEffect(() => {
+		console.log(replyReference.current);
+	}, [replyReference.current]);
+
+	const scrollToRef = () => {
+		console.log(replyReference.current);
+		if (replyReference.current) {
+			replyReference.current.scrollIntoView({ behavior: 'smooth' });
+			replyReference.current.className += ' border-blue-500';
+		}
+	};
 	return (
-		<div className="rounded-lg border-2 p-4">
+		<div className="rounded-lg border-2 p-4" ref={ref}>
+			{isReply ? (
+				<div className="flex items-center space-x-4 pb-4">
+					<p>You replying to</p>
+					<i className="text-gray-400 cursor-pointer" onClick={scrollToRef}>
+						Jack jessada
+					</i>
+					<p className="cursor-pointer" onClick={() => setParentId('')}>
+						click here to <span className="text-red-400">cancel</span>
+					</p>
+				</div>
+			) : null}
+
 			<div className="flex flex-row items-center space-x-2 mb-2">
-				<img className="w-[32px] h-[32px] bg-blue-300 rounded-full" src={`https://cdn.discordapp.com/avatars/${userData.discord_id}/${userData.avatar}.png`} alt="https://www.ihna.edu.au/blog/wp-content/uploads/2022/10/user-dummy.png" />
+				<img
+					className="w-[32px] h-[32px] bg-blue-300 rounded-full"
+					src={`https://cdn.discordapp.com/avatars/${userData.discord_id}/${userData.avatar}.png`}
+					alt="https://www.ihna.edu.au/blog/wp-content/uploads/2022/10/user-dummy.png"
+				/>
 				<p>{name}</p>
 			</div>
-			<CommentInputTextArea onChange={handleOnChange} postID={postID} userID={userData._id}/>
+			<CommentInputTextArea onChange={handleOnChange} postID={postID} userID={userData._id} />
 			<div className="w-full flex flex-row justify-endz">
 				<Button onClick={handleSubmit} className="" color="blue">
 					Sent
@@ -117,4 +148,6 @@ export default function CommentInput(props: any) {
 			</div>
 		</div>
 	);
-}
+});
+
+export default CommentInput;

@@ -1,6 +1,18 @@
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import CommentInput from './commentsInput';
-import {Comment} from '@/database/models';
+import { Comment } from '@/database/models';
+import { motion, useAnimationControls } from 'framer-motion';
+import { cn } from '@/components/utils/ui';
+// function Component() {
+// 	const controls = useAnimationControls();
+
+// 	useEffect(() => {
+// 		controls.start({ scale: 2 });
+// 	}, []);
+
+// 	return <motion.div animate={controls} />;
+// }
+
 // You can edit this file to modify the list of comments
 // const example = [
 // 	{
@@ -19,84 +31,114 @@ import {Comment} from '@/database/models';
 // 	},
 // ];
 
-
 function CommentComponent(props: any) {
-	
-	// const { id, avatar, parent_id, name, text, className, onReply } = props;
-	const { _id, comment_text ,parent_id,onReply,comments,user_id,className } = props;
-	console.log("b",props);
+	const { _id, comment_text, parent_id, onReply, comments, user_id, className } = props;
+
 	return (
 		<div className={className}>
 			<div className="flex flex-row items-center justify-between">
 				<div className="flex flex-row items-center space-x-2">
-				<img className="w-[32px] h-[32px] bg-blue-300 rounded-full" src={`https://cdn.discordapp.com/avatars/${user_id.discord_id}/${user_id.avatar}.png`} alt="https://www.ihna.edu.au/blog/wp-content/uploads/2022/10/user-dummy.png" />
+					<img
+						className="w-[32px] h-[32px] bg-blue-300 rounded-full"
+						src={`https://cdn.discordapp.com/avatars/${user_id.discord_id}/${user_id.avatar}.png`}
+						alt="https://www.ihna.edu.au/blog/wp-content/uploads/2022/10/user-dummy.png"
+					/>
 					<p>{user_id.display_name}</p>
 				</div>
-				<div
-					className="bg-red-200 rounded-full w-[18px] h-[18px] cursor-pointer"
-					onClick={() => onReply(_id)}
-				></div>
 			</div>
-			<div className="mt-2">{comment_text}</div>
+
+			<div className="py-2">{comment_text}</div>
+			{onReply !== undefined ? (
+				<div className="flex flex-row items-center space-x-2">
+					<div className="py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer">Give</div>
+					<div
+						className={cn('py-[2px] px-[8px] text-sm border-2 rounded-md cursor-pointer')}
+						onClick={() => onReply(_id)}
+					>
+						Reply
+					</div>
+				</div>
+			) : null}
 		</div>
 	);
 }
 
-function CommentBlock(props: any) {
-	const { _id, comment_text ,parent_id,onReply,comments,user_id } = props;
-	
+const CommentBlock = forwardRef((props: any, ref: any) => {
+	const { _id, comment_text, parent_id, onReply, comments, user_id } = props;
+	const [isToggle, setToggle] = useState(true);
+	const placeholder = useMemo(() => (isToggle ? 'Hide replies' : 'See replies'), [isToggle]);
+	const animation = useAnimationControls();
+	// const [isFocus, setFocus] = useState(false);
+
+	// const onFocus = () => {
+	// 	setFocus(true);
+	// 	console.log('focus');
+	// };
+
+	// const onBlur = () => {
+	// 	setFocus(false);
+	// };
+
 	function recursive(parent_id: any): JSX.Element {
 		if (parent_id === null) {
-			return (<></>)
+			return <></>;
 		}
 		return (
-			<>	
+			<>
 				{recursive(parent_id.parent_id)}
 				<div>
 					<div className="relative flex flex-row py-2">
 						<div className="border-l-[5px] border-gray-200"></div>
-						<CommentComponent className="pl-6 text-gray-400 mb-2" {...parent_id} />
+						<CommentComponent className="pl-6 text-gray-400 mb-2" {...parent_id} onReply={undefined} />
 					</div>
 				</div>
 			</>
-		)
+		);
 	}
+	useEffect(() => {
+		if (isToggle) {
+			animation.start({ height: '100%' });
+		} else {
+			animation.start({ height: '0px' });
+		}
+	}, [isToggle]);
 
 	return (
-		<div className="rounded-lg border-2 p-4">
-
-			{/* {parent_id &&(
+		<div ref={ref} className={cn('rounded-lg border-2 p-4')}>
+			{parent_id !== null ? (
 				<div>
-					<div className="relative flex flex-row py-2">
-						<div className="border-l-[5px] border-gray-200"></div>
-						<CommentComponent className="pl-6 text-gray-400 mb-2" {...parent_id} />
-					</div>
+					<p className="text-gray-400 text-md cursor-pointer mb-2" onClick={() => setToggle(!isToggle)}>
+						<i>{placeholder}</i>
+					</p>
+					<motion.div className="overflow-hidden" animate={animation}>
+						{recursive(parent_id)}
+					</motion.div>
 				</div>
-			)}
-			<CommentComponent {...props} /> */}
-			{recursive(parent_id)}
+			) : null}
 			<CommentComponent {...props} />
 		</div>
 	);
-}
+});
 
 export default function CommentsElement(props: any) {
-	const { className,postID,userData } = props;
-	const [parent_id, setParentId] = useState("");
+	const { className, postID, userData } = props;
+	const [parent_id, setParentId] = useState('');
 	const [dependency, setDependency] = useState(false);
 	const [comments, setComment] = useState<Comment[]>([]);
+	const commentsRef = useRef<any>(null);
+	const refToInput = useRef<any>(null);
+	const replyToComment = useRef<any>(null);
+
 	async function Loaddata() {
 		('use server');
-		await fetch(
-			`/api/trpc/getComment?input=${encodeURIComponent(
-				JSON.stringify({ post_id: postID})
-			)}`
-		).then(async (res) => {
-			const query = await res.json();
-			console.log('query', query);
-			const query_data = query.result.data.data.post as Comment[];
-			setComment(query_data);
-		});
+		await fetch(`/api/trpc/getComment?input=${encodeURIComponent(JSON.stringify({ post_id: postID }))}`).then(
+			async (res) => {
+				const query = await res.json();
+				console.log('query', query);
+				const query_data = query.result.data.data.post as Comment[];
+				setComment(query_data);
+			}
+		);
 	}
 
 	useEffect(() => {
@@ -110,11 +152,39 @@ export default function CommentsElement(props: any) {
 		fetchData();
 	}, [dependency]);
 
+	useEffect(() => {
+		if (refToInput.current && parent_id !== '') {
+			refToInput.current.scrollIntoView({ behavior: 'smooth' });
+
+			const index = comments.findIndex((comment) => comment._id === parent_id);
+			if (index !== -1) {
+				for (let i = 0; i < commentsRef.current.children.length - 1; i++) {
+					if (commentsRef.current.children[i].className.includes('border-blue-500')) {
+						commentsRef.current.children[i].className = commentsRef.current.children[i].className.replace(
+							'border-blue-500',
+							''
+						);
+					}
+				}
+				replyToComment.current = commentsRef.current.children[index];
+			}
+		} else {
+			replyToComment.current = null;
+			for (let i = 0; i < commentsRef.current.children.length - 1; i++) {
+				if (commentsRef.current.children[i].className.includes('border-blue-500')) {
+					commentsRef.current.children[i].className = commentsRef.current.children[i].className.replace(
+						'border-blue-500',
+						''
+					);
+				}
+			}
+		}
+	}, [parent_id]);
+
 	const onReply = (id: string) => {
 		setParentId(id);
 	};
-	console.log("comments",comments);
-
+	console.log('comments', comments);
 
 	return (
 		<div className={className}>
@@ -123,12 +193,21 @@ export default function CommentsElement(props: any) {
 				<span className="flex-shrink mx-4 text-gray-400">Comments</span>
 				<div className="flex-grow border-t border-gray-200"></div>
 			</div>
-			<div className="flex flex-col space-y-4">
+			<div className="flex flex-col space-y-4" ref={commentsRef}>
 				{comments.map((comment) => (
 					<CommentBlock key={comment._id} {...comment} onReply={onReply} comments={comments} />
 				))}
 
-				<CommentInput name={userData.display_name} parent_id={parent_id} postID={postID} userData={userData} setDependency={setDependency}/>
+				<CommentInput
+					ref={refToInput}
+					replyReference={replyToComment}
+					name={userData.display_name}
+					parent_id={parent_id}
+					postID={postID}
+					userData={userData}
+					setDependency={setDependency}
+					setParentId={setParentId}
+				/>
 			</div>
 		</div>
 	);
