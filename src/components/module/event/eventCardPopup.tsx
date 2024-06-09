@@ -4,9 +4,10 @@ import Backdrop from '@/components/utils/backdrop';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { EventCardPopupProps } from '@/types';
+import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-	const { avatar, name, title, description, setModalOpen,coin,due_date } = props;
+	const { avatar, name, title, description, setModalOpen,coin,due_date,postID,userData } = props;
 	return (
 		<Backdrop onClick={() => {}}>
 			<motion.div
@@ -84,6 +85,8 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 						<motion.div className="flex flex-col mt-16 text-xl text-gray-800">
 							<p>{description}</p>
 						</motion.div>
+
+						<CommentsElement className="mt-24" postID={postID} userData={userData}/>
 					</motion.div>
 				</div>
 			</motion.div>
