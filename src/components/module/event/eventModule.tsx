@@ -76,7 +76,11 @@ export default function EventModule(props: BodyComponentProps) {
 	};
 
 	return (
-		<div>
+		<motion.div
+			initial={{ y: 600, opacity: 0 }}
+			animate={{ y: 0, opacity: 1, transition: { duration: 1 } }}
+			exit={{ translateY: 1000, opacity: 0, transition: { duration: 1.2 } }}
+		>
 			<AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 				{modalOpen && isLoggedIn && (
 					<EventModal
@@ -88,8 +92,9 @@ export default function EventModule(props: BodyComponentProps) {
 					/>
 				)}
 			</AnimatePresence>
+
 			{/* Event Card List */}
-			<div className="pt-[234px] w-[1200px] pb-[34px] mx-[360px]">
+			<div className="w-[1200px] pb-[34px] mx-[360px]">
 				{/* <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
 					{currentPage === '' && }
 				</AnimatePresence> */}
@@ -116,6 +121,7 @@ export default function EventModule(props: BodyComponentProps) {
 						callBack={handleCarouselCallBack}
 						dependency={carouselDependency}
 						query_title_carousel={query_title_carousel}
+						userData={data}
 					/>
 				</div>
 				<div className="flex flex-col items-center">
@@ -142,6 +148,7 @@ export default function EventModule(props: BodyComponentProps) {
 										),
 										0
 									)}
+									user={data}
 								/>
 							);
 						})}
@@ -163,6 +170,6 @@ export default function EventModule(props: BodyComponentProps) {
 					/>
 				)}
 			</AnimatePresence>{' '} */}
-		</div>
+		</motion.div>
 	);
 }

@@ -20,7 +20,6 @@ function createPost() {
 			.mutation(async ({ input }) => {
 				await connectDB();
 				const { title, description, due_date, coin_reward, type, user_id,githubLink } = input;
-				console.log('input:', input);
 				try {
 					const newPost = new PostModel({
 						title: title,
@@ -41,32 +40,6 @@ function createPost() {
 			}),
 	};
 }
-
-// function getPost() {
-// 	return {
-// 		getPost: publicProcedure
-// 			.input(
-// 				z.object({
-// 					type: z.string(),
-// 				})
-// 			)
-// 			.query(async ({ input }) => {
-// 				await connectDB();
-// 				const { type } = input;
-// 				console.log('Fetching post with ID:', type);
-// 				try {
-// 					const fetchedPosts = await PostModel.find({ type }); // Rename the variable 'post' to 'fetchedPosts'
-// 					if (!fetchedPosts) {
-// 						return { status: 404, data: { message: 'Post not found' } };
-// 					}
-// 					return { status: 200, data: { message: 'Post retrieved successfully', post: fetchedPosts } }; // Update the variable name here as well
-// 				} catch (error) {
-// 					console.error('Error fetching post:', error);
-// 					return { status: 500, data: { message: 'Failed to fetch post' } };
-// 				}
-// 			}),
-// 	};
-// }
 
 function getPost() {
 	return {

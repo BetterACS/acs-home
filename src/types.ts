@@ -60,6 +60,7 @@ interface EventModalInputProps {
 interface NavbarProps {
 	isLoggedIn: boolean;
 	data: User;
+	setCurrentPage: (page: string) => void;
 }
 
 interface GitHubRepoProps {
@@ -100,6 +101,8 @@ interface EventCardPopupProps {
 	setModalOpen: (modalOpen: boolean) => void;
 	coin: number;
 	due_date: number;
+	postID: string;
+	userData: User;
 }
 
 export type {
