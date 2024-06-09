@@ -121,13 +121,13 @@ const CommentPhotoModel =
 
 // Define Bookmark Schema
 interface Bookmark extends Document {
-	created_at: string;
+	created_at: Date;
 	user_id: mongoose.Types.ObjectId;
 	post_id: mongoose.Types.ObjectId;
 }
 
 const BookmarkSchema: Schema<Bookmark> = new Schema({
-	created_at: { type: String, required: true },
+	created_at: { type: Date, default: Date.now },
 	user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 	post_id: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
 });

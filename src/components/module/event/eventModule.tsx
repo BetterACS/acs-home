@@ -7,7 +7,7 @@ import SearchBox from './searchBox';
 import { useEffect, useState } from 'react';
 import EventModal from './eventModal';
 import GitHubCarousel from './githubCarousel';
-import { User } from '@/database/models';
+import { Bookmark, User } from '@/database/models';
 
 export default function EventModule(props: BodyComponentProps) {
 	const {
@@ -20,6 +20,7 @@ export default function EventModule(props: BodyComponentProps) {
 		handleEventCallBack,
 		queryTitleEvent,
 		setQueryTitleEvent,
+		setBookMarkDependency,
 	} = props;
 
 	async function loadAllUserData(events: EventCardProps[]) {
@@ -28,9 +29,18 @@ export default function EventModule(props: BodyComponentProps) {
 				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
 			);
 			const query = await res.json();
+
+			const bookmarkRes = await fetch(`/api/trpc/getBookMark?input=${encodeURIComponent(JSON.stringify({ post_id: event._id, user_id: data._id, type: 'event_card'}))}`);
+			const bookmarkQuery = await bookmarkRes.json();
+			if(bookmarkQuery.result.data.status === 200) {
+				console.log('bookmarkQuery', bookmarkQuery)
+				console.log('bookmarkQuery.data', bookmarkQuery.result.data.data.bookmark as Bookmark)
+				;}
 			return {
 				...event,
 				user: query.result.data.data.data as User,
+				bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
+				bookmark:bookmarkQuery.result.data.data.bookmark as Bookmark
 			};
 		});
 		return Promise.all(userPromises);
@@ -149,6 +159,9 @@ export default function EventModule(props: BodyComponentProps) {
 										0
 									)}
 									user={data}
+									bookmark_status={event.bookmark_status}
+									bookmark={event.bookmark}
+									setBookMarkDependency={setBookMarkDependency}
 								/>
 							);
 						})}

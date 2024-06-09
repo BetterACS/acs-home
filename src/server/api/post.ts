@@ -1,4 +1,4 @@
-import { PostModel } from '@/database/models';
+import { BookmarkModel, PostModel } from '@/database/models';
 import { connectDB } from '@/server/db';
 import { z } from 'zod';
 import { publicProcedure } from '../trpc';
@@ -74,7 +74,5 @@ function getPost() {
 			}),
 	};
 }
-
-
 
 export { createPost, getPost };

@@ -1,5 +1,5 @@
 import mongoose, { Document } from 'mongoose';
-import { User } from './database/models';
+import { Bookmark, User } from './database/models';
 interface GroupComponentProps {
 	children: React.ReactNode;
 }
@@ -30,6 +30,7 @@ interface BodyComponentProps extends WebComponentProps {
 	handleEventCallBack: () => void;
 	queryTitleEvent: string;
 	setQueryTitleEvent: (title: string) => void;
+	setBookMarkDependency: (bookMarkDependency: boolean) => void;
 }
 
 interface SequentialComponentsProps<T> {
@@ -64,7 +65,7 @@ interface NavbarProps {
 }
 
 interface GitHubRepoProps {
-	id: number;
+	id: string;
 	title: string;
 	fullName: string;
 	avatar: string;
@@ -74,6 +75,10 @@ interface GitHubRepoProps {
 	userID: mongoose.Types.ObjectId;
 	userAvatar: string;
 	onClick?: (_title: any, _description: any, _avatar: any, ref: any, _userAvatar: any) => void;
+	bookmark_status:boolean,
+	bookmark:Bookmark,
+	userData: User;
+	setBookMarkDependency: (bookMarkDependency: boolean) => void;
 }
 
 interface GitHubEventCardProps extends Document {

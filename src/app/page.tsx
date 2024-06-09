@@ -19,6 +19,7 @@ export default function App() {
 	const [data, setData] = useState({} as User);
 	const cookies = useCookies();
 	const [eventDependency, setEventDependency] = useState(false);
+	const [eventBookMarkDependency, setBookMarkDependency] = useState(false);
 	const handleEventCallBack = () => {
 		setEventDependency((prev) => !prev);
 	};
@@ -83,9 +84,10 @@ export default function App() {
 	useEffect(() => {
 		const fetchData = async () => {
 			await LoadEvent();
+			setBookMarkDependency(false);
 		};
 		fetchData();
-	}, [eventDependency, queryTitleEvent]);
+	}, [eventDependency, queryTitleEvent,eventBookMarkDependency]);
 
 	useEffect(() => {
 		if (!isfetch) {
@@ -123,6 +125,7 @@ export default function App() {
 					handleEventCallBack={handleEventCallBack}
 					queryTitleEvent={queryTitleEvent}
 					setQueryTitleEvent={setQueryTitleEvent}
+					setBookMarkDependency={setBookMarkDependency}
 				/>
 			</div>
 			<Footer />
