@@ -48,17 +48,27 @@ function getPost() {
 				z.object({
 					type: z.string(),
 					title: z.string().optional(),
+					user_id: z.string()
 				})
 			)
 			.query(async ({ input }) => {
 				await connectDB();
-				const { type, title } = input;
-				console.log('Fetching post with Type:', type, 'and Title:', title);
+				const { type, title,user_id } = input;
+				console.log('userId',user_id);
 
 				try {
 					const query: { type: string; title?: { $regex: string; $options: string } } = { type };
-					
-					if (title && title.trim() !== "") {
+					if (title && title.trim() === "bookmark"){
+						const fetchedBookmarks = await BookmarkModel.find({ user_id: user_id }).populate('post_id');
+						const filterPost = fetchedBookmarks.filter((bookmark) => bookmark.post_id.type==type);
+						const postIds = filterPost.map((bookmark) => bookmark.post_id._id);
+						const fetchedPosts = await PostModel.find({ _id: { $in: postIds } });
+						if (!fetchedPosts.length) {
+							return { status: 404, data: { message: 'Post not found' } };
+						}
+						return { status: 200, data: { message: 'Post retrieved successfully', post: fetchedPosts } };
+					}
+					else if (title && title.trim() !== "") {
 						query.title = { $regex: title, $options: 'i' }; // 'i' for case-insensitive search
 					}
 

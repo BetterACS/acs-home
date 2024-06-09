@@ -69,12 +69,12 @@ export default function GitHubCarousel(props: any) {
 		('use server');
 		await fetch(
 			`/api/trpc/getPost?input=${encodeURIComponent(
-				JSON.stringify({ type: 'github_carousel', title: query_title_carousel})
+				JSON.stringify({ type: 'github_carousel', title: query_title_carousel,user_id:userData._id})
 			)}`
 		).then(async (res) => {
 			const query = await res.json();
 			const query_data = query.result.data.data.post;
-			console.log('query_data', query_data);
+			console.log('query_data_new_carousel', query_data);
 			setEvent(query_data);
 		});
 	}
