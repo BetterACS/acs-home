@@ -108,8 +108,8 @@ export default function GiveCoinButton(props:any) {
 			</HoverCardTrigger>}
 			<HoverCardContent>
 				<div className="flex flex-row items-center space-x-2 justify-center">
-					<CoinCard coin="5" onClick={onClickcoin}/>
-					<CoinCard coin="25" onClick={onClickcoin}/>
+					<CoinCard coin="5" onClick={() => onClickcoin(5)}/>
+					<CoinCard coin="25" onClick={() => onClickcoin(25)}/>
 					<CoinInputCard handleSubmit={onClickcoin}/>
 				</div>
 			</HoverCardContent>
