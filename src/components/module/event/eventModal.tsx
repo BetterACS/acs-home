@@ -11,13 +11,15 @@ import EventModalInput, { SelfExpandTextarea, TagInput } from './eventModalInput
 import { Button } from '@/components/ui/button';
 import { CalendarDays, Coins, Github, X, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import Swal from 'sweetalert2';
+
 const example_items: TagItem[] = [
 	{ value: '1', label: 'One' },
 	{ value: '2', label: 'Two' },
 	{ value: '3', label: 'Three' },
 ];
 
-const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinDependency}: any) => {
+const EventModal = ({ handleClose, data, carouselCallBack, eventCallBack, setCoinDependency }: any) => {
 	const [title, setTitle] = useState('' as string);
 	const [dueDate, setDueDate] = useState<Date>(new Date(Date.now() + 24 * 60 * 60 * 1000)); // tomorrow
 	const [coin, setCoin] = useState<number>(0);
@@ -42,11 +44,10 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinD
 
 	const handleTypeChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
 		setGithub(event.target.value);
-		if (event.target.value !== ""){
-			setType("github_carousel");
-		}
-		else{
-			setType("event_card")
+		if (event.target.value !== '') {
+			setType('github_carousel');
+		} else {
+			setType('event_card');
 		}
 	};
 	const handleDescriptionChange = (text: string) => {
@@ -54,15 +55,17 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinD
 		console.log('description:', description);
 	};
 
-
-
 	const coinMutation = trpc.editUserCoin.useMutation({
 		onSuccess: (data) => {
 			setCoinDependency(true);
 		},
 		onError: (error: any) => {
 			console.error('Error creating post:', error);
-			alert('Failed to create post');
+			// alert('Failed to create post');
+			Swal.fire({
+				icon: 'error',
+				title: 'Failed to create post',
+			});
 		},
 		onSettled: () => {
 			console.log('settled');
@@ -75,16 +78,18 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinD
 			console.log('data.data._id:', data.data._id);
 			setId(data.data._id);
 			handleClose();
-			if (type!=='event_card') {
+			if (type !== 'event_card') {
 				carouselCallBack();
-			}else{
+			} else {
 				eventCallBack();
 			}
-
 		},
 		onError: (error: any) => {
 			console.error('Error creating post:', error);
-			alert('Failed to create post');
+			Swal.fire({
+				icon: 'error',
+				title: 'Failed to create post',
+			});
 		},
 		onSettled: () => {
 			console.log('settled');
@@ -93,7 +98,11 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinD
 	const handleSubmit = async () => {
 		const currentCoin = data.coin;
 		if (currentCoin < coin) {
-			alert('You do not have enough coin');
+			Swal.fire({
+				icon: 'error',
+				title: 'Failed to create post',
+				text: 'You do not have enough coins',
+			});
 			return;
 		}
 		const postData = {
@@ -112,10 +121,10 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinD
 
 		const coinData = {
 			_id: data._id,
-			newCoinValue: currentCoin-coin,
+			newCoinValue: currentCoin - coin,
 		};
 
-		const coinResponse = await coinMutation.mutate(coinData)
+		const coinResponse = await coinMutation.mutate(coinData);
 	};
 
 	return (
@@ -176,7 +185,10 @@ const EventModal = ({ handleClose, data ,carouselCallBack,eventCallBack,setCoinD
 					</div>
 				</div>
 				<center>
-					<Button onClick={handleSubmit} className="text-lg bg-blue-600 hover:bg-blue-500 transition-all duration-200 hover:shadow-xl hover:scale-105">
+					<Button
+						onClick={handleSubmit}
+						className="text-lg bg-blue-600 hover:bg-blue-500 transition-all duration-200 hover:shadow-xl hover:scale-105"
+					>
 						Create
 					</Button>
 				</center>
