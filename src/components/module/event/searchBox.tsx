@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Meteors } from '@/components/ui/meteors';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 
 import { PlaceholdersAndVanishInput } from '@/components/ui/placeholder';
 
@@ -44,7 +45,14 @@ export function PlaceholdersAndVanishInputDemo({
 }
 
 export default function SearchBox(props: any) {
-	const { setModalOpen, setQueryTitleEvent, setQueryTitleCarousel } = props;
+	const { isLoggedIn, setModalOpen, setQueryTitleEvent, setQueryTitleCarousel } = props;
+	const CreateButton = () => {
+		if (!isLoggedIn) {
+			Swal.fire('Oops..', 'Please login to create an event', 'error');
+			return;
+		}
+		setModalOpen();
+	};
 	return (
 		<motion.div
 			className="flex flex-row h-[104px] w-full justify-between items-center"
@@ -54,7 +62,7 @@ export default function SearchBox(props: any) {
 		>
 			<button
 				className="rounded-2xl text-2xl w-[360px] h-[84px] relative overflow-hidden border border-blue-500 bg-blue-500 text-white transition-all hover: transform hover:scale-105"
-				onClick={setModalOpen}
+				onClick={CreateButton}
 			>
 				<div className="relative z-10 flex flex-row items-center justify-center">
 					<Image src={'/pencil.gif'} alt="search-icon" width={42} height={42} className="bg-transparent" />

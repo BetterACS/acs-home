@@ -26,14 +26,16 @@ export function Logo() {
 	);
 }
 export default function Body(props: BodyComponentProps) {
-	const { currentPage } = props;
+	const { currentPage, isLoggedIn } = props;
 	return (
 		<div>
 			<Logo />
 			<AnimatePresence initial={true} mode="wait" onExitComplete={() => null}>
 				{(currentPage === '' || currentPage.includes('#event-')) && <EventModule {...props} />}
-	const { currentPage } = props;
-				{currentPage.includes('shop') && <ShopModule data={props.data} setCoinDependency={props.setCoinDependency}/>}
+				{/* const {currentPage} = props; */}
+				{currentPage.includes('shop') && (
+					<ShopModule data={props.data} setCoinDependency={props.setCoinDependency} isLoggedIn={isLoggedIn} />
+				)}
 			</AnimatePresence>
 		</div>
 	);

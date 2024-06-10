@@ -1,29 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/components/utils/ui';
-import {
-	IconArrowWaveRightUp,
-	IconBoxAlignRightFilled,
-	IconBoxAlignTopLeft,
-	IconClipboardCopy,
-	IconFileBroken,
-	IconSignature,
-	IconTableColumn,
-} from '@tabler/icons-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { trpc } from '@/app/_trpc/client';
 import { Item, User } from '@/database/models';
+import Swal from 'sweetalert2';
 
 const Skeleton = ({ src }: { src: string }) => (
 	<div className="relative flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100">
-		<img
-			src={src}
-			className="absolute inset-0 w-full h-full object-cover rounded-xl"
-		/>
+		<img src={src} className="absolute inset-0 w-full h-full object-cover rounded-xl" />
 	</div>
 );
 
-export default function ShopModule({data,setCoinDependency}:{data:User,setCoinDependency:(value: boolean) => void}) {
+export default function ShopModule({
+	data,
+	isLoggedIn,
+	setCoinDependency,
+}: {
+	data: User;
+	isLoggedIn: boolean;
+	setCoinDependency: (value: boolean) => void;
+}) {
 	const [items, setItems] = useState([] as Item[]);
 	const query = trpc.getItem.useQuery();
 
@@ -62,6 +59,7 @@ export default function ShopModule({data,setCoinDependency}:{data:User,setCoinDe
 						coin={item.price}
 						data={data}
 						setCoinDependency={setCoinDependency}
+						isLoggedIn={isLoggedIn}
 					/>
 				))}
 			</BentoGrid>
@@ -69,7 +67,7 @@ export default function ShopModule({data,setCoinDependency}:{data:User,setCoinDe
 	);
 }
 
-const BentoGrid = ({ className ,children}: { className: string, children: React.ReactNode[]}) => {
+const BentoGrid = ({ className, children }: { className: string; children: React.ReactNode[] }) => {
 	return (
 		<div className={cn('grid md:auto-rows-[18rem] grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto ', className)}>
 			{children}
@@ -86,7 +84,8 @@ const BentoGridItem = ({
 	header,
 	coin,
 	data,
-	setCoinDependency
+	setCoinDependency,
+	isLoggedIn,
 }: {
 	itemKey: string;
 	className: string;
@@ -97,6 +96,7 @@ const BentoGridItem = ({
 	coin: number;
 	data: User;
 	setCoinDependency: (value: boolean) => void;
+	isLoggedIn: boolean;
 }) => {
 	const coinMutation = trpc.editUserCoin.useMutation({
 		onSuccess: (data) => {
@@ -113,8 +113,12 @@ const BentoGridItem = ({
 	});
 
 	const handleClick = async () => {
+		if (!isLoggedIn) {
+			Swal.fire('Oops...', 'You need to login to purchase items', 'error');
+			return;
+		}
 		if (data.coin < coin) {
-			alert('You do not have enough coin');
+			Swal.fire('Oops...', 'Seems like you do not have enough coins', 'error');
 			return;
 		}
 		const coinData = {
@@ -122,8 +126,22 @@ const BentoGridItem = ({
 			newCoinValue: data.coin - coin,
 		};
 
-		console.log('Sending coinData:', coinData);
-		const coinResponse = await coinMutation.mutate(coinData);
+		Swal.fire({
+			title: 'Do you want to buy this item?',
+			text: 'You will not be able to revert this!',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, buy it for ' + coin + ' coins',
+			cancelButtonText: 'No, cancel!',
+		}).then(async (result) => {
+			if (result.value) {
+				Swal.fire('Bought!', 'Your item has been bought.', 'success');
+				console.log('Sending coinData:', coinData);
+				const coinResponse = await coinMutation.mutate(coinData);
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				Swal.fire('Cancelled', '', 'error');
+			}
+		});
 	};
 
 	return (
