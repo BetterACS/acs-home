@@ -8,10 +8,11 @@ interface User extends Document {
 	created_at: Date;
 	reset_token?: string;
 	reset_token_expire?: Date;
-	coin?: number;
+	coin: number;
 	role: string;
 	discord_id: string;
 	avatar: string;
+	last_reward: Date;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -25,6 +26,7 @@ const UserSchema: Schema<User> = new Schema({
 	role: { type: String, default: 'User' },
 	discord_id: { type: String },
 	avatar: { type: String, required: true },
+	last_reward: { type: Date, required: false, default:null},
 });
 
 const UserModel = mongoose.models.User || mongoose.model<User>('User', UserSchema);
@@ -187,6 +189,7 @@ interface Item extends Document {
 	price: number;
 	quantity: number;
 	item_text: string;
+	source:string;
 }
 
 const ItemSchema: Schema<Item> = new Schema({
@@ -194,6 +197,7 @@ const ItemSchema: Schema<Item> = new Schema({
 	price: { type: Number, required: true },
 	quantity: { type: Number, required: true },
 	item_text: { type: String, required: true },
+	source: { type: String, required: true },
 });
 
 const ItemModel = mongoose.models.Item || mongoose.model<Item>('Item', ItemSchema);

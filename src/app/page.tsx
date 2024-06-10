@@ -21,6 +21,7 @@ export default function App() {
 	const [eventDependency, setEventDependency] = useState(false);
 	const [eventBookMarkDependency, setBookMarkDependency] = useState(false);
 	const [coinDependency, setCoinDependency] = useState(false);
+	const [isRecievedCoins, setIsRecievedCoins] = useState(false);
 	const handleEventCallBack = () => {
 		setEventDependency((prev) => !prev);
 	};
@@ -107,7 +108,7 @@ export default function App() {
 			setCoinDependency(false)
 		};
 		fetchData();
-	}, [isfetch,coinDependency]);
+	}, [isfetch,coinDependency,isRecievedCoins]);
 
 	useEffect(() => {
 		if (isLoading) return;
@@ -131,7 +132,7 @@ export default function App() {
 			}}
 		>
 			<p>{}</p>
-			<Navbar isLoggedIn={isLoggedIn} data={data} setCurrentPage={setCurrentPage} />
+			<Navbar isLoggedIn={isLoggedIn} data={data} setCurrentPage={setCurrentPage} isRecievedCoins={isRecievedCoins} setIsRecievedCoins={setIsRecievedCoins} />
 			<div className="flex flex-col justify-center items-center w-full">
 				<Body
 					currentPage={currentPage}

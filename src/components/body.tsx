@@ -32,7 +32,8 @@ export default function Body(props: BodyComponentProps) {
 			<Logo />
 			<AnimatePresence initial={true} mode="wait" onExitComplete={() => null}>
 				{(currentPage === '' || currentPage.includes('#event-')) && <EventModule {...props} />}
-				{currentPage.includes('shop') && <ShopModule />}
+	const { currentPage } = props;
+				{currentPage.includes('shop') && <ShopModule data={props.data} setCoinDependency={props.setCoinDependency}/>}
 			</AnimatePresence>
 		</div>
 	);

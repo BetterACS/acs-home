@@ -64,6 +64,8 @@ interface NavbarProps {
 	isLoggedIn: boolean;
 	data: User;
 	setCurrentPage: (page: string) => void;
+	isRecievedCoins: boolean;
+	setIsRecievedCoins : (isRecievedCoins: boolean) => void;
 }
 
 interface GitHubRepoProps {

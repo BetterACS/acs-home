@@ -67,7 +67,7 @@ export default function GiveCoinButton(props:any) {
 			console.log('settled');
 		},
 	});
-
+	
 	const query = trpc.useUtils();
 	const onClickcoin = async (coin:number) => {
 		const currentCoin = postCoin;

@@ -8,6 +8,7 @@ import { User } from '@/database/models';
 import { Menu } from '@/components/ui/navbar_menu';
 import Image from 'next/image';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
+import { trpc } from '@/app/_trpc/client';
 
 const HoverIcon = (props: any) => {
 	const { name, src, hoverSrc, setCurrentPage, link } = props;
@@ -31,33 +32,88 @@ const HoverIcon = (props: any) => {
 };
 
 function LoginGifts(props: any) {
-	const { isRecievedCoins, setIsRecievedCoins } = props;
+	const { isRecievedCoins, setIsRecievedCoins, data } = props;
 	const anim = useAnimation();
+	
+	const mutation = trpc.editUserLastReward.useMutation({
+		onSuccess: async (data) => {
+			console.log('editUserLastReward success:', data);
+		},
+		onError: (error: any) => {
+			console.error('Error creating post:', error);
+			alert('Failed to create post');
+		},
+		onSettled: () => {
+			console.log('editUserLastReward settled');
+		},
+	});
 
+	const coinMutation = trpc.editUserCoin.useMutation({
+		onSuccess: (data) => {
+			console.log('editUserCoin success:', data);
+			setIsRecievedCoins(false);
+		},
+		onError: (error: any) => {
+			console.error('Failed to update coin value:', error);
+			alert('Failed to update coin value');
+		},
+		onSettled: () => {
+			console.log('editUserCoin settled');
+		},
+	});
+	
 	const handleAnimation = async () => {
-		await anim.start({
-			display: 'block',
-			translateY: 0,
-			position: 'absolute',
-			opacity: 0,
-		});
-		await anim.start({
-			opacity: 1,
-			transition: {
-				duration: 0.25,
-				ease: 'easeOut',
-			},
-		});
-		await anim.start({
-			translateY: -25,
-			opacity: 0,
-			position: 'absolute',
-			transition: {
-				duration: 1.5,
-				ease: 'easeOut',
-			},
-		});
-		setIsRecievedCoins(false);
+		if (isRecievedCoins){
+			await anim.start({
+				display: 'block',
+				translateY: 0,
+				position: 'absolute',
+				opacity: 0,
+			});
+			await anim.start({
+				opacity: 1,
+				transition: {
+					duration: 0.25,
+					ease: 'easeOut',
+				},
+			});
+			await anim.start({
+				translateY: -25,
+				opacity: 0,
+				position: 'absolute',
+				transition: {
+					duration: 1.5,
+					ease: 'easeOut',
+				},
+			});
+			const today = new Date();
+			const tomorrow = new Date(today);
+			tomorrow.setDate(today.getDate() + 2);
+			tomorrow.setUTCHours(0, 0, 0, 0);
+
+			const lastRewardData = {
+				_id: data._id,
+				newDate: tomorrow.toISOString(),
+			};
+
+			console.log('Sending lastRewardData:', lastRewardData);
+			const response = await mutation.mutate(lastRewardData);
+			console.log('lastRewardData response:', response);
+
+			console.log("Current coin value:", data.coin);
+			const newValue = data.coin + 1;
+
+			const coinData = {
+				_id: data._id,
+				newCoinValue: newValue,
+			};
+
+			console.log('Sending coinData:', coinData);
+			const coinResponse = await coinMutation.mutate(coinData);
+			console.log('coinResponse:', coinResponse);
+		} else {
+			alert("You have already received coins today");	
+		}
 	};
 
 	return (
@@ -65,7 +121,7 @@ function LoginGifts(props: any) {
 			<motion.div className="hidden absolute" animate={anim}>
 				<Image alt="coin" src="/coin.gif" width={32} height={32} />
 			</motion.div>
-			{!isRecievedCoins ? (
+			{isRecievedCoins ? (
 				<Image
 					className="hover:scale-[125%] transition-all duration-200 ease-in-out cursor-pointer"
 					alt="gift"
@@ -80,11 +136,25 @@ function LoginGifts(props: any) {
 	);
 }
 
-export default function Navbar({ isLoggedIn, data, setCurrentPage }: NavbarProps) {
+export default function Navbar({ isLoggedIn, data, setCurrentPage, isRecievedCoins, setIsRecievedCoins }: NavbarProps) {
 	const [active, setActive] = useState<string | null>(null);
 	const DISCORD_API = process.env.DISCORD_API || '';
 
-	const [isRecievedCoins, setIsRecievedCoins] = useState(false);
+	const today = new Date();
+	const last_reward = data.last_reward;
+	console.log('last_reward', last_reward);
+	console.log('today', today);
+	
+	const isSameDayOrFuture = (d1: Date, d2: Date | null) => {
+		return d2 === null || d1.getTime() >= d2.getTime();
+	};
+
+	useEffect(() => {
+		const result = isSameDayOrFuture(today, new Date(last_reward));
+		setIsRecievedCoins(result);
+	}, [today, last_reward]);
+
+	console.log("isReceive", isRecievedCoins);
 
 	function handleClick() {
 		console.log('This button was clicked');
@@ -113,7 +183,7 @@ export default function Navbar({ isLoggedIn, data, setCurrentPage }: NavbarProps
 					<div className="">
 						{isLoggedIn ? (
 							<div className="flex flex-row items-center ">
-								<LoginGifts setIsRecievedCoins={setIsRecievedCoins} isRecievedCoins={isRecievedCoins} />
+								<LoginGifts setIsRecievedCoins={setIsRecievedCoins} isRecievedCoins={isRecievedCoins} data={data} />
 								<p className="ml-4">{data.coin}</p>
 								<Image
 									src={'/coin.gif'}
