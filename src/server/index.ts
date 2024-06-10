@@ -6,7 +6,8 @@ import {getUser,getUserBy_id,editUserCoin,editUserLastReward} from './api/user';
 import { createCallerFactory, router } from './trpc';
 import {createComment,getComment} from './api/comment';
 import {createBookMark,getBookMark,deleteBookMark} from './api/bookmark';
-import {getItem} from './api/item';
+import {getItem,editItem} from './api/item';
+import {saveItem} from './api/redeem';
 export const appRouter = router({
 	...apiTest(),
 	...login(),
@@ -23,7 +24,9 @@ export const appRouter = router({
 	...editUserCoin(),
 	...editPostCoin(),
 	...editUserLastReward(),
-	...getItem()
+	...getItem(),
+	...editItem(),
+	...saveItem(),
 });
 const createCaller = createCallerFactory(appRouter);
 

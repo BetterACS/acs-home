@@ -62,6 +62,7 @@ export default function ShopModule({data,setCoinDependency}:{data:User,setCoinDe
 						coin={item.price}
 						data={data}
 						setCoinDependency={setCoinDependency}
+						quantity={item.quantity}
 					/>
 				))}
 			</BentoGrid>
@@ -86,7 +87,8 @@ const BentoGridItem = ({
 	header,
 	coin,
 	data,
-	setCoinDependency
+	setCoinDependency,
+	quantity
 }: {
 	itemKey: string;
 	className: string;
@@ -97,11 +99,38 @@ const BentoGridItem = ({
 	coin: number;
 	data: User;
 	setCoinDependency: (value: boolean) => void;
+	quantity:number;
 }) => {
 	const coinMutation = trpc.editUserCoin.useMutation({
 		onSuccess: (data) => {
 			console.log('editUserCoin success:', data);
 			setCoinDependency(true);
+		},
+		onError: (error: any) => {
+			console.error('Failed to update coin value:', error);
+			alert('Failed to update coin value');
+		},
+		onSettled: () => {
+			console.log('editUserCoin settled');
+		},
+	});
+
+	const quantityMutation = trpc.editItem.useMutation({
+		onSuccess: (data) => {
+			console.log('editUserCoin success:', data);
+		},
+		onError: (error: any) => {
+			console.error('Failed to update coin value:', error);
+			alert('Failed to update coin value');
+		},
+		onSettled: () => {
+			console.log('editUserCoin settled');
+		},
+	});
+
+	const saveMutation = trpc.saveItem.useMutation({
+		onSuccess: (data) => {
+			console.log('editUserCoin success:', data);
 		},
 		onError: (error: any) => {
 			console.error('Failed to update coin value:', error);
@@ -124,6 +153,18 @@ const BentoGridItem = ({
 
 		console.log('Sending coinData:', coinData);
 		const coinResponse = await coinMutation.mutate(coinData);
+
+		const quantityData = {
+			_id: itemKey,
+			quantity: quantity - 1,
+		};
+		const quantityResponse = await quantityMutation.mutate(quantityData);
+
+		const SaveData = {
+			user_id: data._id,
+			item_id: itemKey,
+		};
+		const saveResponse = await saveMutation.mutate(SaveData);
 	};
 
 	return (
