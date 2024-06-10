@@ -1,76 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { cn } from '@/components/utils/ui';
-
-import {
-	IconArrowWaveRightUp,
-	IconBoxAlignRightFilled,
-	IconBoxAlignTopLeft,
-	IconClipboardCopy,
-	IconFileBroken,
-	IconSignature,
-	IconTableColumn,
-} from '@tabler/icons-react';
-
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { trpc } from '@/app/_trpc/client';
+import { Item, User } from '@/database/models';
+import Swal from 'sweetalert2';
 
-const Skeleton = () => (
-	<div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100"></div>
+const Skeleton = ({ src }: { src: string }) => (
+	<div className="relative flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100">
+		<img src={src} className="absolute inset-0 w-full h-full object-cover rounded-xl" />
+	</div>
 );
 
-const items = [
-	{
-		title: 'เสื้อ ACS Developer',
-		description: 'เสื้อสำหรับนักพัฒนาโดยนักพัฒนา',
-		header: <Skeleton />,
-		icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
-		coin: 500,
-	},
-	{
-		title: 'คูปองคอร์สเรียนออนไลน์ 500 บาท',
-		description: 'สนับสนุนค่าใช้จ่ายคอร์สเรียนออนไลน์ 500 บาท',
-		header: <Skeleton />,
-		icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
-		coin: 1000,
-	},
-	{
-		title: 'แผ่นรองเมาส์ ACS',
-		description: 'แผ่นรองเมาส์สุดเท่จาก ACS',
-		header: <Skeleton />,
-		icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
-		coin: 200,
-	},
-	{
-		title: 'หนังสือพัฒนาตนเอง',
-		description: 'หนังสือสำหรับพัฒนาตัวเอง หรือหนังสือสำหรับโปรแกรมมิ่งและการออกแบบ',
-		header: <Skeleton />,
-		icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
-		coin: 300,
-	},
-	{
-		title: '1 Month Colab pro subscription',
-		description: 'สิทธิ์ใช้งาน Colab pro 1 เดือน',
-		header: <Skeleton />,
-		icon: <IconArrowWaveRightUp className="h-4 w-4 text-neutral-500" />,
-		coin: 350,
-	},
-	{
-		title: 'Custom discord role',
-		description: 'เปร่งประกายด้วยชื่อสีที่คุณต้องการในเซิฟเวอร์ ACS Common',
-		header: <Skeleton />,
-		icon: <IconBoxAlignTopLeft className="h-4 w-4 text-neutral-500" />,
-		coin: 2000,
-	},
-	{
-		title: 'พวงกุญแจ ACS',
-		description: 'พวงกุญแจสุดเท่จาก ACS',
-		header: <Skeleton />,
-		icon: <IconBoxAlignRightFilled className="h-4 w-4 text-neutral-500" />,
-		coin: 100,
-	},
-];
+export default function ShopModule({
+	data,
+	isLoggedIn,
+	setCoinDependency,
+}: {
+	data: User;
+	isLoggedIn: boolean;
+	setCoinDependency: (value: boolean) => void;
+}) {
+	const [items, setItems] = useState([] as Item[]);
+	const query = trpc.getItem.useQuery();
 
-export default function ShopModule() {
+	useEffect(() => {
+		if (query.data) {
+			const fetchedItems = query.data.data.data; // Adjust the path according to your response structure
+			setItems(fetchedItems);
+		}
+	}, [query.data]);
+
+	if (query.isLoading) {
+		return <div>Loading...</div>;
+	}
+
+	if (query.isError) {
+		return <div>Error loading items</div>;
+	}
+
 	return (
 		<motion.div
 			className="mt-8"
@@ -81,13 +49,17 @@ export default function ShopModule() {
 			<BentoGrid className="max-w-4xl mx-auto">
 				{items.map((item, i) => (
 					<BentoGridItem
-						key={i}
-						title={item.title}
-						description={item.description}
-						header={item.header}
-						icon={item.icon}
+						key={item._id}
+						itemKey={item._id} // Rename key to itemKey
+						index={i}
+						title={item.item_name}
+						description={item.item_text}
+						header={<Skeleton src={item.source} />}
 						className={i === 3 || i === 6 ? 'md:col-span-2' : ''}
-						coin={item.coin}
+						coin={item.price}
+						data={data}
+						setCoinDependency={setCoinDependency}
+						isLoggedIn={isLoggedIn}
 					/>
 				))}
 			</BentoGrid>
@@ -95,9 +67,7 @@ export default function ShopModule() {
 	);
 }
 
-const BentoGrid = (props: any) => {
-	const { className, children, coin } = props;
-
+const BentoGrid = ({ className, children }: { className: string; children: React.ReactNode[] }) => {
 	return (
 		<div className={cn('grid md:auto-rows-[18rem] grid-cols-1 md:grid-cols-3 gap-4 max-w-7xl mx-auto ', className)}>
 			{children}
@@ -106,31 +76,85 @@ const BentoGrid = (props: any) => {
 };
 
 const BentoGridItem = ({
+	itemKey,
 	className,
+	index,
 	title,
 	description,
 	header,
-	icon,
 	coin,
+	data,
+	setCoinDependency,
+	isLoggedIn,
 }: {
-	className?: string;
-	title?: string | React.ReactNode;
-	description?: string | React.ReactNode;
-	header?: React.ReactNode;
-	icon?: React.ReactNode;
-	coin?: number;
+	itemKey: string;
+	className: string;
+	index: number;
+	title: string;
+	description: string;
+	header: React.ReactNode;
+	coin: number;
+	data: User;
+	setCoinDependency: (value: boolean) => void;
+	isLoggedIn: boolean;
 }) => {
+	const coinMutation = trpc.editUserCoin.useMutation({
+		onSuccess: (data) => {
+			console.log('editUserCoin success:', data);
+			setCoinDependency(true);
+		},
+		onError: (error: any) => {
+			console.error('Failed to update coin value:', error);
+			alert('Failed to update coin value');
+		},
+		onSettled: () => {
+			console.log('editUserCoin settled');
+		},
+	});
+
+	const handleClick = async () => {
+		if (!isLoggedIn) {
+			Swal.fire('Oops...', 'You need to login to purchase items', 'error');
+			return;
+		}
+		if (data.coin < coin) {
+			Swal.fire('Oops...', 'Seems like you do not have enough coins', 'error');
+			return;
+		}
+		const coinData = {
+			_id: data._id,
+			newCoinValue: data.coin - coin,
+		};
+
+		Swal.fire({
+			title: 'Do you want to buy this item?',
+			text: 'You will not be able to revert this!',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Yes, buy it for ' + coin + ' coins',
+			cancelButtonText: 'No, cancel!',
+		}).then(async (result) => {
+			if (result.value) {
+				Swal.fire('Bought!', 'Your item has been bought.', 'success');
+				console.log('Sending coinData:', coinData);
+				const coinResponse = await coinMutation.mutate(coinData);
+			} else if (result.dismiss === Swal.DismissReason.cancel) {
+				Swal.fire('Cancelled', '', 'error');
+			}
+		});
+	};
+
 	return (
 		<div
 			className={cn(
 				'row-span-1 cursor-pointer hover:scale-[102%] rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-none p-4 dark:bg-black dark:border-white/[0.2] bg-white border border-transparent justify-between flex flex-col space-y-4',
 				className
 			)}
+			onClick={handleClick}
 		>
 			{header}
 			<div className="group-hover/bento:translate-x-2 transition duration-200">
 				<div className="flex flex-row items-center justify-between">
-					<p>{icon}</p>
 					<div className="flex flex-row items-center space-x-1">
 						<p>{coin}</p>
 						<Image alt={'Coin'} src={'/coin.gif'} height={20} width={20} />

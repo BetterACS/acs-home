@@ -7,7 +7,7 @@ import { EventCardPopupProps } from '@/types';
 import CommentsElement from '../comments/comments';
 
 const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
-	const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData } = props;
+	const { avatar, name, title, description, setModalOpen, coin, due_date, postID, userData, setCoinDependency: setMainCoinDependency, setCoinGithubDependency,user_id_foreign,isLoggedIn} = props;
 	const windowSize = useMemo(
 		() => (window.innerWidth > 1800 ? 1200 : Math.floor(window.innerWidth * 0.7)),
 		[window.innerWidth]
@@ -62,35 +62,32 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 						</motion.div>
 					</motion.div>
 
-					{/* Content */}
-					<motion.div className="px-32 flex flex-col w-full h-full">
-						<motion.p
-							className="mb-4"
-							initial={{ fontSize: '1.25rem' }}
-							animate={{ fontSize: '3rem' }}
-							transition={{ duration: 0.45 }}
-						>
-							{title}
-						</motion.p>
+                    <motion.div className="px-32 flex flex-col w-full h-full">
+                        <motion.p
+                            className="mb-4"
+                            initial={{ fontSize: '1.25rem' }}
+                            animate={{ fontSize: '3rem' }}
+                            transition={{ duration: 0.45 }}
+                        >
+                            {title}
+                        </motion.p>
 
-						{/* Badges */}
-						<motion.div className="flex flex-row space-x-4">
-							<motion.div className="flex flex-row items-center space-x-2 rounded-md border-2 pl-2 pr-1 py-1">
-								<p>{coin}</p>
-								<Image src={'/coin.gif'} alt="avatar" width={32} height={32} />
-							</motion.div>
-							<motion.div className="flex flex-row items-center space-x-2 rounded-md border-2 pl-2 pr-1 py-1">
-								<p>Close in:</p>
-								<p>{due_date.toString()} days</p>
-							</motion.div>
-						</motion.div>
+                        <motion.div className="flex flex-row space-x-4">
+                            <motion.div className="flex flex-row items-center space-x-2 rounded-md border-2 pl-2 pr-1 py-1">
+                                <p>{coin}</p>
+                                <Image src={'/coin.gif'} alt="avatar" width={32} height={32} />
+                            </motion.div>
+                            <motion.div className="flex flex-row items-center space-x-2 rounded-md border-2 pl-2 pr-1 py-1">
+                                <p>Close in:</p>
+                                <p>{due_date.toString()} days</p>
+                            </motion.div>
+                        </motion.div>
 
-						{/* Description */}
-						<motion.div className="flex flex-col mt-16 text-xl text-gray-800">
-							<p>{description}</p>
-						</motion.div>
+                        <motion.div className="flex flex-col mt-16 text-xl text-gray-800">
+                            <p>{description}</p>
+                        </motion.div>
 
-						<CommentsElement className="mt-8 pb-12" postID={postID} userData={userData} />
+						<CommentsElement className="mt-8 pb-12" postID={postID} userData={userData} setCoinDependency={setMainCoinDependency} postCoin={coin} setCoinGithubDependency={setCoinGithubDependency} user_id_foreign={user_id_foreign} isLoggedIn={isLoggedIn}/>
 					</motion.div>
 				</div>
 			</motion.div>
@@ -99,3 +96,6 @@ const EventCardPopup = forwardRef((props: EventCardPopupProps, ref: any) => {
 });
 
 export default EventCardPopup;
+
+
+

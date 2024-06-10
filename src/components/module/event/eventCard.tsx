@@ -22,6 +22,11 @@ export default function EventCard(props: any) {
 		bookmark_status,
 		bookmark,
 		setBookMarkDependency,
+		setCoinDependency,
+		setCoinGithubDependency,
+		coinGithubDependency,
+		user_id_foreign,
+		isLoggedIn
 	} = props;
 	const [modalOpen, setModalOpen] = useState(false);
 	const [isBookmark, setIsBookmark] = useState(bookmark_status);
@@ -79,7 +84,6 @@ export default function EventCard(props: any) {
 	});
 
 	const handleDelete = async () => {	
-		console.log("_________________",bookmark)
 		const bookmarkData = {
 			_id: bookmark._id,
 		};
@@ -120,6 +124,10 @@ export default function EventCard(props: any) {
 					due_date={due_date}
 					postID={id}
 					userData={user}
+					setCoinDependency={setCoinDependency}
+					setCoinGithubDependency={setCoinGithubDependency}
+					user_id_foreign={user_id_foreign}
+					isLoggedIn={isLoggedIn}
 				/>
 			)}
 			<Card
@@ -136,23 +144,25 @@ export default function EventCard(props: any) {
 					<p className="text-gray-800 line-clamp-1">{description}</p>
 				</div>
 				<div className="cursor-pointer" onClick={bookmarkButton}>
-					{isBookmark ? (
-						<Image
-							className="hover:scale-[114%]"
-							alt="bookmark"
-							src={bookmarkImage}
-							width={36}
-							height={36}
-							priority
-						/>
-					) : (
-						<Image
-							className="hover:scale-[114%]"
-							alt="bookmark"
-							src={'/bookmark.png'}
-							width={36}
-							height={36}
-						/>
+					{isLoggedIn && (
+						isBookmark ? (
+							<Image
+								className="hover:scale-[114%]"
+								alt="bookmark"
+								src={bookmarkImage}
+								width={36}
+								height={36}
+								priority
+							/>
+						) : (
+							<Image
+								className="hover:scale-[114%]"
+								alt="bookmark"
+								src={'/bookmark.png'}
+								width={36}
+								height={36}
+							/>
+						)
 					)}
 				</div>
 			</Card>

@@ -13,32 +13,32 @@ import Link from 'next/link';
 const octokit = new Octokit();
 
 export default function GitHubCarousel(props: any) {
-	const { onCardClick, callBack, dependency, query_title_carousel, userData } = props;
-	const [modalOpen, setModalOpen] = useState(false);
+    const { onCardClick, callBack, dependency, query_title_carousel, userData, setCoinDependency: setMainCoinDependency,coinGithubDependency,setCoinGithubDependency,coinDependency ,isLoggedIn} = props;
+    const [modalOpen, setModalOpen] = useState(false);
 
-	const [title, setTitle] = useState('');
-	const [description, setDescription] = useState<any>('');
-	const [avatar, setAvatar] = useState('');
-	const [name, setName] = useState('');
-	const cardRef = useRef<any>();
-	const [data, setData] = useState({} as User);
-	const [coin, setCoin] = useState(0);
-	const [due_date, setDueDate] = useState(0); // tomorrow
-	const [postID, setPostID] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState<any>('');
+    const [avatar, setAvatar] = useState('');
+    const [name, setName] = useState('');
+    const cardRef = useRef<any>();
+    const [data, setData] = useState({} as User);
+    const [coin, setCoin] = useState(0);
+    const [due_date, setDueDate] = useState(0);
+    const [postID, setPostID] = useState('');
+    const [user_id_foreign, setUser_id_foreign] = useState(''); 
 	const [repoGitHub, setRepoGitHub] = useState('');
 
-	async function LoaddataUser(_userID: string) {
-		('use server');
-		await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: _userID }))}`).then(
-			async (res) => {
-				const query = await res.json();
-				const query_data = query.result.data.data.data as User;
-				setData(query_data);
-				setName(query_data.display_name);
-				setAvatar(`https://cdn.discordapp.com/avatars/${query_data.discord_id}/${query_data.avatar}.png`);
-			}
-		);
-	}
+    async function LoaddataUser(_userID: string) {
+        await fetch(`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: _userID }))}`).then(
+            async (res) => {
+                const query = await res.json();
+                const query_data = query.result.data.data.data as User;
+                setData(query_data);
+                setName(query_data.display_name);
+                setAvatar(`https://cdn.discordapp.com/avatars/${query_data.discord_id}/${query_data.avatar}.png`);
+            }
+        );
+    }
 
 	const open = async (
 		id: any,
@@ -50,7 +50,8 @@ export default function GitHubCarousel(props: any) {
 		ref: any,
 		_userID: any,
 		coin: any,
-		due_date: any
+		due_date: any,
+		user_id_foreign: any
 	) => {
 		await LoaddataUser(_userID);
 		setTitle(_title);
@@ -85,6 +86,7 @@ export default function GitHubCarousel(props: any) {
 		const differenceInMilliseconds = dueDateTimestamp - currentTimestamp;
 		setDueDate(Math.max(Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24)), 0));
 		setPostID(id);
+		setUser_id_foreign(user_id_foreign);
 	};
 
 	const [event, setEvent] = useState<GitHubEventCardProps[]>([]);
@@ -96,7 +98,7 @@ export default function GitHubCarousel(props: any) {
 		('use server');
 		await fetch(
 			`/api/trpc/getPost?input=${encodeURIComponent(
-				JSON.stringify({ type: 'github_carousel', title: query_title_carousel, user_id: userData._id })
+				JSON.stringify({ type: 'github_carousel', title: query_title_carousel, user_id: userData?._id })
 			)}`
 		).then(async (res) => {
 			const query = await res.json();
@@ -118,23 +120,38 @@ export default function GitHubCarousel(props: any) {
 				`/api/trpc/getUserBy_id?input=${encodeURIComponent(JSON.stringify({ _id: event.user_id }))}`
 			);
 			const query = await res.json();
-			const bookmarkRes = await fetch(
-				`/api/trpc/getBookMark?input=${encodeURIComponent(
-					JSON.stringify({ post_id: event._id, user_id: userData._id, type: 'github_carousel' })
-				)}`
-			);
-			const bookmarkQuery = await bookmarkRes.json();
-			return {
-				...event,
-				user: query.result.data.data.data as User,
-				bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
-				bookmark: bookmarkQuery.result.data.data.bookmark as Bookmark,
-			};
+			let bookmarkRes;
+			if (isLoggedIn){
+				bookmarkRes = await fetch(
+					`/api/trpc/getBookMark?input=${encodeURIComponent(
+						JSON.stringify({ post_id: event._id, user_id: userData._id, type: 'github_carousel' })
+					)}`
+				);
+				const bookmarkQuery = await bookmarkRes.json();
+				return {
+					...event,
+					user: query.result.data.data.data as User,
+					bookmark_status: bookmarkQuery.result.data.status === 200 ? true : false,
+					bookmark: bookmarkQuery.result.data.data.bookmark as Bookmark,
+				};
+			}else{
+				bookmarkRes = await fetch(
+					`/api/trpc/getBookMark?input=${encodeURIComponent(
+						JSON.stringify({ post_id: event._id, type: 'github_carousel' })
+					)}`
+				);
+				const bookmarkQuery = await bookmarkRes.json();
+				return {
+					...event,
+					user: query.result.data.data.data as User,
+				};
+			}
+			
 		});
 		return Promise.all(userPromises);
 	}
 
-	const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
+    const [eventsWithUserData, setEventsWithUserData] = useState([] as any[]);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -162,93 +179,100 @@ export default function GitHubCarousel(props: any) {
 	// 	console.log('eventsWithUserData updated', eventsWithUserData);
 	// }, [eventsWithUserData]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			await Loaddata();
-			setIsLoading(false);
-			if (dependency === true) {
-				callBack();
-			}
-			setBookMarkDependency(false);
-		};
-		fetchData();
-	}, [dependency, query_title_carousel, bookMarkDependency]);
+    useEffect(() => {
+        const fetchData = async () => {
+            await Loaddata();
+            setIsLoading(false);
+            if (dependency === true) {
+                callBack();
+            }
+            setBookMarkDependency(false);
+			setMainCoinDependency(false);
+        };
+        fetchData();
+    }, [dependency, query_title_carousel, bookMarkDependency, coinDependency]);
 
-	useEffect(() => {
-		if (!isLoading && eventsWithUserData.length > 0) {
-			functionToCall();
-		}
-	}, [isLoading, eventsWithUserData]);
-	const functionToCall = async () => {
-		const eventsArray = [] as GitHubRepoProps[];
-		if (eventsWithUserData) {
-			if (eventsWithUserData[0] === 404) {
-				console.log('No events found');
-				setRepos([]);
-				setRepoIsLoading(false);
-				setIsLoading(false);
-				return;
-			}
-			await Promise.all(
-				eventsWithUserData.map(async (event) => {
-					const link = event.githubLink.split('/');
-					const { data } = await octokit.request('GET /repos/{owner}/{repo}', {
-						owner: link[3],
-						repo: link[4],
-					});
-					const repo = {
-						id: event._id,
-						title: event.title,
-						fullName: data.full_name,
-						avatar: data.owner.avatar_url,
-						description: data.description,
+    useEffect(() => {
+        if (!isLoading && eventsWithUserData.length > 0) {
+            functionToCall();
+        }
+    }, [isLoading, eventsWithUserData]);
+
+    const functionToCall = async () => {
+        const eventsArray = [] as GitHubRepoProps[];
+        if (eventsWithUserData) {
+            if (eventsWithUserData[0] === 404) {
+                console.log('No events found');
+                setRepos([]);
+                setRepoIsLoading(false);
+                setIsLoading(false);
+                return;
+            }
+            await Promise.all(
+                eventsWithUserData.map(async (event) => {
+                    const link = event.githubLink.split('/');
+                    const { data } = await octokit.request('GET /repos/{owner}/{repo}', {
+                        owner: link[3],
+                        repo: link[4],
+                    });
+                    const repo = {
+                        id: event._id,
+                        title: event.title,
+                        fullName: data.full_name,
+                        avatar: data.owner.avatar_url,
+                        description: data.description,
 						userDescription: event.description,
-						language: data.language,
-						stars: data.stargazers_count,
-						userID: event.user_id,
-						userAvatar: `https://cdn.discordapp.com/avatars/${event.user.discord_id}/${event.user.avatar}.png`,
-						bookmark_status: event.bookmark_status,
-						bookmark: event.bookmark,
-						userData: userData,
-						setBookMarkDependency: setBookMarkDependency,
-					} as GitHubRepoProps;
-					eventsArray.push(repo);
-				})
-			);
-			setRepos(eventsArray);
-			setRepoIsLoading(false);
-			setIsLoading(false);
-		}
-	};
+                        language: data.language,
+                        stars: data.stargazers_count,
+                        userID: event.user_id,
+                        userAvatar: `https://cdn.discordapp.com/avatars/${event.user.discord_id}/${event.user.avatar}.png`,
+                        bookmark_status:  event.bookmark_status,
+                        bookmark:  event.bookmark,
+                        userData:  userData,
+						isLoggedIn: isLoggedIn,
+                        setBookMarkDependency:  setBookMarkDependency,
+                    } as GitHubRepoProps;
+                    eventsArray.push(repo);
+                })
+            );
+            setRepos(eventsArray);
+            setRepoIsLoading(false);
+            setIsLoading(false);
+        }
+    };
 
-	if (
-		repos.length === 0 &&
-		eventsWithUserData.length === 1 &&
-		!repoIsLoading &&
-		!isLoading &&
-		eventsWithUserData[0] === 404
-	) {
-		return <div className="text-lg text-white">No Github events found</div>;
-	} else if (isLoading || repoIsLoading) {
-		return <LoadingTemplate />;
-	}
+    if (
+        repos.length === 0 &&
+        eventsWithUserData.length === 1 &&
+        !repoIsLoading &&
+        !isLoading &&
+        eventsWithUserData[0] === 404
+    ) {
+        return <div className="text-lg text-white">No Github events found</div>;
+    } else if (isLoading || repoIsLoading) {
+        return <LoadingTemplate />;
+    }
 
-	return (
-		<div>
-			{modalOpen && (
-				<EventCardPopup
-					avatar={avatar}
-					name={name}
-					title={title}
-					description={description}
-					ref={cardRef}
-					setModalOpen={setModalOpen}
-					coin={coin}
-					due_date={due_date}
-					postID={postID}
-					userData={userData}
-				/>
-			)}
+    return (
+        <div>
+            {modalOpen && (
+                <EventCardPopup
+                    avatar={avatar}
+                    name={name}
+                    title={title}
+                    description={description}
+                    ref={cardRef}
+                    setModalOpen={setModalOpen}
+                    coin={coin}
+                    due_date={due_date}
+                    postID={postID}
+                    userData={userData}
+                    setCoinDependency={setMainCoinDependency}
+                    setCoinGithubDependency={setCoinGithubDependency}
+					user_id_foreign={user_id_foreign}
+					isLoggedIn={isLoggedIn}
+                />
+            )}
 
 			<Carousel className="w-[1200px] h-[318px] mx-[360px]">
 				<CarouselContent className="w-[1200px] h-[318px]">
@@ -268,7 +292,8 @@ export default function GitHubCarousel(props: any) {
 										ref,
 										repo.userID,
 										eventsWithUserData[index].coin_reward,
-										eventsWithUserData[index].due_date
+										eventsWithUserData[index].due_date,
+										eventsWithUserData[index].user_id
 									);
 									// setRepoGitHubDescription(repo.fullName);
 								}}
@@ -282,3 +307,4 @@ export default function GitHubCarousel(props: any) {
 		</div>
 	);
 }
+

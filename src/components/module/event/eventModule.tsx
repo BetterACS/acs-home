@@ -22,28 +22,39 @@ export default function EventModule(props: BodyComponentProps) {
 		queryTitleEvent,
 		setQueryTitleEvent,
 		setBookMarkDependency,
+		setCoinDependency,
+		coinDependency,
 	} = props;
 	const query = trpc.useUtils();
-
+	const [coinGithubDependency, setCoinGithubDependency] = useState(false);
 	async function loadAllUserData(events: EventCardProps[]) {
 		const userPromises = events.map(async (event) => {
 			const userResult = await query.getUserBy_id.fetch({ _id: JSON.stringify(event.user_id).replace(/"/g, '') });
-			const bookmarkResult = await query.getBookMark.fetch({
-				post_id: event._id,
-				user_id: data._id,
-				type: 'event_card',
-			});
+			if (isLoggedIn) {
+				const bookmarkResult = await query.getBookMark.fetch({
+					post_id: event._id,
+					user_id: data?._id,
+					type: 'event_card',
+				});
 
-			if (bookmarkResult.status === 200) {
-				console.log('bookmarkQuery', bookmarkResult);
-				console.log('bookmarkQuery.data', bookmarkResult.data.bookmark as Bookmark);
+				if (bookmarkResult.status === 200) {
+					console.log('bookmarkQuery', bookmarkResult);
+					console.log('bookmarkQuery.data', bookmarkResult.data.bookmark as Bookmark);
+				}
+				return {
+					...event,
+					user: userResult.data.data as User,
+					bookmark_status: bookmarkResult.status === 200 ? true : false,
+					bookmark: bookmarkResult.data.bookmark as Bookmark,
+				};
+			} else {
+				return {
+					...event,
+					user: userResult.data.data as User,
+					// bookmark_status: false,
+					// bookmark: undefined,
+				};
 			}
-			return {
-				...event,
-				user: userResult.data.data as User,
-				bookmark_status: bookmarkResult.status === 200 ? true : false,
-				bookmark: bookmarkResult.data.bookmark as Bookmark,
-			};
 		});
 		return Promise.all(userPromises);
 	}
@@ -94,6 +105,9 @@ export default function EventModule(props: BodyComponentProps) {
 						data={data}
 						carouselCallBack={handleCarouselCallBack}
 						eventCallBack={handleEventCallBack}
+						setCoinDependency={setCoinDependency}
+						setCoinGithubDependency={setCoinGithubDependency}
+						coinGithubDependency={coinGithubDependency}
 					/>
 				)}
 			</AnimatePresence>
@@ -104,6 +118,7 @@ export default function EventModule(props: BodyComponentProps) {
 					{currentPage === '' && }
 				</AnimatePresence> */}
 				<SearchBox
+					isLoggedIn={isLoggedIn}
 					setModalOpen={open}
 					setQueryTitleEvent={setQueryTitleEvent}
 					setQueryTitleCarousel={setQueryTitleCarousel}
@@ -127,6 +142,11 @@ export default function EventModule(props: BodyComponentProps) {
 						dependency={carouselDependency}
 						query_title_carousel={query_title_carousel}
 						userData={data}
+						setCoinDependency={setCoinDependency}
+						setCoinGithubDependency={setCoinGithubDependency}
+						coinGithubDependency={coinGithubDependency}
+						coinDependency={coinDependency}
+						isLoggedIn={isLoggedIn}
 					/>
 				</div>
 				<div className="flex flex-col items-center">
@@ -157,6 +177,9 @@ export default function EventModule(props: BodyComponentProps) {
 									bookmark_status={event.bookmark_status}
 									bookmark={event.bookmark}
 									setBookMarkDependency={setBookMarkDependency}
+									setCoinDependency={setCoinDependency}
+									user_id_foreign={event.user_id}
+									isLoggedIn={isLoggedIn}
 								/>
 							);
 						})}

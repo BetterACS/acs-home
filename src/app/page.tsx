@@ -20,6 +20,8 @@ export default function App() {
 	const cookies = useCookies();
 	const [eventDependency, setEventDependency] = useState(false);
 	const [eventBookMarkDependency, setBookMarkDependency] = useState(false);
+	const [coinDependency, setCoinDependency] = useState(false);
+	const [isRecievedCoins, setIsRecievedCoins] = useState(false);
 	const handleEventCallBack = () => {
 		setEventDependency((prev) => !prev);
 	};
@@ -52,6 +54,7 @@ export default function App() {
 				const query_data = query.result.data.data.data as User;
 				console.log('user', query_data);
 				setData(query_data);
+				console.log('data-from-page', data);
 			}
 		);
 	}
@@ -59,9 +62,10 @@ export default function App() {
 
 	async function LoadEvent() {
 		('use server');
+		if (isLoggedIn){
 		await fetch(
 			`/api/trpc/getPost?input=${encodeURIComponent(
-				JSON.stringify({ type: 'event_card', title: queryTitleEvent ,user_id:data._id})
+				JSON.stringify({ type: 'event_card', title: queryTitleEvent ,user_id:data?._id})
 			)}`
 		).then(async (res) => {
 			const query = await res.json();
@@ -69,7 +73,21 @@ export default function App() {
 			// console.log("query2 err",query.error.message)
 			const query_data = query.result.data.data.post;
 			setEvents(query_data);
-		});
+		});}else{
+			await fetch(
+				`/api/trpc/getPost?input=${encodeURIComponent(
+					JSON.stringify({ type: 'event_card', title: queryTitleEvent })
+				)}`
+			).then(async (res) => {
+				const query = await res.json();
+				console.log("query2",query)
+				// console.log("query2 err",query.error.message)
+				const query_data = query.result.data.data.post;
+			
+				setEvents(query_data);
+			});
+		
+		}
 	}
 
 	useEffect(() => {
@@ -87,13 +105,15 @@ export default function App() {
 		const fetchData = async () => {
 			await Loaddata();
 			setIsLoading(false);
+			setCoinDependency(false)
 		};
 		fetchData();
-	}, [isfetch]);
+	}, [isfetch,coinDependency,isRecievedCoins]);
 
 	useEffect(() => {
-		if (!data||isLoading) return;
+		if (isLoading) return;
 		const fetchData = async () => {
+			console.log("data-inLoadEvent",data)
 			await LoadEvent();
 			setBookMarkDependency(false);
 		};
@@ -112,7 +132,7 @@ export default function App() {
 			}}
 		>
 			<p>{}</p>
-			<Navbar isLoggedIn={isLoggedIn} data={data} setCurrentPage={setCurrentPage} />
+			<Navbar isLoggedIn={isLoggedIn} data={data} setCurrentPage={setCurrentPage} isRecievedCoins={isRecievedCoins} setIsRecievedCoins={setIsRecievedCoins} />
 			<div className="flex flex-col justify-center items-center w-full">
 				<Body
 					currentPage={currentPage}
@@ -126,6 +146,8 @@ export default function App() {
 					queryTitleEvent={queryTitleEvent}
 					setQueryTitleEvent={setQueryTitleEvent}
 					setBookMarkDependency={setBookMarkDependency}
+					setCoinDependency={setCoinDependency}
+					coinDependency={coinDependency}
 				/>
 			</div>
 			<Footer />
